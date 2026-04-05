@@ -1,0 +1,123 @@
+@model IEnumerable<TravelGuide.Models.Entities.User>
+@using TravelGuide.Models.Entities
+@{
+    ViewData["Title"] = "Управление пользователями";
+}
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>👥 Управление пользователями</h2>
+        <a asp-action="Index" class="btn btn-secondary">← Назад</a>
+    </div>
+    
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>ФИО</th>
+                    <th>Email</th>
+                    <th>Роль</th>
+                    <th>Агентство</th>
+                    <th>Регистрация</th>
+                    <th>Статус</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr class="@(user.IsBlocked ? "table-secondary" : "")">
+                        <td>@user.Id</td>
+                        <td>@user.FullName</td>
+                        <td>@user.Email</td>
+                        <td>
+                            @switch (user.Role)
+                            {
+                                case UserRole.Admin:
+                                    <span class="badge bg-danger">Администратор</span>
+                                    break;
+                                case UserRole.Manager:
+                                    <span class="badge bg-warning text-dark">Менеджер</span>
+                                    break;
+                                case UserRole.Tourist:
+                                    <span class="badge bg-primary">Турист</span>
+                                    break;
+                                default:
+                                    <span class="badge bg-secondary">Гость</span>
+                                    break;
+                            }
+                        </td>
+                        <td>@user.Agency?.Name</td>
+                        <td>@user.RegistrationDate.ToString("dd.MM.yyyy")</td>
+                        <td>
+                            @if (!user.IsBlocked)
+                            {
+                                <span class="badge bg-success">Активен</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Заблокирован</span>
+                            }
+                        </td>
+                        <td>
+                            @if (user.Role != UserRole.Admin)
+                            {
+                                <form asp-action="ToggleUserBlock" asp-route-id="@user.Id" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    @if (!user.IsBlocked)
+                                    {
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Заблокировать">🚫</button>
+                                    }
+                                    else
+                                    {
+                                        <button type="submit" class="btn btn-sm btn-outline-success" title="Разблокировать">✓</button>
+                                    }
+                                </form>
+                            }
+                            else
+                            {
+                                <span class="text-muted small">Нельзя</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="card mt-4">
+        <div class="card-body">
+            <h6>Статистика:</h6>
+            <div class="row">
+                <div class="col-md-3">
+                    <p class="mb-0">Всего пользователей: <strong>@Model.Count()</strong></p>
+                </div>
+                <div class="col-md-3">
+                    <p class="mb-0">Активных: <strong>@Model.Count(u => !u.IsBlocked)</strong></p>
+                </div>
+                <div class="col-md-3">
+                    <p class="mb-0">Администраторов: <strong>@Model.Count(u => u.Role == UserRole.Admin)</strong></p>
+                </div>
+                <div class="col-md-3">
+                    <p class="mb-0">Менеджеров: <strong>@Model.Count(u => u.Role == UserRole.Manager)</strong></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

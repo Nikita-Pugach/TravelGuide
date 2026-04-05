@@ -1,0 +1,175 @@
+@model TravelGuide.Models.Entities.Sight
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="container">
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-action="Index">Достопримечательности</a></li>
+            <li class="breadcrumb-item active">@Model.Name</li>
+        </ol>
+    </nav>
+    
+    <div class="row">
+        <div class="col-lg-8">
+<div class="card shadow mb-4">
+                @if (!string.IsNullOrEmpty(Model.PhotoUrl))
+                {
+                    <img src="@Model.PhotoUrl" class="card-img-top" alt="@Model.Name" style="max-height: 400px; object-fit: cover;">
+                }
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">@Model.Name</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <h5 class="text-muted">📍 Расположение</h5>
+                            <p class="fs-5">
+                                @Model.City?.Name, @Model.City?.Country?.Name
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="text-muted">🏷️ Тип</h5>
+                            <p class="fs-5">
+                                <span class="badge bg-secondary">@Model.Type</span>
+                            </p>
+                        </div>
+                    </div>
+                    
+                    @if (!string.IsNullOrEmpty(Model.Address))
+                    {
+                        <div class="mb-3">
+                            <h5 class="text-muted">🏠 Адрес</h5>
+                            <p>@Model.Address</p>
+                        </div>
+                    }
+                    
+                    @if (!string.IsNullOrEmpty(Model.Description))
+                    {
+                        <hr />
+                        <h5>Описание</h5>
+                        <p>@Model.Description</p>
+                    }
+                </div>
+            </div>
+            
+            <!-- Сообщения -->
+            @if (TempData["ReviewSuccess"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    @TempData["ReviewSuccess"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+            @if (TempData["ReviewError"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    @TempData["ReviewError"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            <!-- Отзывы -->
+            <div class="card shadow">
+                <div class="card-header">
+                    <h5 class="mb-0">💬 Отзывы</h5>
+                </div>
+                <div class="card-body">
+                    <!-- Форма добавления отзыва -->
+                    @if (Context.Session.GetInt32("UserId") != null)
+                    {
+                        <div class="card bg-light mb-4">
+                            <div class="card-body">
+                                <h6 class="card-title">Оставить отзыв</h6>
+                                <form asp-action="AddReview" asp-controller="Sights" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="SightId" value="@Model.Id" />
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Оценка</label>
+                                        <div class="star-rating-input">
+                                            @for (int i = 5; i >= 1; i--)
+                                            {
+                                                <input type="radio" name="Rating" value="@i" id="star@(i)" @(i == 5 ? "checked" : "") class="d-none" />
+                                                <label for="star@(i)" class="star-label" title="@i звёд">★</label>
+                                            }
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Ваш отзыв</label>
+                                        <textarea name="Text" class="form-control" rows="3" placeholder="Поделитесь впечатлениями..." required minlength="10"></textarea>
+                                    </div>
+                                    
+                                    <button type="submit" class="btn btn-primary">Отправить отзыв</button>
+                                </form>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info mb-4">
+                            <a asp-controller="Account" asp-action="Login">Войдите</a>, чтобы оставить отзыв
+                        </div>
+                    }
+                    
+                    @if (Model.Reviews == null || !Model.Reviews.Any())
+                    {
+                        <p class="text-muted text-center">Отзывов пока нет. Будьте первым!</p>
+                    }
+                    else
+                    {
+                        @foreach (var review in Model.Reviews.OrderByDescending(r => r.CreatedAt))
+                        {
+                            <div class="border-bottom pb-3 mb-3">
+                                <div class="d-flex justify-content-between">
+                                    <strong>@review.User?.FullName</strong>
+                                    <small class="text-muted">@review.CreatedAt.ToString("dd.MM.yyyy")</small>
+                                </div>
+                                <div class="mb-2">
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        <span class="@(i <= review.Rating ? "text-warning" : "text-secondary")">★</span>
+                                    }
+                                </div>
+                                <p class="mb-0">@review.Text</p>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <!-- Информация -->
+            <div class="card shadow mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">ℹ️ Информация</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2">
+                            <strong>Тип:</strong> 
+                            <span class="badge bg-secondary">@Model.Type</span>
+                        </li>
+                        <li class="mb-2">
+                            <strong>Город:</strong> @Model.City?.Name
+                        </li>
+                        <li class="mb-2">
+                            <strong>Страна:</strong> @Model.City?.Country?.Name
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Действия -->
+            <div class="card shadow">
+                <div class="card-body">
+                    <h5 class="mb-3">Действия</h5>
+                    <a asp-action="Index" class="btn btn-secondary d-grid">← К списку достопримечательностей</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

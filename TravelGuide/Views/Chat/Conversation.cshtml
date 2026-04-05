@@ -1,0 +1,169 @@
+@model TravelGuide.ViewModels.ChatConversationViewModel
+
+@{
+    ViewData["Title"] = $"Чат с {Model.UserName}";
+}
+
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <!-- Заголовок чата -->
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <a asp-action="Index" class="btn btn-outline-light btn-sm me-3">
+                    <i class="bi bi-arrow-left"></i>
+                </a>
+                <div class="avatar-placeholder me-2 bg-white text-primary rounded-circle d-flex align-items-center justify-content-center" 
+                     style="width: 40px; height: 40px; font-weight: bold;">
+                    @if (!string.IsNullOrEmpty(Model.UserAvatar))
+                    {
+                        <img src="@Model.UserAvatar" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;" />
+                    }
+                    else
+                    {
+                        <span>@Model.UserName.FirstOrDefault()</span>
+                    }
+                </div>
+                <div>
+                    <h6 class="mb-0">@Model.UserName</h6>
+                    <small>
+                        @if (Model.Status == ChatStatus.Active)
+                        {
+                            <span class="text-success">● Активен</span>
+                        }
+                        else
+                        {
+                            <span class="text-warning">● Закрыт</span>
+                        }
+                    </small>
+                </div>
+            </div>
+            @if (Model.Status == ChatStatus.Active)
+            {
+                <form asp-action="Close" asp-route-id="@Model.ChatId" method="post">
+                    <button type="submit" class="btn btn-outline-light btn-sm">
+                        <i class="bi bi-x-circle me-1"></i> Закрыть чат
+                    </button>
+                </form>
+            }
+        </div>
+
+        <!-- Сообщения -->
+        <div class="card-body messages-container" style="height: 400px; overflow-y: auto;" id="messagesContainer">
+            @if (!Model.Messages.Any())
+            {
+                <div class="text-center text-muted py-5">
+                    <i class="bi bi-chat-square-text display-4"></i>
+                    <p class="mt-2">Начните общение!</p>
+                </div>
+            }
+            else
+            {
+                @foreach (var msg in Model.Messages)
+                {
+                    <div class="message mb-3 @(msg.IsMyMessage ? "text-end" : "")">
+                        <div class="d-inline-block @(msg.IsMyMessage ? "bg-primary text-white" : "bg-light") rounded p-2 px-3" 
+                             style="max-width: 70%;">
+                            <small class="@(msg.IsMyMessage ? "text-white-50" : "text-muted")">
+                                @msg.SenderName
+                            </small>
+                            <p class="mb-1">@msg.Text</p>
+                            <small class="@(msg.IsMyMessage ? "text-white-50" : "text-muted")">
+                                @msg.Timestamp.ToString("dd.MM HH:mm")
+                                @if (msg.IsMyMessage)
+                                {
+                                    <i class="bi @(msg.IsRead ? "bi-check-all text-info" : "bi-check")"></i>
+                                }
+                            </small>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+
+        <!-- Форма отправки -->
+        @if (Model.Status == ChatStatus.Active)
+        {
+            <div class="card-footer">
+                <form asp-action="SendMessage" method="post" id="messageForm">
+                    <input type="hidden" name="ChatId" value="@Model.ChatId" />
+                    <div class="input-group">
+                        <input type="text" name="Text" class="form-control" 
+                               placeholder="Введите сообщение..." required maxlength="5000" id="messageInput" />
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-send"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        }
+        else
+        {
+            <div class="card-footer text-center text-muted">
+                <i class="bi bi-lock me-1"></i> Чат закрыт
+                <a asp-action="Create" class="btn btn-outline-primary btn-sm ms-2">
+                    Создать новый чат
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Прокрутка к последнему сообщению
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.getElementById('messagesContainer');
+            container.scrollTop = container.scrollHeight;
+        });
+        
+        // SignalR подключение
+        const chatId = @Model.ChatId;
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/chathub")
+            .build();
+        
+        connection.on("ReceiveMessage", function(message) {
+            const container = document.getElementById('messagesContainer');
+            const isMyMessage = message.senderId === '@Context.Session.GetInt32("UserId")'.toString();
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message mb-3 ' + (isMyMessage ? 'text-end' : '');
+            messageDiv.innerHTML = `
+                <div class="d-inline-block ${isMyMessage ? 'bg-primary text-white' : 'bg-light'} rounded p-2 px-3" style="max-width: 70%;">
+                    <p class="mb-1">${escapeHtml(message.text)}</p>
+                    <small class="${isMyMessage ? 'text-white-50' : 'text-muted'}">${message.timestamp}</small>
+                </div>
+            `;
+            container.appendChild(messageDiv);
+            container.scrollTop = container.scrollHeight;
+        });
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        connection.start().then(function() {
+            connection.invoke("JoinChat", chatId).catch(function(err) {
+                console.error(err.toString());
+            });
+        }).catch(function(err) {
+            console.error(err.toString());
+        });
+        
+        // Отправка через SignalR
+        document.getElementById('messageForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const input = document.getElementById('messageInput');
+            const text = input.value.trim();
+            
+            if (text) {
+                connection.invoke("SendMessage", chatId, text, false).catch(function(err) {
+                    console.error(err.toString());
+                });
+                input.value = '';
+            }
+        });
+    </script>
+}

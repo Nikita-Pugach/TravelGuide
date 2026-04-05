@@ -1,0 +1,134 @@
+@model TravelGuide.Models.Entities.Sight
+@using TravelGuide.Models.Entities
+@{
+    ViewData["Title"] = "Добавить достопримечательность";
+}
+
+<div class="container">
+    <h1>Добавить достопримечательность</h1>
+    
+    <div class="card shadow mt-4">
+        <div class="card-body">
+            <form asp-action="CreateSight" method="post" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Name" class="form-label">Название *</label>
+                        <input asp-for="Name" class="form-control" required>
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="col-md-3 mb-3">
+                        <label asp-for="Type" class="form-label">Тип *</label>
+                        <select asp-for="Type" class="form-select" required>
+                            @if (ViewBag.SightTypes != null)
+                            {
+                                foreach (SightType st in ViewBag.SightTypes)
+                                {
+                                    <option value="@((int)st)">@st.GetDisplayName()</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-3 mb-3">
+                        <label asp-for="CityId" class="form-label">Город *</label>
+                        <select asp-for="CityId" class="form-select" required>
+                            <option value="">Выберите город</option>
+                            @if (ViewBag.Cities != null)
+                            {
+                                foreach (var city in ViewBag.Cities)
+                                {
+                                    <option value="@city.Id">@city.Name (@city.Country?.Name)</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Address" class="form-label">Адрес</label>
+                        <input asp-for="Address" class="form-control">
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Фото</label>
+                        <input type="file" name="photo" class="form-control" accept="image/*">
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-label">Описание</label>
+                    <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="Latitude" class="form-label">Широта</label>
+                        <input asp-for="Latitude" class="form-control" type="number" step="any" placeholder="напр. 55.7558">
+                        <small class="text-muted">Кликните на карту или введите вручную</small>
+                    </div>
+                    
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="Longitude" class="form-label">Долгота</label>
+                        <input asp-for="Longitude" class="form-control" type="number" step="any" placeholder="напр. 37.6173">
+                    </div>
+                    
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Позиция на карте</label>
+                        <button type="button" id="locateBtn" class="btn btn-outline-primary w-100">📍 Определить местоположение</button>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Карта (кликните для выбора позиции)</label>
+                    <div id="pickMap" style="height: 300px; border-radius: 10px; border: 1px solid #ddd;"></div>
+                </div>
+                
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                    <a asp-action="Sights" class="btn btn-secondary">Отмена</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        var map = L.map('pickMap').setView([55.7558, 37.6173], 10);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+        
+        var marker = null;
+        
+        function updateMarker(lat, lng) {
+            if (marker) map.removeLayer(marker);
+            marker = L.marker([lat, lng]).addTo(map);
+            map.setView([lat, lng], 15);
+        }
+        
+        map.on('click', function(e) {
+            document.getElementById('Latitude').value = e.latlng.lat.toFixed(6);
+            document.getElementById('Longitude').value = e.latlng.lng.toFixed(6);
+            updateMarker(e.latlng.lat, e.latlng.lng);
+        });
+        
+        document.getElementById('locateBtn').addEventListener('click', function() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(pos) {
+                    document.getElementById('Latitude').value = pos.coords.latitude.toFixed(6);
+                    document.getElementById('Longitude').value = pos.coords.longitude.toFixed(6);
+                    updateMarker(pos.coords.latitude, pos.coords.longitude);
+                });
+            } else {
+                alert('Геолокация не поддерживается браузером');
+            }
+        });
+    </script>
+}

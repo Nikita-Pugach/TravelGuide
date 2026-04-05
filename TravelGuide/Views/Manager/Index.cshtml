@@ -1,0 +1,116 @@
+@{
+    ViewData["Title"] = "Панель менеджера";
+}
+
+<div class="container">
+    <h2 class="mb-4">👤 Панель менеджера</h2>
+    
+    <div class="row">
+        <div class="col-md-3 mb-4">
+            <div class="card bg-primary text-white h-100">
+                <div class="card-body text-center">
+                    <h3>@ViewBag.ToursCount</h3>
+                    <p class="mb-0">🗺️ Туры</p>
+                </div>
+                <div class="card-footer">
+                    <a asp-action="Tours" class="text-white text-decoration-none">Управление →</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-4">
+            <div class="card bg-success text-white h-100">
+                <div class="card-body text-center">
+                    <h3>@ViewBag.ActiveChatsCount</h3>
+                    <p class="mb-0">💬 Активных чатов</p>
+                </div>
+                <div class="card-footer">
+                    <a asp-action="Chats" class="text-white text-decoration-none">Открыть →</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-4">
+            <div class="card bg-warning text-dark h-100">
+                <div class="card-body text-center">
+                    <h3>@ViewBag.PendingReviewsCount</h3>
+                    <p class="mb-0">⏳ Отзывов на модерации</p>
+                </div>
+                <div class="card-footer">
+                    <a asp-controller="Admin" asp-action="Reviews" asp-route-status="Pending" class="text-dark text-decoration-none">Модерация →</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-4">
+            <div class="card bg-info text-white h-100">
+                <div class="card-body text-center">
+                    <h3>@ViewBag.TotalReviewsCount</h3>
+                    <p class="mb-0">⭐ Опубликованных отзывов</p>
+                </div>
+                <div class="card-footer">
+                    <a asp-action="Statistics" class="text-white text-decoration-none">Статистика →</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">⚡ Быстрые действия</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a asp-action="CreateTour" class="btn btn-primary">
+                            ➕ Добавить тур
+                        </a>
+                        <a asp-action="Tours" class="btn btn-outline-primary">
+                            🗺️ Управление турами
+                        </a>
+                        <a asp-action="Chats" class="btn btn-success">
+                            💬 Чаты с клиентами
+                            @if (ViewBag.ActiveChatsCount > 0)
+                            {
+                                <span class="badge bg-light text-dark">@ViewBag.ActiveChatsCount</span>
+                            }
+                        </a>
+                        <a asp-action="Statistics" class="btn btn-outline-secondary">
+                            📊 Статистика
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">💬 Активные чаты</h5>
+                    <a asp-action="Chats" class="btn btn-sm btn-outline-primary">Все чаты</a>
+                </div>
+                <div class="card-body">
+                    @if (ViewBag.ActiveChats != null && ViewBag.ActiveChats.Count > 0)
+                    {
+                        <div class="list-group list-group-flush">
+                            @foreach (var chat in ViewBag.ActiveChats)
+                            {
+                                <a asp-action="Chat" asp-route-id="@chat.Id" class="list-group-item list-group-item-action">
+                                    <div class="d-flex justify-content-between">
+                                        <span>Чат #@(chat.Id)</span>
+                                        <small class="text-muted">@chat.StartTime.ToString("dd.MM HH:mm")</small>
+                                    </div>
+                                </a>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted text-center mb-0">Нет активных чатов</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

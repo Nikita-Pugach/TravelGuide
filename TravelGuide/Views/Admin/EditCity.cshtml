@@ -1,0 +1,43 @@
+@model TravelGuide.Models.Entities.City
+@{
+    ViewData["Title"] = "Редактирование города";
+    var countries = ViewBag.Countries as IEnumerable<TravelGuide.Models.Entities.Country>;
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h4>✏️ Редактирование города</h4>
+            </div>
+            <div class="card-body">
+                <form asp-action="EditCity" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="Id" />
+                    
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label">Название *</label>
+                        <input asp-for="Name" class="form-control" required />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="CountryId" class="form-label">Страна *</label>
+                        <select asp-for="CountryId" class="form-select" required>
+                            <option value="">-- Выберите страну --</option>
+                            @foreach (var country in countries ?? Enumerable.Empty<TravelGuide.Models.Entities.Country>())
+                            {
+                                <option value="@country.Id" selected="@(Model.CountryId == country.Id)">@country.GetFlag() @country.Name</option>
+                            }
+                        </select>
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">💾 Сохранить</button>
+                        <a asp-action="Cities" class="btn btn-outline-secondary">Отмена</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,132 @@
+@model TravelGuide.ViewModels.PaginatedList<TravelGuide.Models.Entities.Sight>
+@using TravelGuide.Models.Entities
+
+@{
+    ViewData["Title"] = "Достопримечательности";
+    var paginationModel = new TravelGuide.ViewModels.PaginationViewModel
+    {
+        CurrentPage = Model.CurrentPage,
+        TotalPages = Model.TotalPages,
+        PageSize = Model.PageSize,
+        TotalItems = Model.TotalItems,
+        Action = "Index",
+        Controller = "Sights",
+        RouteValues = new Dictionary<string, string>
+        {
+            { "search", ViewBag.CurrentSearch ?? "" },
+            { "type", ViewBag.CurrentType?.ToString() ?? "" },
+            { "cityId", ViewBag.CurrentCityId?.ToString() ?? "" },
+            { "sortBy", ViewBag.CurrentSortBy ?? "" }
+        }
+    };
+}
+
+<div class="hero-section py-5 text-center">
+    <div class="container">
+        <h1>Достопримечательности</h1>
+        <p class="lead">Откройте для себя удивительные места мира</p>
+    </div>
+</div>
+
+<div class="container mt-4">
+    <div class="search-card mb-4">
+        <form method="get">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <input type="text" name="search" class="form-control" placeholder="Поиск..." value="@ViewBag.CurrentSearch">
+                </div>
+                <div class="col-md-2">
+                    <select name="type" class="form-select">
+                        <option value="">Все типы</option>
+                        @if (ViewBag.SightTypes != null)
+                        {
+                            foreach (SightType t in ViewBag.SightTypes)
+                            {
+                                <option value="@((int)t)" selected="@(ViewBag.CurrentType == (int)t)">@t.GetDisplayName()</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select name="cityId" class="form-select">
+                        <option value="">Все города</option>
+                        @if (ViewBag.Cities != null)
+                        {
+                            foreach (var c in ViewBag.Cities)
+                            {
+                                <option value="@c.Id" selected="@(ViewBag.CurrentCityId == c.Id)">@c.Name (@c.Country?.Name)</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select name="sortBy" class="form-select">
+                        <option value="">По названию</option>
+                        <option value="type" selected="@(ViewBag.CurrentSortBy == "type")">По типу</option>
+                    </select>
+                </div>
+                <div class="col-md-1">
+                    <button type="submit" class="btn btn-primary w-100">Найти</button>
+                </div>
+                <div class="col-md-1">
+                    <a asp-action="Index" class="btn btn-outline-secondary w-100">Сброс</a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="row g-4">
+            @foreach (var sight in Model)
+            {
+<div class="col-md-6 col-lg-4">
+                    <div class="card h-100 tour-card">
+                        @if (!string.IsNullOrEmpty(sight.PhotoUrl))
+                        {
+                            <img src="@sight.PhotoUrl" class="card-img-top" alt="@sight.Name" style="height: 200px; object-fit: cover;">
+                        }
+                        else
+                        {
+                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                <span class="display-4">🏛️</span>
+                            </div>
+                        }
+                        <div class="card-header">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">@sight.Name</h5>
+                                <span class="badge bg-secondary">@sight.Type.GetDisplayName()</span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-2">
+                                <strong>@sight.City?.Name</strong>, @sight.City?.Country?.Name
+                            </div>
+                            <p class="card-text text-truncate">@sight.Description</p>
+                            @if (!string.IsNullOrEmpty(sight.Address))
+                            {
+                                <small class="text-muted">@sight.Address</small>
+                            }
+                        </div>
+                        <div class="card-footer">
+                            <a asp-action="Details" asp-route-id="@sight.Id" class="btn btn-primary w-100">Подробнее</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        
+        @if (Model.TotalPages > 1)
+        {
+            <partial name="_Pagination" model="paginationModel" />
+        }
+    }
+    else
+    {
+        <div class="text-center py-5">
+            <h3>Достопримечательности не найдены</h3>
+            <p class="text-muted">Попробуйте изменить параметры поиска</p>
+            <a asp-action="Index" class="btn btn-primary">Показать все</a>
+        </div>
+    }
+</div>

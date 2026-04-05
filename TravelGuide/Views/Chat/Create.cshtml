@@ -1,0 +1,44 @@
+@model TravelGuide.ViewModels.CreateChatViewModel
+
+@{
+    ViewData["Title"] = "Новое сообщение";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-chat-dots me-2"></i>Начать новый чат
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle me-2"></i>
+                        Наш менеджер ответит на ваше сообщение в ближайшее время!
+                    </div>
+
+                    <form asp-action="Create" method="post">
+                        <div class="mb-3">
+                            <label asp-for="FirstMessage" class="form-label">Ваше сообщение</label>
+                            <textarea asp-for="FirstMessage" class="form-control" rows="4" 
+                                      placeholder="Здравствуйте! Меня интересуют туры в Турцию..."
+                                      required maxlength="5000"></textarea>
+                            <span asp-validation-for="FirstMessage" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="Index" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-1"></i> Отмена
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-send me-1"></i> Отправить
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,40 @@
+@model TravelGuide.Models.Entities.Country
+@{
+    ViewData["Title"] = "Добавление страны";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4>🌍 Добавление страны</h4>
+            </div>
+            <div class="card-body">
+                <form asp-action="CreateCountry" method="post" enctype="multipart/form-data">
+                    @Html.AntiForgeryToken()
+                    
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label">Название *</label>
+                        <input asp-for="Name" class="form-control" required />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label">Описание</label>
+                        <textarea asp-for="Description" class="form-control" rows="3" placeholder="Визовые требования, климат, особенности..."></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="photo" class="form-label">Изображение (флаг или фото)</label>
+                        <input type="file" name="photo" id="photo" class="form-control" accept="image/*" />
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">💾 Сохранить</button>
+                        <a asp-action="Countries" class="btn btn-outline-secondary">Отмена</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

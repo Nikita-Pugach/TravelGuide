@@ -1,0 +1,208 @@
+@model TravelGuide.ViewModels.PaginatedList<TravelGuide.Models.Entities.Tour>
+@using TravelGuide.Models.Entities
+
+@{
+    ViewData["Title"] = "Туры";
+    var paginationModel = new TravelGuide.ViewModels.PaginationViewModel
+    {
+        CurrentPage = Model.CurrentPage,
+        TotalPages = Model.TotalPages,
+        PageSize = Model.PageSize,
+        TotalItems = Model.TotalItems,
+        Action = "Index",
+        Controller = "Tours",
+        RouteValues = new Dictionary<string, string>
+        {
+            { "search", ViewBag.CurrentSearch ?? "" },
+            { "countryId", ViewBag.CurrentCountryId?.ToString() ?? "" },
+            { "tourType", ViewBag.CurrentTourType?.ToString() ?? "" },
+            { "minPrice", ViewBag.CurrentMinPrice?.ToString() ?? "" },
+            { "maxPrice", ViewBag.CurrentMaxPrice?.ToString() ?? "" },
+            { "durationMin", ViewBag.CurrentDurationMin?.ToString() ?? "" },
+            { "durationMax", ViewBag.CurrentDurationMax?.ToString() ?? "" },
+            { "sortBy", ViewBag.CurrentSortBy ?? "" }
+        }
+    };
+}
+
+<div class="hero-section py-5 text-center">
+    <div class="container">
+        <h1>Каталог туров</h1>
+        <p class="lead">Выберите своё идеальное путешествие</p>
+    </div>
+</div>
+
+<div class="container mt-4">
+    @Html.AntiForgeryToken()
+    
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    
+    <div class="search-card mb-4">
+        <form method="get">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <input type="text" name="search" class="form-control" placeholder="Поиск тура..." value="@ViewBag.CurrentSearch">
+                </div>
+                <div class="col-md-2">
+                    <select name="countryId" class="form-select">
+                        <option value="">Все страны</option>
+                        @if (ViewBag.Countries != null)
+                        {
+                            foreach (var c in ViewBag.Countries)
+                            {
+                                <option value="@c.Id" selected="@(ViewBag.CurrentCountryId == c.Id)">@c.Name</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select name="tourType" class="form-select">
+                        <option value="">Все типы</option>
+                        @foreach (TourType t in Enum.GetValues(typeof(TourType)))
+                        {
+                            <option value="@((int)t)" selected="@(ViewBag.CurrentTourType == (int)t)">@t.GetDisplayName()</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select name="sortBy" class="form-select">
+                        <option value="">По дате ↓</option>
+                        <option value="popular" selected="@(ViewBag.CurrentSortBy == "popular")">По популярности ↓</option>
+                        <option value="rating" selected="@(ViewBag.CurrentSortBy == "rating")">По рейтингу ↓</option>
+                        <option value="price_asc" selected="@(ViewBag.CurrentSortBy == "price_asc")">Цена ↑</option>
+                        <option value="price_desc" selected="@(ViewBag.CurrentSortBy == "price_desc")">Цена ↓</option>
+                        <option value="duration_asc" selected="@(ViewBag.CurrentSortBy == "duration_asc")">Длительность ↑</option>
+                        <option value="duration_desc" selected="@(ViewBag.CurrentSortBy == "duration_desc")">Длительность ↓</option>
+                        <option value="name" selected="@(ViewBag.CurrentSortBy == "name")">По названию</option>
+                    </select>
+                </div>
+                <div class="col-md-1">
+                    <button type="submit" class="btn btn-primary w-100">Найти</button>
+                </div>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-outline-secondary w-100" data-bs-toggle="collapse" data-bs-target="#advancedSearch">Фильтры</button>
+                </div>
+            </div>
+            <div class="collapse mt-3" id="advancedSearch">
+                <div class="row g-3 pt-3 border-top">
+                    <div class="col-md-3">
+                        <label class="form-label">Цена от</label>
+                        <input type="number" name="minPrice" class="form-control" placeholder="Мин. цена ₽" value="@ViewBag.CurrentMinPrice">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Цена до</label>
+                        <input type="number" name="maxPrice" class="form-control" placeholder="Макс. цена ₽" value="@ViewBag.CurrentMaxPrice">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Длительность от (дн.)</label>
+                        <input type="number" name="durationMin" class="form-control" placeholder="Мин. дней" value="@ViewBag.CurrentDurationMin">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Длительность до (дн.)</label>
+                        <input type="number" name="durationMax" class="form-control" placeholder="Макс. дней" value="@ViewBag.CurrentDurationMax">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="row g-4">
+            @foreach (var tour in Model)
+            {
+                <div class="col-md-6 col-lg-4">
+                    <div class="tour-card card h-100">
+                        <div class="card-header">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">@tour.Name</h5>
+                                <span class="badge @GetTourTypeBadgeClass(tour.TourType)">@tour.TourType.GetDisplayName()</span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <span class="country-flag">@tour.Country?.GetFlag()</span>
+                                <strong>@tour.Country?.Name</strong>
+                            </div>
+                            <div class="d-flex gap-3 mb-3 text-muted">
+                                <span>@tour.Duration дн.</span>
+                                <span>@tour.Price.ToString("N0") ₽</span>
+                                <span>👁 @tour.ViewCount</span>
+                            </div>
+                            <p class="card-text text-truncate">@tour.Description</p>
+                            @if (tour.TourHotels?.Any() == true)
+                            {
+                                <small class="text-muted">@string.Join(", ", tour.TourHotels.Select(h => h.Hotel?.Name).Where(n => n != null).Take(2))</small>
+                            }
+                        </div>
+                        <div class="card-footer">
+                            <div class="d-flex gap-2">
+                                <a asp-action="Details" asp-route-id="@tour.Id" class="btn btn-primary flex-grow-1">Подробнее</a>
+                                <button type="button" class="btn btn-favorite @(ViewBag.FavoriteIds != null && ViewBag.FavoriteIds.Contains(tour.Id) ? "btn-outline-danger" : "btn-outline-secondary")" data-tour-id="@tour.Id" data-is-favorite="@(ViewBag.FavoriteIds != null && ViewBag.FavoriteIds.Contains(tour.Id) ? "true" : "false")">
+                                    @(ViewBag.FavoriteIds != null && ViewBag.FavoriteIds.Contains(tour.Id) ? "В избранном" : "В избранное")
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        
+        @if (Model.TotalPages > 1)
+        {
+            <partial name="_Pagination" model="paginationModel" />
+        }
+    }
+    else
+    {
+        <div class="text-center py-5">
+            <h3>Туры не найдены</h3>
+            <p class="text-muted">Попробуйте изменить параметры поиска</p>
+            <a asp-action="Index" class="btn btn-primary">Показать все туры</a>
+        </div>
+    }
+</div>
+
+@functions {
+    string GetTourTypeBadgeClass(TourType type) => type switch
+    {
+        TourType.Beach => "badge-beach",
+        TourType.Excursion => "badge-excursion",
+        TourType.Combined => "badge-combined",
+        TourType.Health => "badge-health",
+        TourType.Cruise => "badge-cruise",
+        TourType.Adventure => "badge-adventure",
+        _ => "bg-secondary"
+    };
+}
+
+@section Scripts {
+<script>
+document.querySelectorAll('.btn-favorite').forEach(btn => {
+    btn.addEventListener('click', async function() {
+        const tourId = this.dataset.tourId;
+        const isFavorite = this.dataset.isFavorite === 'true';
+        try {
+            const response = await fetch(isFavorite ? '/Favorites/Remove/' + tourId : '/Favorites/Add/' + tourId, {
+                method: 'POST',
+                headers: { 'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || '' }
+            });
+            const data = await response.json();
+            if (data.needLogin) { window.location.href = '/Account/Login'; return; }
+            if (data.success) {
+                this.dataset.isFavorite = isFavorite ? 'false' : 'true';
+                this.classList.toggle('btn-outline-danger', !isFavorite);
+                this.classList.toggle('btn-outline-secondary', isFavorite);
+                this.textContent = isFavorite ? 'В избранное' : 'В избранном';
+            }
+        } catch (e) { console.error('Error:', e); }
+    });
+});
+</script>
+}

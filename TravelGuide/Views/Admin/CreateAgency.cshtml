@@ -1,0 +1,46 @@
+@model TravelGuide.Models.Entities.Agency
+@{
+    ViewData["Title"] = "Добавление агентства";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4>🏢 Добавление агентства</h4>
+            </div>
+            <div class="card-body">
+                <form asp-action="CreateAgency" method="post" enctype="multipart/form-data">
+                    @Html.AntiForgeryToken()
+                    
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label">Название *</label>
+                        <input asp-for="Name" class="form-control" required />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="ContactInfo" class="form-label">Контактная информация *</label>
+                        <textarea asp-for="ContactInfo" class="form-control" rows="2" required placeholder="Телефон, email, адрес..."></textarea>
+                        <span asp-validation-for="ContactInfo" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label">Описание</label>
+                        <textarea asp-for="Description" class="form-control" rows="3" placeholder="Информация об агентстве..."></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="logo" class="form-label">Логотип</label>
+                        <input type="file" name="logo" id="logo" class="form-control" accept="image/*" />
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">💾 Сохранить</button>
+                        <a asp-action="Agencies" class="btn btn-outline-secondary">Отмена</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
