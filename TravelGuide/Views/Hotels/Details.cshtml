@@ -1,9 +1,13 @@
 @model TravelGuide.Models.Entities.Hotel
 @{
     ViewData["Title"] = Model.Name;
+    var avgRating = Model.Reviews != null && Model.Reviews.Any() 
+        ? Model.Reviews.Average(r => r.Rating) 
+        : 0;
+    var reviewCount = Model.Reviews?.Count ?? 0;
 }
 
-<div class="container">
+<div class="container py-4">
     <nav aria-label="breadcrumb" class="mb-3">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a asp-action="Index">Отели</a></li>
@@ -11,78 +15,103 @@
         </ol>
     </nav>
     
-    <div class="row">
+    <div class="row g-4">
         <div class="col-lg-8">
-<div class="card shadow mb-4">
+            <!-- Главное фото -->
+            <div class="detail-card mb-4">
                 @if (!string.IsNullOrEmpty(Model.PhotoUrl))
                 {
-                    <img src="@Model.PhotoUrl" class="card-img-top" alt="@Model.Name" style="max-height: 400px; object-fit: cover;">
+                    <img src="@Model.PhotoUrl" class="img-fluid rounded-4 w-100" alt="@Model.Name" style="max-height: 450px; object-fit: cover;">
                 }
-                <div class="card-header bg-primary text-white">
-                    <h3 class="mb-0">@Model.Name</h3>
-                </div>
-                <div class="card-body">
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <h5 class="text-muted">📍 Расположение</h5>
-                            <p class="fs-5">
-                                @Model.City?.Name, @Model.City?.Country?.Name
-                            </p>
-                        </div>
-                        <div class="col-md-6">
-                            <h5 class="text-muted">⭐ Категория</h5>
-                            <p class="fs-5">
-                                @for (int i = 0; i < Model.Stars; i++)
-                                {
-                                    <span class="text-warning">★</span>
-                                }
-                            </p>
+                else
+                {
+                    <div class="bg-light rounded-4 d-flex align-items-center justify-content-center" style="height: 450px;">
+                        <span style="font-size: 6rem;">🏨</span>
+                    </div>
+                }
+            </div>
+            
+            <!-- Информация об отеле -->
+            <div class="detail-card">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <h1 class="h2 mb-2">@Model.Name</h1>
+                        <div class="d-flex align-items-center gap-3">
+                            <span class="text-warning fs-5">@(new string('★', Model.Stars))</span>
+                            @if (reviewCount > 0)
+                            {
+                                <span class="star-rating fs-5">
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        if (i <= Math.Round(avgRating))
+                                        {
+                                            <span>★</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="empty">★</span>
+                                        }
+                                    }
+                                </span>
+                                <span class="text-muted">(@reviewCount отзывов)</span>
+                            }
                         </div>
                     </div>
-                    
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <h5 class="text-muted">🍽️ Тип питания</h5>
-                            <p class="fs-5">
-                                <span class="badge bg-info">@Model.MealType</span>
-                            </p>
-                        </div>
-                        @if (Model.PricePerNight.HasValue)
-                        {
-                            <div class="col-md-6">
-                                <h5 class="text-muted">💰 Цена за ночь</h5>
-                                <p class="fs-5 text-primary fw-bold">
-                                    @Model.PricePerNight.Value.ToString("N0") ₽
-                                </p>
-                            </div>
-                        }
-                    </div>
-                    
-                    @if (Model.DistanceToBeach.HasValue || Model.DistanceToCenter.HasValue)
+                    @if (Model.PricePerNight.HasValue)
                     {
-                        <div class="row mb-3">
-                            @if (Model.DistanceToBeach.HasValue)
-                            {
-                                <div class="col-md-6">
-                                    <h5 class="text-muted">🏖️ До пляжа</h5>
-                                    <p>@Model.DistanceToBeach м</p>
-                                </div>
-                            }
-                            @if (Model.DistanceToCenter.HasValue)
-                            {
-                                <div class="col-md-6">
-                                    <h5 class="text-muted">🏙️ До центра</h5>
-                                    <p>@Model.DistanceToCenter км</p>
-                                </div>
-                            }
+                        <div class="text-end">
+                            <span class="price-tag fs-4">@Model.PricePerNight.Value.ToString("N0") ₽</span>
+                            <small class="text-muted d-block">за ночь</small>
                         </div>
                     }
-                    
-                    @if (!string.IsNullOrEmpty(Model.Description))
-                    {
-                        <hr />
+                </div>
+                
+                <p class="text-muted mb-4">
+                    <i class="bi bi-geo-alt-fill text-primary"></i>
+                    @Model.City?.Name, @Model.City?.Country?.Name
+                </p>
+                
+                @if (!string.IsNullOrEmpty(Model.Description))
+                {
+                    <div class="mb-4">
                         <h5>Описание</h5>
-                        <p>@Model.Description</p>
+                        <p class="text-muted">@Model.Description</p>
+                    </div>
+                }
+                
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <div class="info-box">
+                            <span class="icon">🍽️</span>
+                            <div>
+                                <strong>Питание</strong>
+                                <p class="mb-0 text-muted">@Model.MealType.GetDisplayName()</p>
+                            </div>
+                        </div>
+                    </div>
+                    @if (Model.DistanceToBeach.HasValue)
+                    {
+                        <div class="col-md-6">
+                            <div class="info-box">
+                                <span class="icon">🏖️</span>
+                                <div>
+                                    <strong>До пляжа</strong>
+                                    <p class="mb-0 text-muted">@Model.DistanceToBeach м</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @if (Model.DistanceToCenter.HasValue)
+                    {
+                        <div class="col-md-6">
+                            <div class="info-box">
+                                <span class="icon">🏙️</span>
+                                <div>
+                                    <strong>До центра</strong>
+                                    <p class="mb-0 text-muted">@Model.DistanceToCenter км</p>
+                                </div>
+                            </div>
+                        </div>
                     }
                 </div>
             </div>
@@ -104,110 +133,118 @@
             }
 
             <!-- Отзывы -->
-            <div class="card shadow">
-                <div class="card-header">
-                    <h5 class="mb-0">💬 Отзывы</h5>
-                </div>
-                <div class="card-body">
-                    <!-- Форма добавления отзыва -->
-                    @if (Context.Session.GetInt32("UserId") != null)
+            <div class="detail-card">
+                <h5 class="mb-4">💬 Отзывы</h5>
+                
+                @if (Context.Session.GetInt32("UserId") != null)
+                {
+                    <div class="card bg-light border-0 mb-4">
+                        <div class="card-body">
+                            <h6 class="card-title">Оставить отзыв</h6>
+                            <form asp-action="AddReview" asp-controller="Hotels" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="HotelId" value="@Model.Id" />
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Оценка</label>
+                                    <div class="star-rating-input">
+                                        @for (int i = 5; i >= 1; i--)
+                                        {
+                                            <input type="radio" name="Rating" value="@i" id="star@(i)" @(i == 5 ? "checked" : "") class="d-none" />
+                                            <label for="star@(i)" class="star-label" title="@i звёзд">★</label>
+                                        }
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Ваш отзыв</label>
+                                    <textarea name="Text" class="form-control" rows="3" placeholder="Поделитесь впечатлениями..." required minlength="10"></textarea>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary">Отправить отзыв</button>
+                            </form>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-info mb-4">
+                        <a asp-controller="Account" asp-action="Login" class="text-decoration-none">Войдите</a>, чтобы оставить отзыв
+                    </div>
+                }
+                
+                @if (Model.Reviews == null || !Model.Reviews.Any())
+                {
+                    <p class="text-muted text-center py-4">Отзывов пока нет. Будьте первым!</p>
+                }
+                else
+                {
+                    @foreach (var review in Model.Reviews.OrderByDescending(r => r.CreatedAt))
                     {
-                        <div class="card bg-light mb-4">
-                            <div class="card-body">
-                                <h6 class="card-title">Оставить отзыв</h6>
-                                <form asp-action="AddReview" asp-controller="Hotels" method="post">
-                                    @Html.AntiForgeryToken()
-                                    <input type="hidden" name="HotelId" value="@Model.Id" />
-                                    
-                                    <div class="mb-3">
-                                        <label class="form-label">Оценка</label>
-                                        <div class="star-rating-input">
-                                            @for (int i = 5; i >= 1; i--)
+                        <div class="review-item">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="d-flex align-items-center gap-2">
+                                    @if (!string.IsNullOrEmpty(review.User?.AvatarUrl))
+                                    {
+                                        <img src="@review.User.AvatarUrl" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;" alt="Avatar">
+                                    }
+                                    else
+                                    {
+                                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                            @(review.User?.FullName?.FirstOrDefault() ?? '?')
+                                        </div>
+                                    }
+                                    <div>
+                                        <strong>@review.User?.FullName</strong>
+                                        <div class="star-rating small">
+                                            @for (int i = 1; i <= 5; i++)
                                             {
-                                                <input type="radio" name="Rating" value="@i" id="star@(i)" @(i == 5 ? "checked" : "") class="d-none" />
-                                                <label for="star@(i)" class="star-label" title="@i звёд">★</label>
+                                                <span class="@(i <= review.Rating ? "" : "empty")">★</span>
                                             }
                                         </div>
                                     </div>
-                                    
-                                    <div class="mb-3">
-                                        <label class="form-label">Ваш отзыв</label>
-                                        <textarea name="Text" class="form-control" rows="3" placeholder="Поделитесь впечатлениями..." required minlength="10"></textarea>
-                                    </div>
-                                    
-                                    <button type="submit" class="btn btn-primary">Отправить отзыв</button>
-                                </form>
+                                </div>
+                                <small class="text-muted">@review.CreatedAt.ToString("dd.MM.yyyy")</small>
                             </div>
+                            <p class="mt-2 mb-0">@review.Text</p>
                         </div>
                     }
-                    else
-                    {
-                        <div class="alert alert-info mb-4">
-                            <a asp-controller="Account" asp-action="Login">Войдите</a>, чтобы оставить отзыв
-                        </div>
-                    }
-                    
-                    @if (Model.Reviews == null || !Model.Reviews.Any())
-                    {
-                        <p class="text-muted text-center">Отзывов пока нет. Будьте первым!</p>
-                    }
-                    else
-                    {
-                        @foreach (var review in Model.Reviews.OrderByDescending(r => r.CreatedAt))
-                        {
-                            <div class="border-bottom pb-3 mb-3">
-                                <div class="d-flex justify-content-between">
-                                    <strong>@review.User?.FullName</strong>
-                                    <small class="text-muted">@review.CreatedAt.ToString("dd.MM.yyyy")</small>
-                                </div>
-                                <div class="mb-2">
-                                    @for (int i = 1; i <= 5; i++)
-                                    {
-                                        <span class="@(i <= review.Rating ? "text-warning" : "text-secondary")">★</span>
-                                    }
-                                </div>
-                                <p class="mb-0">@review.Text</p>
-                            </div>
-                        }
-                    }
-                </div>
+                }
             </div>
         </div>
         
         <div class="col-lg-4">
-            <!-- Информация -->
-            <div class="card shadow mb-4">
-                <div class="card-header">
-                    <h5 class="mb-0">ℹ️ Информация</h5>
-                </div>
-                <div class="card-body">
-                    <ul class="list-unstyled mb-0">
-                        <li class="mb-2">
-                            <strong>Категория:</strong> 
-                            @for (int i = 0; i < Model.Stars; i++)
-                            {
-                                <span class="text-warning">★</span>
-                            }
-                        </li>
-                        <li class="mb-2">
-                            <strong>Питание:</strong> @Model.MealType
-                        </li>
-                        <li class="mb-2">
-                            <strong>Город:</strong> @Model.City?.Name
-                        </li>
-                        <li class="mb-2">
-                            <strong>Страна:</strong> @Model.City?.Country?.Name
-                        </li>
-                    </ul>
-                </div>
+            <!-- Боковая панель -->
+            <div class="detail-card mb-4">
+                <h5 class="mb-3">ℹ️ Информация</h5>
+                <ul class="list-unstyled mb-0">
+                    <li class="d-flex justify-content-between py-2 border-bottom">
+                        <span class="text-muted">Категория</span>
+                        <span class="text-warning">@(new string('★', Model.Stars))</span>
+                    </li>
+                    <li class="d-flex justify-content-between py-2 border-bottom">
+                        <span class="text-muted">Питание</span>
+                        <span>@Model.MealType.GetDisplayName()</span>
+                    </li>
+                    <li class="d-flex justify-content-between py-2 border-bottom">
+                        <span class="text-muted">Город</span>
+                        <span>@Model.City?.Name</span>
+                    </li>
+                    <li class="d-flex justify-content-between py-2">
+                        <span class="text-muted">Страна</span>
+                        <span>@Model.City?.Country?.Name</span>
+                    </li>
+                </ul>
             </div>
             
-            <!-- Действия -->
-            <div class="card shadow">
-                <div class="card-body">
-                    <h5 class="mb-3">Действия</h5>
-                    <a asp-action="Index" class="btn btn-secondary d-grid">← К списку отелей</a>
-                </div>
+            <div class="detail-card">
+                <a asp-action="Index" class="btn btn-outline-primary w-100 mb-3">← К списку отелей</a>
+                @if (Context.Session.GetInt32("UserId") != null)
+                {
+                    <a asp-controller="Chat" asp-action="Create" asp-route-hotelId="@Model.Id" class="btn btn-primary w-100">
+                        Задать вопрос
+                    </a>
+                }
             </div>
         </div>
     </div>
