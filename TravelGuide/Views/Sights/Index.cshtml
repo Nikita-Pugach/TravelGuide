@@ -80,36 +80,61 @@
         <div class="row g-4">
             @foreach (var sight in Model)
             {
-<div class="col-md-6 col-lg-4">
-                    <div class="card h-100 tour-card">
+                var avgRating = sight.Reviews != null && sight.Reviews.Any() 
+                    ? sight.Reviews.Average(r => r.Rating) 
+                    : 0;
+                var reviewCount = sight.Reviews?.Count ?? 0;
+                
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 tour-card border-0">
                         @if (!string.IsNullOrEmpty(sight.PhotoUrl))
                         {
-                            <img src="@sight.PhotoUrl" class="card-img-top" alt="@sight.Name" style="height: 200px; object-fit: cover;">
+                            <img src="@sight.PhotoUrl" class="card-img-top" alt="@sight.Name" style="height: 200px; object-fit: cover; border-radius: 12px 12px 0 0;">
                         }
                         else
                         {
-                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
-                                <span class="display-4">🏛️</span>
+                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px; border-radius: 12px 12px 0 0;">
+                                <span style="font-size: 3rem;">🏛️</span>
                             </div>
                         }
-                        <div class="card-header">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <h5 class="mb-0">@sight.Name</h5>
-                                <span class="badge bg-secondary">@sight.Type.GetDisplayName()</span>
-                            </div>
-                        </div>
                         <div class="card-body">
-                            <div class="mb-2">
-                                <strong>@sight.City?.Name</strong>, @sight.City?.Country?.Name
+                            <h5 class="card-title text-truncate">@sight.Name</h5>
+                            <p class="text-muted small mb-2">
+                                @if (sight.City != null)
+                                {
+                                    <span>@sight.City.Name, @sight.City.Country?.Name</span>
+                                }
+                            </p>
+                            <div class="d-flex align-items-center mb-2">
+                                <span class="badge bg-light text-dark me-2">@sight.Type.GetDisplayName()</span>
+                                @if (reviewCount > 0)
+                                {
+                                    <span class="star-rating">
+                                        @for (int i = 1; i <= 5; i++)
+                                        {
+                                            if (i <= Math.Round(avgRating))
+                                            {
+                                                <span>★</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="empty">★</span>
+                                            }
+                                        }
+                                    </span>
+                                    <span class="text-muted small ms-2">(@reviewCount)</span>
+                                }
                             </div>
-                            <p class="card-text text-truncate">@sight.Description</p>
+                            <p class="card-text text-truncate text-muted small">@sight.Description</p>
                             @if (!string.IsNullOrEmpty(sight.Address))
                             {
-                                <small class="text-muted">@sight.Address</small>
+                                <small class="text-muted"><i class="bi bi-geo-alt"></i> @sight.Address</small>
                             }
                         </div>
-                        <div class="card-footer">
-                            <a asp-action="Details" asp-route-id="@sight.Id" class="btn btn-primary w-100">Подробнее</a>
+                        <div class="card-footer bg-white border-0 pt-0">
+                            <a asp-action="Details" asp-route-id="@sight.Id" class="btn btn-outline-primary w-100">
+                                Подробнее
+                            </a>
                         </div>
                     </div>
                 </div>
