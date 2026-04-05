@@ -539,3 +539,132 @@ footer a:hover {
     background: var(--primary-hover);
     transform: scale(1.1);
 }
+
+/* Auth Pages */
+.auth-page {
+    min-height: calc(100vh - 200px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f2 100%);
+}
+
+.auth-container {
+    width: 100%;
+    max-width: 420px;
+}
+
+.auth-card {
+    background: var(--bg-white);
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.auth-header {
+    text-align: center;
+    padding: 2rem 2rem 1.5rem;
+    background: linear-gradient(135deg, var(--primary) 0%, #5ba4e5 100%);
+    color: white;
+}
+
+.auth-header .auth-icon {
+    font-size: 3rem;
+    margin-bottom: 0.75rem;
+}
+
+.auth-header h3 {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    font-size: 1.5rem;
+}
+
+.auth-header p {
+    opacity: 0.9;
+    margin-bottom: 0;
+}
+
+.auth-body {
+    padding: 2rem;
+}
+
+.auth-body .form-group {
+    margin-bottom: 1.25rem;
+}
+
+.auth-body .form-label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: var(--text-dark);
+}
+
+.auth-body .input-group-custom {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.auth-body .input-icon {
+    position: absolute;
+    left: 1rem;
+    font-size: 1rem;
+    z-index: 5;
+}
+
+.auth-body .input-group-custom .form-control {
+    padding-left: 2.75rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
+    height: 48px;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+}
+
+.auth-body .input-group-custom .form-control:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+.auth-body .alert-sm {
+    padding: 0.75rem 1rem;
+    font-size: 0.85rem;
+    margin-bottom: 1.25rem;
+}
+
+.btn-auth {
+    height: 48px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: var(--radius);
+    transition: all 0.2s ease;
+}
+
+.btn-auth:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(74, 144, 217, 0.4);
+}
+
+.btn-outline-primary-gradient {
+    color: var(--primary);
+    border: 2px solid var(--primary);
+    background: transparent;
+    height: 48px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: var(--radius);
+    transition: all 0.2s ease;
+}
+
+.btn-outline-primary-gradient:hover {
+    background: var(--primary);
+    color: white;
+    transform: translateY(-1px);
+}
+
+.auth-footer {
+    padding: 1.5rem 2rem 2rem;
+    text-align: center;
+    border-top: 1px solid var(--border-color);
+    background: var(--bg-light);
+}
