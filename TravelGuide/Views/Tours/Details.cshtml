@@ -122,7 +122,7 @@
                                             <small class="text-muted">@th.Hotel?.City?.Name</small>
                                             @if (th.Hotel?.Stars > 0)
                                             {
-                                                <span class="text-warning small"> @("⭐".Repeat(th.Hotel.Stars))</span>
+                                                <span class="text-warning small"> @string.Concat(Enumerable.Repeat("⭐", th.Hotel.Stars))</span>
                                             }
                                         </div>
                                     </div>
@@ -258,7 +258,7 @@
                                     else
                                     {
                                         <div class="review-avatar bg-primary text-white d-flex align-items-center justify-content-center">
-                                            @(review.User?.FullName?.FirstOrDefault() ?? "?")
+                                            @(review.User?.FullName?.FirstOrDefault().ToString() ?? "?")
                                         </div>
                                     }
                                     <div class="flex-grow-1">
