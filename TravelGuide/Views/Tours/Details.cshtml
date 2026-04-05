@@ -1,13 +1,16 @@
 @model TravelGuide.Models.Entities.Tour
 @using TravelGuide.ViewModels
+@using TravelGuide.Models.Entities
 @{
     ViewData["Title"] = Model.Name;
     var sightsWithCoords = Model.TourSights?.Where(ts => ts.Sight?.Latitude.HasValue == true && ts.Sight?.Longitude.HasValue == true).ToList();
     var hotelsWithCoords = Model.TourHotels?.Where(th => th.Hotel?.Latitude.HasValue == true && th.Hotel?.Longitude.HasValue == true).ToList();
     var hasMapData = (sightsWithCoords?.Any() ?? false) || (hotelsWithCoords?.Any() ?? false);
+    var approvedReviews = Model.Reviews?.Where(r => r.Status == ReviewStatus.Approved).OrderByDescending(r => r.Date).ToList() ?? new List<Review>();
+    var avgRating = approvedReviews.Any() ? Math.Round(approvedReviews.Average(r => r.Rating), 1) : 0;
 }
 
-<div class="container">
+<div class="container py-4">
     <nav aria-label="breadcrumb" class="mb-3">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a asp-action="Index">Туры</a></li>
@@ -15,96 +18,164 @@
         </ol>
     </nav>
     
-    <div class="row">
+    <div class="row g-4">
         <div class="col-lg-8">
-            <div class="card shadow mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h3 class="mb-0">@Model.Name</h3>
+            <!-- Фото тура -->
+            @if (!string.IsNullOrEmpty(Model.PhotoUrl))
+            {
+                <div class="tour-photo mb-4">
+                    <img src="@Model.PhotoUrl" alt="@Model.Name" class="img-fluid rounded-4 shadow">
                 </div>
-                <div class="card-body">
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <h5 class="text-muted">📍 Страна</h5>
-                            <p class="fs-5">@Model.Country?.Name</p>
-                        </div>
-                        <div class="col-md-6">
-                            <h5 class="text-muted">📅 Длительность</h5>
-                            <p class="fs-5">@Model.Duration дней</p>
-                        </div>
+            }
+            
+            <!-- Заголовок -->
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <h1 class="mb-0">@Model.Name</h1>
+                <span class="badge @GetTourTypeBadgeClass(Model.TourType) fs-6">@Model.TourType.GetDisplayName()</span>
+            </div>
+            
+            <div class="d-flex align-items-center mb-4">
+                <span class="country-flag me-2">@Model.Country?.GetFlag()</span>
+                <span class="text-muted">@Model.Country?.Name</span>
+                <span class="text-muted ms-3">👁 @Model.ViewCount просмотров</span>
+            </div>
+            
+            <!-- Рейтинг -->
+            @if (approvedReviews.Any())
+            {
+                <div class="d-flex align-items-center mb-4">
+                    <span class="star-rating me-2">
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            <span class="@(i <= Math.Round(avgRating) ? "" : "empty")">★</span>
+                        }
+                    </span>
+                    <span class="fw-bold">@avgRating</span>
+                    <span class="text-muted ms-2">(@approvedReviews.Count отзывов)</span>
+                </div>
+            }
+            
+            <!-- Инфо-боксы -->
+            <div class="row g-3 mb-4">
+                <div class="col-md-3 col-6">
+                    <div class="info-box text-center">
+                        <div class="info-icon">💰</div>
+                        <div class="info-value">@Model.Price.ToString("N0") ₽</div>
+                        <div class="info-label">Цена</div>
                     </div>
-                    
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <h5 class="text-muted">💰 Цена</h5>
-                            <p class="fs-4 text-primary fw-bold">@Model.Price.ToString("N0") ₽</p>
-                        </div>
-                        <div class="col-md-6">
-                            <h5 class="text-muted">🏷️ Тип тура</h5>
-                            <p class="fs-5"><span class="badge bg-secondary">@Model.TourType</span></p>
-                        </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="info-box text-center">
+                        <div class="info-icon">📅</div>
+                        <div class="info-value">@Model.Duration</div>
+                        <div class="info-label">Дней</div>
                     </div>
-                    
-                    @if (!string.IsNullOrEmpty(Model.Description))
-                    {
-                        <hr />
-                        <h5>Описание</h5>
-                        <p>@Model.Description</p>
-                    }
-                    
-                    @if (Model.TourHotels != null && Model.TourHotels.Any())
-                    {
-                        <hr />
-                        <h5>🏨 Отели</h5>
-                        <div class="row">
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="info-box text-center">
+                        <div class="info-icon">🏨</div>
+                        <div class="info-value">@(Model.TourHotels?.Count ?? 0)</div>
+                        <div class="info-label">Отели</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="info-box text-center">
+                        <div class="info-icon">🏛️</div>
+                        <div class="info-value">@(Model.TourSights?.Count ?? 0)</div>
+                        <div class="info-label">Достопримечательности</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Описание -->
+            @if (!string.IsNullOrEmpty(Model.Description))
+            {
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Описание</h5>
+                        <p class="mb-0">@Model.Description</p>
+                    </div>
+                </div>
+            }
+            
+            <!-- Отели -->
+            @if (Model.TourHotels != null && Model.TourHotels.Any())
+            {
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">🏨 Отели в туре</h5>
+                        <div class="row g-3">
                             @foreach (var th in Model.TourHotels)
                             {
-                                <div class="col-md-6 mb-2">
-                                    <div class="card">
-                                        <div class="card-body py-2">
-                                            <strong>@th.Hotel?.Name</strong>
-                                            <br><small class="text-muted">@th.Hotel?.City?.Name</small>
-                                        </div>
-                                    </div>
-                                </div>
-                            }
-                        </div>
-                    }
-                    
-                    @if (Model.TourSights != null && Model.TourSights.Any())
-                    {
-                        <hr />
-                        <h5>🏛️ Достопримечательности</h5>
-                        <div class="row">
-                            @foreach (var ts in Model.TourSights)
-                            {
-                                <div class="col-md-6 mb-2">
-                                    <div class="card">
-                                        <div class="card-body py-2">
-                                            <strong>@ts.Sight?.Name</strong>
-                                            @if (!string.IsNullOrEmpty(ts.Sight?.Address))
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-center p-3 bg-light rounded">
+                                        @if (!string.IsNullOrEmpty(th.Hotel?.PhotoUrl))
+                                        {
+                                            <img src="@th.Hotel.PhotoUrl" alt="@th.Hotel.Name" class="rounded me-3" style="width: 60px; height: 60px; object-fit: cover;">
+                                        }
+                                        else
+                                        {
+                                            <div class="bg-secondary bg-opacity-25 rounded me-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">🏨</div>
+                                        }
+                                        <div>
+                                            <strong class="d-block">@th.Hotel?.Name</strong>
+                                            <small class="text-muted">@th.Hotel?.City?.Name</small>
+                                            @if (th.Hotel?.Stars > 0)
                                             {
-                                                <br><small class="text-muted">@ts.Sight.Address</small>
+                                                <span class="text-warning small"> @("⭐".Repeat(th.Hotel.Stars))</span>
                                             }
                                         </div>
                                     </div>
                                 </div>
                             }
                         </div>
-                    }
-                    
-                    @if (hasMapData)
-                    {
-                        <hr />
-                        <h5>🗺️ Карта</h5>
-                        <div id="tourMap" style="height: 400px; border-radius: 10px; overflow: hidden;"></div>
-                    }
+                    </div>
                 </div>
-            </div>
+            }
             
-            @using TravelGuide.Models.Entities
-            @{
-                var approvedReviews = Model.Reviews?.Where(r => r.Status == ReviewStatus.Approved).OrderByDescending(r => r.Date).ToList() ?? new List<Review>();
-                var avgRating = approvedReviews.Any() ? Math.Round(approvedReviews.Average(r => r.Rating), 1) : 0;
+            <!-- Достопримечательности -->
+            @if (Model.TourSights != null && Model.TourSights.Any())
+            {
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">🏛️ Достопримечательности</h5>
+                        <div class="row g-3">
+                            @foreach (var ts in Model.TourSights)
+                            {
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-center p-3 bg-light rounded">
+                                        @if (!string.IsNullOrEmpty(ts.Sight?.PhotoUrl))
+                                        {
+                                            <img src="@ts.Sight.PhotoUrl" alt="@ts.Sight.Name" class="rounded me-3" style="width: 60px; height: 60px; object-fit: cover;">
+                                        }
+                                        else
+                                        {
+                                            <div class="bg-secondary bg-opacity-25 rounded me-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">🏛️</div>
+                                        }
+                                        <div>
+                                            <strong class="d-block">@ts.Sight?.Name</strong>
+                                            @if (!string.IsNullOrEmpty(ts.Sight?.Address))
+                                            {
+                                                <small class="text-muted">@ts.Sight.Address</small>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+            
+            <!-- Карта -->
+            @if (hasMapData)
+            {
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">🗺️ Карта маршрута</h5>
+                        <div id="tourMap" style="height: 400px; border-radius: 10px; overflow: hidden;"></div>
+                    </div>
+                </div>
             }
             
             <!-- Сообщения -->
@@ -124,17 +195,18 @@
             }
 
             <!-- Отзывы -->
-            <div class="card shadow">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">💬 Отзывы</h5>
-                    @if (approvedReviews.Any())
-                    {
-                        <span class="badge bg-warning text-dark fs-6">
-                            ⭐ @avgRating.ToString("0.0") (@approvedReviews.Count отзывов)
-                        </span>
-                    }
-                </div>
+            <div class="card">
                 <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="card-title mb-0">💬 Отзывы</h5>
+                        @if (approvedReviews.Any())
+                        {
+                            <span class="badge bg-warning text-dark">
+                                ⭐ @avgRating.ToString("0.0") (@approvedReviews.Count)
+                            </span>
+                        }
+                    </div>
+                    
                     @if (Context.Session.GetInt32("UserId") != null)
                     {
                         <div class="card bg-light mb-4">
@@ -157,7 +229,7 @@
                                         <label class="form-label">Ваш отзыв</label>
                                         <textarea name="Text" class="form-control" rows="3" placeholder="Поделитесь впечатлениями..." required minlength="10"></textarea>
                                     </div>
-                                    <button type="submit" class="btn btn-primary">Отправить на модерацию</button>
+                                    <button type="submit" class="btn btn-primary">Отправить</button>
                                 </form>
                             </div>
                         </div>
@@ -171,24 +243,38 @@
                     
                     @if (!approvedReviews.Any())
                     {
-                        <p class="text-muted text-center">Отзывов пока нет. Будьте первым!</p>
+                        <p class="text-muted text-center py-4">Отзывов пока нет. Будьте первым!</p>
                     }
                     else
                     {
                         @foreach (var review in approvedReviews)
                         {
-                            <div class="border-bottom pb-3 mb-3">
-                                <div class="d-flex justify-content-between">
-                                    <strong>@review.User?.FullName</strong>
-                                    <small class="text-muted">@review.Date.ToString("dd.MM.yyyy")</small>
-                                </div>
-                                <div class="mb-2">
-                                    @for (int i = 1; i <= 5; i++)
+                            <div class="review-item">
+                                <div class="d-flex">
+                                    @if (!string.IsNullOrEmpty(review.User?.AvatarUrl))
                                     {
-                                        <span class="@(i <= review.Rating ? "text-warning" : "text-secondary")">★</span>
+                                        <img src="@review.User.AvatarUrl" alt="@review.User.FullName" class="review-avatar">
                                     }
+                                    else
+                                    {
+                                        <div class="review-avatar bg-primary text-white d-flex align-items-center justify-content-center">
+                                            @(review.User?.FullName?.FirstOrDefault() ?? "?")
+                                        </div>
+                                    }
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <strong>@review.User?.FullName</strong>
+                                            <small class="text-muted">@review.Date.ToString("dd.MM.yyyy")</small>
+                                        </div>
+                                        <div class="mb-2">
+                                            @for (int i = 1; i <= 5; i++)
+                                            {
+                                                <span class="@(i <= review.Rating ? "text-warning" : "text-secondary")">★</span>
+                                            }
+                                        </div>
+                                        <p class="mb-0">@review.Text</p>
+                                    </div>
                                 </div>
-                                <p class="mb-0">@review.Text</p>
                             </div>
                         }
                     }
@@ -196,20 +282,19 @@
             </div>
         </div>
         
+        <!-- Боковая панель -->
         <div class="col-lg-4">
             @if (Model.Agency != null)
             {
-                <div class="card shadow mb-4">
-                    <div class="card-header">
-                        <h5 class="mb-0">🏢 Агентство</h5>
-                    </div>
+                <div class="card mb-4">
                     <div class="card-body">
-                        <h6>@Model.Agency.Name</h6>
+                        <h5 class="card-title">🏢 Агентство</h5>
+                        <h6 class="fw-bold">@Model.Agency.Name</h6>
                         @if (!string.IsNullOrEmpty(Model.Agency.Description))
                         {
                             <p class="text-muted small">@Model.Agency.Description</p>
                         }
-                        <p class="mb-0">
+                        <p class="mb-0 small">
                             <strong>Контакты:</strong><br>
                             @Model.Agency.ContactInfo
                         </p>
@@ -224,7 +309,7 @@
                 </div>
             }
             
-            <div class="card shadow">
+            <div class="card sticky-top" style="top: 20px;">
                 <div class="card-body">
                     <h5 class="mb-3">Действия</h5>
                     @if (Context.Session.GetInt32("UserId") != null)
@@ -240,20 +325,33 @@
                         {
                             <form asp-action="AddToFavorites" asp-route-id="@Model.Id" method="post" class="d-grid mb-2">
                                 @Html.AntiForgeryToken()
-                                <button type="submit" class="btn btn-outline-success">❤️ В избранное</button>
+                                <button type="submit" class="btn btn-success">❤️ В избранное</button>
                             </form>
                         }
                     }
                     else
                     {
-                        <a asp-controller="Account" asp-action="Login" class="btn btn-outline-primary d-grid mb-2">Войдите, чтобы добавить в избранное</a>
+                        <a asp-controller="Account" asp-action="Login" class="btn btn-primary d-grid mb-2">Войдите для избранного</a>
                     }
-                    <a asp-action="Index" class="btn btn-secondary d-grid">← К списку туров</a>
+                    <a asp-action="Index" class="btn btn-outline-secondary d-grid">← К списку туров</a>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+@functions {
+    string GetTourTypeBadgeClass(TourType type) => type switch
+    {
+        TourType.Beach => "badge-beach",
+        TourType.Excursion => "badge-excursion",
+        TourType.Combined => "badge-combined",
+        TourType.Health => "badge-health",
+        TourType.Cruise => "badge-cruise",
+        TourType.Adventure => "badge-adventure",
+        _ => "bg-secondary"
+    };
+}
 
 @section Scripts {
     @if (hasMapData)
@@ -262,8 +360,8 @@
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
         <script>
             (function() {
-                var sights = @Html.Raw(System.Text.Json.JsonSerializer.Serialize((sightsWithCoords ?? new List<TravelGuide.Models.Entities.TourSight>()).Select(ts => new { name = ts.Sight?.Name ?? "", lat = ts.Sight?.Latitude, lng = ts.Sight?.Longitude, address = ts.Sight?.Address ?? "" }).ToList()));
-                var hotels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize((hotelsWithCoords ?? new List<TravelGuide.Models.Entities.TourHotel>()).Select(th => new { name = th.Hotel?.Name ?? "", lat = th.Hotel?.Latitude, lng = th.Hotel?.Longitude, stars = th.Hotel?.Stars }).ToList()));
+                var sights = @Html.Raw(System.Text.Json.JsonSerializer.Serialize((sightsWithCoords ?? new List<TourSight>()).Select(ts => new { name = ts.Sight?.Name ?? "", lat = ts.Sight?.Latitude, lng = ts.Sight?.Longitude, address = ts.Sight?.Address ?? "" }).ToList()));
+                var hotels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize((hotelsWithCoords ?? new List<TourHotel>()).Select(th => new { name = th.Hotel?.Name ?? "", lat = th.Hotel?.Latitude, lng = th.Hotel?.Longitude, stars = th.Hotel?.Stars }).ToList()));
                 
                 var allPoints = [];
                 sights.forEach(s => { if (s.lat && s.lng) allPoints.push(s); });
