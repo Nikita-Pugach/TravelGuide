@@ -8,7 +8,6 @@
     <div class="auth-container">
         <div class="auth-card">
             <div class="auth-header">
-                <div class="auth-icon">🔑</div>
                 <h3>Добро пожаловать!</h3>
                 <p class="text-muted">Войдите в свой аккаунт</p>
             </div>
@@ -21,19 +20,13 @@
                     
                     <div class="form-group">
                         <label asp-for="Email" class="form-label">Email</label>
-                        <div class="input-group-custom">
-                            <span class="input-icon">📧</span>
-                            <input asp-for="Email" class="form-control" placeholder="example@email.com" />
-                        </div>
+                        <input asp-for="Email" class="form-control" placeholder="example@email.com" />
                         <span asp-validation-for="Email" class="text-danger small"></span>
                     </div>
                     
                     <div class="form-group">
                         <label asp-for="Password" class="form-label">Пароль</label>
-                        <div class="input-group-custom">
-                            <span class="input-icon">🔒</span>
-                            <input asp-for="Password" class="form-control" placeholder="Введите пароль" />
-                        </div>
+                        <input asp-for="Password" class="form-control" placeholder="Введите пароль" />
                         <span asp-validation-for="Password" class="text-danger small"></span>
                     </div>
                     
