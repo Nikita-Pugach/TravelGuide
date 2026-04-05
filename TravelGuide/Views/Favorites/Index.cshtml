@@ -1,0 +1,105 @@
+@model IEnumerable<TravelGuide.Models.Entities.FavoriteTour>
+@using TravelGuide.Models.Entities
+
+@{
+    ViewData["Title"] = "Избранные туры";
+    var favoritesList = Model.ToList();
+}
+
+<div class="hero-section py-5 text-center">
+    <div class="container">
+        <h1>❤️ Избранные туры</h1>
+        <p class="lead">Ваши любимые направления в одном месте</p>
+    </div>
+</div>
+
+<div class="container mt-4">
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (!favoritesList.Any())
+    {
+        <div class="text-center py-5">
+            <div class="mb-4">
+                <span style="font-size: 5rem;">💔</span>
+            </div>
+            <h3>У вас пока нет избранных туров</h3>
+            <p class="text-muted mb-4">Добавляйте туры в избранное, чтобы вернуться к ним позже</p>
+            <a asp-controller="Tours" asp-action="Index" class="btn btn-primary btn-lg">
+                🔍 Искать туры
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="mb-0">Найдено: <span class="badge bg-primary">@favoritesList.Count</span></h4>
+            <a asp-controller="Tours" asp-action="Index" class="btn btn-outline-primary">
+                + Добавить ещё
+            </a>
+        </div>
+
+        <div class="row g-4">
+            @foreach (var favorite in favoritesList)
+            {
+                var tour = favorite.Tour!;
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 tour-card">
+                        <div class="card-header">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">@tour.Name</h5>
+                                <span class="badge @GetTourTypeBadgeClass(tour.TourType)">@tour.TourType.GetDisplayName()</span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-2">
+                                <span class="country-flag">@tour.Country?.GetFlag()</span>
+                                <strong>@tour.Country?.Name</strong>
+                            </div>
+                            <div class="d-flex gap-3 mb-3 text-muted">
+                                <span>📅 @tour.Duration дн.</span>
+                            </div>
+                            <p class="card-text text-truncate">@tour.Description</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="fs-5 text-primary fw-bold">@tour.Price.ToString("N0") ₽</span>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="d-flex gap-2">
+                                <a asp-controller="Tours" asp-action="Details" asp-route-id="@tour.Id" 
+                                   class="btn btn-primary flex-grow-1">Подробнее</a>
+                                <form asp-action="RemoveFromList" asp-route-id="@tour.Id" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-outline-danger" title="Удалить из избранного">
+                                        💔
+                                    </button>
+                                </form>
+                            </div>
+                            <small class="text-muted d-block mt-2 text-center">
+                                Добавлен: @favorite.AddedDate.ToString("dd.MM.yyyy")
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@functions {
+    string GetTourTypeBadgeClass(TourType type) => type switch
+    {
+        TourType.Beach => "badge-beach",
+        TourType.Excursion => "badge-excursion",
+        TourType.Combined => "badge-combined",
+        TourType.Health => "badge-health",
+        TourType.Cruise => "badge-cruise",
+        TourType.Adventure => "badge-adventure",
+        _ => "bg-secondary"
+    };
+}

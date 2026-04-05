@@ -1,0 +1,145 @@
+@model TravelGuide.Models.Entities.Sight
+@using TravelGuide.Models.Entities
+@{
+    ViewData["Title"] = "Редактировать достопримечательность";
+}
+
+<div class="container">
+    <h1>Редактировать достопримечательность</h1>
+    
+    <div class="card shadow mt-4">
+        <div class="card-body">
+            <form asp-action="EditSight" method="post" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="Id" />
+                
+                @if (!string.IsNullOrEmpty(Model.PhotoUrl))
+                {
+                    <div class="mb-3">
+                        <label class="form-label">Текущее фото</label>
+                        <div>
+                            <img src="@Model.PhotoUrl" alt="@Model.Name" style="max-width: 200px; max-height: 150px; object-fit: cover; border-radius: 8px;">
+                        </div>
+                    </div>
+                }
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Name" class="form-label">Название *</label>
+                        <input asp-for="Name" class="form-control" required>
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="col-md-3 mb-3">
+                        <label asp-for="Type" class="form-label">Тип *</label>
+                        <select asp-for="Type" class="form-select" required>
+                            @if (ViewBag.SightTypes != null)
+                            {
+                                foreach (SightType st in ViewBag.SightTypes)
+                                {
+                                    <option value="@((int)st)" selected="@(st == Model.Type)">@st.GetDisplayName()</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-3 mb-3">
+                        <label asp-for="CityId" class="form-label">Город *</label>
+                        <select asp-for="CityId" class="form-select" required>
+                            @if (ViewBag.Cities != null)
+                            {
+                                foreach (var city in ViewBag.Cities)
+                                {
+                                    <option value="@city.Id" selected="@(city.Id == Model.CityId)">@city.Name (@city.Country?.Name)</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Address" class="form-label">Адрес</label>
+                        <input asp-for="Address" class="form-control">
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Новое фото</label>
+                        <input type="file" name="photo" class="form-control" accept="image/*">
+                        <small class="text-muted">Оставьте пустым, чтобы сохранить текущее</small>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-label">Описание</label>
+                    <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="Latitude" class="form-label">Широта</label>
+                        <input asp-for="Latitude" class="form-control" type="number" step="any" placeholder="напр. 55.7558">
+                    </div>
+                    
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="Longitude" class="form-label">Долгота</label>
+                        <input asp-for="Longitude" class="form-control" type="number" step="any" placeholder="напр. 37.6173">
+                    </div>
+                    
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Позиция</label>
+                        <button type="button" id="locateBtn" class="btn btn-outline-primary w-100">📍 Определить местоположение</button>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Карта (кликните для выбора позиции)</label>
+                    <div id="pickMap" style="height: 300px; border-radius: 10px; border: 1px solid #ddd;"></div>
+                </div>
+                
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                    <a asp-action="Sights" class="btn btn-secondary">Отмена</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        var initialLat = @(Model.Latitude ?? 55.7558);
+        var initialLng = @(Model.Longitude ?? 37.6173);
+        var map = L.map('pickMap').setView([initialLat, initialLng], 10);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+        
+        var marker = L.marker([initialLat, initialLng]).addTo(map);
+        if (@(Model.Latitude.HasValue ? "true" : "false")) {
+            map.setView([initialLat, initialLng], 15);
+        }
+        
+        map.on('click', function(e) {
+            document.getElementById('Latitude').value = e.latlng.lat.toFixed(6);
+            document.getElementById('Longitude').value = e.latlng.lng.toFixed(6);
+            if (marker) map.removeLayer(marker);
+            marker = L.marker([e.latlng.lat, e.latlng.lng]).addTo(map);
+            map.setView([e.latlng.lat, e.latlng.lng], 15);
+        });
+        
+        document.getElementById('locateBtn').addEventListener('click', function() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(pos) {
+                    document.getElementById('Latitude').value = pos.coords.latitude.toFixed(6);
+                    document.getElementById('Longitude').value = pos.coords.longitude.toFixed(6);
+                    if (marker) map.removeLayer(marker);
+                    marker = L.marker([pos.coords.latitude, pos.coords.longitude]).addTo(map);
+                    map.setView([pos.coords.latitude, pos.coords.longitude], 15);
+                });
+            }
+        });
+    </script>
+}

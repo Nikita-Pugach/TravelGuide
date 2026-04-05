@@ -1,0 +1,66 @@
+@model IEnumerable<TravelGuide.Models.Entities.Sight>
+@{
+    ViewData["Title"] = "Управление достопримечательностями";
+}
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Управление достопримечательностями</h1>
+        <a asp-action="CreateSight" class="btn btn-primary">+ Добавить достопримечательность</a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="card shadow">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Фото</th>
+                            <th>Название</th>
+                            <th>Город</th>
+                            <th>Тип</th>
+                            <th>Адрес</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var sight in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(sight.PhotoUrl))
+                                    {
+                                        <img src="@sight.PhotoUrl" alt="@sight.Name" style="width: 60px; height: 40px; object-fit: cover; border-radius: 4px;">
+                                    }
+                                    else
+                                    {
+                                        <div class="bg-light d-flex align-items-center justify-content-center" style="width: 60px; height: 40px; border-radius: 4px;">🏛️</div>
+                                    }
+                                </td>
+                                <td>@sight.Name</td>
+                                <td>@sight.City?.Name, @sight.City?.Country?.Name</td>
+                                <td><span class="badge bg-secondary">@sight.Type</span></td>
+                                <td>@(sight.Address ?? "-")</td>
+                                <td>
+                                    <a asp-action="EditSight" asp-route-id="@sight.Id" class="btn btn-sm btn-outline-primary">✏️</a>
+                                    <form asp-action="DeleteSight" asp-route-id="@sight.Id" method="post" class="d-inline" onsubmit="return confirm('Удалить достопримечательность?')">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">🗑️</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

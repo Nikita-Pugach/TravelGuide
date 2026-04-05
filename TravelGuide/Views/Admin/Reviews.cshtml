@@ -1,0 +1,129 @@
+@model IEnumerable<TravelGuide.Models.Entities.Review>
+@using TravelGuide.Models.Entities
+@{
+    ViewData["Title"] = "Модерация отзывов";
+}
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>⏳ Модерация отзывов</h2>
+        <a asp-action="Index" class="btn btn-secondary">← Назад</a>
+    </div>
+    
+    <!-- Фильтры -->
+    <div class="btn-group mb-4" role="group">
+        <a asp-action="Reviews" class="btn @(ViewBag.CurrentStatus == null ? "btn-primary" : "btn-outline-primary")">
+            Все
+        </a>
+        <a asp-action="Reviews" asp-route-status="Pending" class="btn @(ViewBag.CurrentStatus?.ToString() == "Pending" ? "btn-warning" : "btn-outline-warning")">
+            ⏳ На модерации
+        </a>
+        <a asp-action="Reviews" asp-route-status="Approved" class="btn @(ViewBag.CurrentStatus?.ToString() == "Approved" ? "btn-success" : "btn-outline-success")">
+            ✓ Опубликованные
+        </a>
+        <a asp-action="Reviews" asp-route-status="Rejected" class="btn @(ViewBag.CurrentStatus?.ToString() == "Rejected" ? "btn-danger" : "btn-outline-danger")">
+            ✗ Отклонённые
+        </a>
+    </div>
+    
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            Нет отзывов для отображения
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Дата</th>
+                        <th>Автор</th>
+                        <th>Объект</th>
+                        <th>Оценка</th>
+                        <th>Текст</th>
+                        <th>Статус</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var review in Model)
+                    {
+                        <tr>
+                            <td>@review.Date.ToString("dd.MM.yyyy HH:mm")</td>
+                            <td>@review.User?.FullName</td>
+                            <td>
+                                @if (review.Tour != null)
+                                {
+                                    <span class="badge bg-primary">🗺️ Тур: @review.Tour.Name</span>
+                                }
+                                else if (review.Hotel != null)
+                                {
+                                    <span class="badge bg-info">🏨 Отель: @review.Hotel.Name</span>
+                                }
+                                else if (review.Sight != null)
+                                {
+                                    <span class="badge bg-secondary">🏛️ Достопр.: @review.Sight.Name</span>
+                                }
+                            </td>
+                            <td>
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    <span class="@(i <= review.Rating ? "text-warning" : "text-secondary")">★</span>
+                                }
+                            </td>
+                            <td>
+                                <span class="d-inline-block text-truncate" style="max-width: 200px;" title="@review.Text">
+                                    @review.Text
+                                </span>
+                            </td>
+                            <td>
+                                @switch (review.Status)
+                                {
+                                    case ReviewStatus.Pending:
+                                        <span class="badge bg-warning text-dark">⏳ На модерации</span>
+                                        break;
+                                    case ReviewStatus.Approved:
+                                        <span class="badge bg-success">✓ Опубликован</span>
+                                        break;
+                                    case ReviewStatus.Rejected:
+                                        <span class="badge bg-danger">✗ Отклонён</span>
+                                        break;
+                                }
+                            </td>
+                            <td>
+                                @if (review.Status == ReviewStatus.Pending)
+                                {
+                                    <form asp-action="ApproveReview" asp-route-id="@review.Id" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-success" title="Опубликовать">✓</button>
+                                    </form>
+                                    <form asp-action="RejectReview" asp-route-id="@review.Id" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-danger" title="Отклонить">✗</button>
+                                    </form>
+                                }
+                                else if (review.Status == ReviewStatus.Rejected)
+                                {
+                                    <form asp-action="ApproveReview" asp-route-id="@review.Id" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-outline-success" title="Опубликовать">✓</button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

@@ -1,0 +1,77 @@
+﻿@{
+    ViewData["Title"] = "Главная";
+}
+
+<!-- Hero Section -->
+<section class="hero-section text-center">
+    <div class="container position-relative">
+        <h1>Откройте мир с TravelGuide</h1>
+        <p class="lead">Найдите идеальный тур для незабываемого путешествия</p>
+        <a asp-controller="Tours" asp-action="Index" class="btn btn-light btn-lg mt-3">
+            Смотреть туры
+        </a>
+    </div>
+</section>
+
+<!-- Search Card -->
+<div class="container">
+    <div class="search-card">
+        <form asp-controller="Tours" asp-action="Index" method="get">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Поиск</label>
+                    <input type="text" name="search" class="form-control" placeholder="Название или описание тура...">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Тип тура</label>
+                    <select name="tourType" class="form-select">
+                        <option value="">Все типы</option>
+                        <option value="0">Пляжный</option>
+                        <option value="1">Экскурсионный</option>
+                        <option value="2">Комбинированный</option>
+                        <option value="3">Оздоровительный</option>
+                        <option value="4">Круиз</option>
+                        <option value="5">Приключения</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Макс. цена</label>
+                    <input type="number" name="maxPrice" class="form-control" placeholder="₽">
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">Найти</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Features Section -->
+<section class="py-5 mt-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Почему выбирают нас?</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="icon">🌍</div>
+                    <h4>Большой выбор туров</h4>
+                    <p class="text-muted">Более 100 направлений по всему миру</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="icon">💰</div>
+                    <h4>Лучшие цены</h4>
+                    <p class="text-muted">Сравниваем цены от разных агентств</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="icon">⭐</div>
+                    <h4>Честные отзывы</h4>
+                    <p class="text-muted">Реальные отзывы реальных туристов</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

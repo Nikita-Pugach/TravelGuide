@@ -1,0 +1,98 @@
+@model IEnumerable<TravelGuide.Models.Entities.Chat>
+@{
+    ViewData["Title"] = "Чаты с клиентами";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>💬 Чаты с клиентами</h2>
+</div>
+
+<!-- Фильтры -->
+<div class="btn-group mb-4" role="group">
+    <a asp-action="Chats" class="btn @(ViewBag.Status == null ? "btn-primary" : "btn-outline-primary")">Все</a>
+    <a asp-action="Chats" asp-route-status="Active" class="btn @(ViewBag.Status?.ToString() == "Active" ? "btn-success" : "btn-outline-success")">Активные</a>
+    <a asp-action="Chats" asp-route-status="Closed" class="btn @(ViewBag.Status?.ToString() == "Closed" ? "btn-secondary" : "btn-outline-secondary")">Закрытые</a>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info text-center">
+        <h5>Чатов пока нет</h5>
+        <p>Когда пользователи начнут чаты, они появятся здесь.</p>
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Пользователь</th>
+                    <th>Статус</th>
+                    <th>Начало</th>
+                    <th>Последнее сообщение</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var chat in Model)
+                {
+                    var lastMessage = chat.Messages?.OrderByDescending(m => m.Timestamp).FirstOrDefault();
+                    
+                    <tr class="@(chat.Status == TravelGuide.Models.Entities.ChatStatus.Active ? "table-success" : "")">
+                        <td><strong>#@chat.Id</strong></td>
+                        <td>
+                            @if (chat.User != null)
+                            {
+                                <span>@chat.User.FullName</span>
+                                <br />
+                                <small class="text-muted">@chat.User.Email</small>
+                            }
+                            else
+                            {
+                                <span class="text-muted">Пользователь удалён</span>
+                            }
+                        </td>
+                        <td>
+                            @if (chat.Status == TravelGuide.Models.Entities.ChatStatus.Active)
+                            {
+                                <span class="badge bg-success">🟢 Активен</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Закрыт</span>
+                            }
+                        </td>
+                        <td>@chat.StartTime.ToString("dd.MM.yyyy HH:mm")</td>
+                        <td>
+                            @if (lastMessage != null)
+                            {
+                                <span>@(lastMessage.Text.Length > 50 ? lastMessage.Text.Substring(0, 50) + "..." : lastMessage.Text)</span>
+                                <br />
+                                <small class="text-muted">@lastMessage.Timestamp.ToString("dd.MM HH:mm")</small>
+                            }
+                            else
+                            {
+                                <span class="text-muted">Нет сообщений</span>
+                            }
+                        </td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <a asp-action="Chat" asp-route-id="@chat.Id" class="btn btn-outline-primary" title="Открыть">
+                                    💬 Открыть
+                                </a>
+                                @if (chat.Status == TravelGuide.Models.Entities.ChatStatus.Active)
+                                {
+                                    <form asp-action="CloseChat" asp-route-id="@chat.Id" method="post" style="display: inline;">
+                                        <button type="submit" class="btn btn-outline-warning" title="Закрыть чат">✓ Закрыть</button>
+                                    </form>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

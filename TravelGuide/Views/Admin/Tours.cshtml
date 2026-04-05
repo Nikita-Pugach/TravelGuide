@@ -1,0 +1,88 @@
+@model IEnumerable<TravelGuide.Models.Entities.Tour>
+@{
+    ViewData["Title"] = "Управление турами";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>🧳 Управление турами</h2>
+    <a asp-action="CreateTour" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> Добавить тур
+    </a>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead class="table-light">
+            <tr>
+                <th>Фото</th>
+                <th>Название</th>
+                <th>Тип</th>
+                <th>Страна</th>
+                <th>Агентство</th>
+                <th>Дней</th>
+                <th>Цена</th>
+                <th>Создан</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var tour in Model)
+            {
+                <tr>
+                    <td>
+                        @if (!string.IsNullOrEmpty(tour.PhotoUrl))
+                        {
+                            <img src="@tour.PhotoUrl" alt="@tour.Name" style="width: 60px; height: 45px; object-fit: cover; border-radius: 4px;" />
+                        }
+                        else
+                        {
+                            <span style="font-size: 2rem;">@tour.TourType.GetIcon()</span>
+                        }
+                    </td>
+                    <td>
+                        <strong>@tour.Name</strong>
+                        @if (tour.IsSeasonal)
+                        {
+                            <span class="badge bg-info ms-1">Сезонный</span>
+                        }
+                    </td>
+                    <td>
+                        <span class="badge bg-secondary">@tour.TourType.GetDisplayName()</span>
+                    </td>
+                    <td>@tour.Country?.GetFlag() @tour.Country?.Name</td>
+                    <td>@tour.Agency?.Name</td>
+                    <td>@tour.Duration</td>
+                    <td><strong>@tour.Price.ToString("N0") ₽</strong></td>
+                    <td>@tour.CreatedDate.ToString("dd.MM.yyyy")</td>
+                    <td>
+                        <div class="btn-group btn-group-sm">
+                            <a asp-action="EditTour" asp-route-id="@tour.Id" class="btn btn-outline-primary" title="Редактировать">
+                                ✏️
+                            </a>
+                            <a asp-controller="Tours" asp-action="Details" asp-route-id="@tour.Id" class="btn btn-outline-info" title="Просмотр">
+                                👁️
+                            </a>
+                            <form asp-action="DeleteTour" asp-route-id="@tour.Id" method="post" style="display: inline;"
+                                  onsubmit="return confirm('Удалить тур '@tour.Name'?');">
+                                <button type="submit" class="btn btn-outline-danger" title="Удалить">🗑️</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="text-center py-5">
+        <p class="text-muted">Туры не найдены. Добавьте первый тур!</p>
+        <a asp-action="CreateTour" class="btn btn-primary">Добавить тур</a>
+    </div>
+}

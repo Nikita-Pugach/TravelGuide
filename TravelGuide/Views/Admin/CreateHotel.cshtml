@@ -1,0 +1,144 @@
+@model TravelGuide.Models.Entities.Hotel
+@using TravelGuide.Models.Entities
+@{
+    ViewData["Title"] = "Добавить отель";
+}
+
+<div class="container">
+    <h1>Добавить отель</h1>
+    
+    <div class="card shadow mt-4">
+        <div class="card-body">
+            <form asp-action="CreateHotel" method="post" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Name" class="form-label">Название *</label>
+                        <input asp-for="Name" class="form-control" required>
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="col-md-3 mb-3">
+                        <label asp-for="Stars" class="form-label">Звёзды *</label>
+                        <select asp-for="Stars" class="form-select" required>
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                <option value="@i">@i ★</option>
+                            }
+                        </select>
+                        <span asp-validation-for="Stars" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="col-md-3 mb-3">
+                        <label asp-for="CityId" class="form-label">Город *</label>
+                        <select asp-for="CityId" class="form-select" required>
+                            <option value="">Выберите город</option>
+                            @if (ViewBag.Cities != null)
+                            {
+                                foreach (var city in ViewBag.Cities)
+                                {
+                                    <option value="@city.Id">@city.Name (@city.Country?.Name)</option>
+                                }
+                            }
+                        </select>
+                        <span asp-validation-for="CityId" class="text-danger"></span>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="MealType" class="form-label">Тип питания</label>
+                        <select asp-for="MealType" class="form-select">
+                            @if (ViewBag.MealTypes != null)
+                            {
+                                foreach (MealType mt in ViewBag.MealTypes)
+                                {
+                                    <option value="@((int)mt)">@mt.GetDisplayName()</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="PricePerNight" class="form-label">Цена за ночь (₽)</label>
+                        <input asp-for="PricePerNight" class="form-control" type="number" step="0.01">
+                    </div>
+                    
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Фото отеля</label>
+                        <input type="file" name="photo" class="form-control" accept="image/*">
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="DistanceToBeach" class="form-label">До пляжа (м)</label>
+                        <input asp-for="DistanceToBeach" class="form-control" type="number">
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="DistanceToCenter" class="form-label">До центра (км)</label>
+                        <input asp-for="DistanceToCenter" class="form-control" type="number" step="0.1">
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-label">Описание</label>
+                    <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="Latitude" class="form-label">Широта</label>
+                        <input asp-for="Latitude" class="form-control" type="number" step="any" placeholder="напр. 55.7558">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="Longitude" class="form-label">Долгота</label>
+                        <input asp-for="Longitude" class="form-control" type="number" step="any" placeholder="напр. 37.6173">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Позиция</label>
+                        <button type="button" id="locateBtn" class="btn btn-outline-primary w-100">📍 Определить</button>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Карта</label>
+                    <div id="pickMap" style="height: 250px; border-radius: 10px; border: 1px solid #ddd;"></div>
+                </div>
+                
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                    <a asp-action="Hotels" class="btn btn-secondary">Отмена</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        var map = L.map('pickMap').setView([55.7558, 37.6173], 10);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        var marker = null;
+        map.on('click', function(e) {
+            document.getElementById('Latitude').value = e.latlng.lat.toFixed(6);
+            document.getElementById('Longitude').value = e.latlng.lng.toFixed(6);
+            if (marker) map.removeLayer(marker);
+            marker = L.marker([e.latlng.lat, e.latlng.lng]).addTo(map);
+        });
+        document.getElementById('locateBtn').addEventListener('click', function() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(pos) {
+                    document.getElementById('Latitude').value = pos.coords.latitude.toFixed(6);
+                    document.getElementById('Longitude').value = pos.coords.longitude.toFixed(6);
+                    if (marker) map.removeLayer(marker);
+                    marker = L.marker([pos.coords.latitude, pos.coords.longitude]).addTo(map);
+                    map.setView([pos.coords.latitude, pos.coords.longitude], 15);
+                });
+            }
+        });
+    </script>
+}

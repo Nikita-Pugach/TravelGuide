@@ -1,0 +1,191 @@
+@model TravelGuide.Models.Entities.Tour
+@{
+    ViewData["Title"] = "Редактирование тура";
+    var countries = ViewBag.Countries as IEnumerable<TravelGuide.Models.Entities.Country>;
+    var agencies = ViewBag.Agencies as IEnumerable<TravelGuide.Models.Entities.Agency>;
+    var hotels = ViewBag.Hotels as IEnumerable<TravelGuide.Models.Entities.Hotel>;
+    var sights = ViewBag.Sights as IEnumerable<TravelGuide.Models.Entities.Sight>;
+    var selectedHotels = ViewBag.SelectedHotels as List<int> ?? new List<int>();
+    var selectedSights = ViewBag.SelectedSights as List<int> ?? new List<int>();
+}
+
+<h2>✏️ Редактирование тура</h2>
+
+<form asp-action="EditTour" method="post" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+    
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header">Основная информация</div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label">Название тура *</label>
+                        <input asp-for="Name" class="form-control" required />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="TourType" class="form-label">Тип тура</label>
+                            <select asp-for="TourType" class="form-select" asp-items="Html.GetEnumSelectList<TravelGuide.Models.Entities.TourType>()"></select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Price" class="form-label">Цена (₽) *</label>
+                            <input asp-for="Price" class="form-control" type="number" step="0.01" required />
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="CountryId" class="form-label">Страна</label>
+                            <select asp-for="CountryId" class="form-select">
+                                <option value="">-- Выберите страну --</option>
+                                @foreach (var country in countries ?? Enumerable.Empty<TravelGuide.Models.Entities.Country>())
+                                {
+                                    <option value="@country.Id" selected="@(Model.CountryId == country.Id)">@country.GetFlag() @country.Name</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="AgencyId" class="form-label">Агентство</label>
+                            <select asp-for="AgencyId" class="form-select">
+                                <option value="">-- Выберите агентство --</option>
+                                @foreach (var agency in agencies ?? Enumerable.Empty<TravelGuide.Models.Entities.Agency>())
+                                {
+                                    <option value="@agency.Id" selected="@(Model.AgencyId == agency.Id)">@agency.Name</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="Duration" class="form-label">Дней *</label>
+                            <input asp-for="Duration" class="form-control" type="number" min="1" required />
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="StartDate" class="form-label">Дата начала</label>
+                            <input asp-for="StartDate" class="form-control" type="date" />
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="EndDate" class="form-label">Дата окончания</label>
+                            <input asp-for="EndDate" class="form-control" type="date" />
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label">Описание</label>
+                        <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="Route" class="form-label">Маршрут по дням</label>
+                        <textarea asp-for="Route" class="form-control" rows="4"></textarea>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-header">Сезонность</div>
+                <div class="card-body">
+                    <div class="form-check mb-3">
+                        <input asp-for="IsSeasonal" class="form-check-input" />
+                        <label asp-for="IsSeasonal" class="form-check-label">Сезонный тур</label>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="SeasonalMonths" class="form-label">Месяцы сезонности</label>
+                        <input asp-for="SeasonalMonths" class="form-control" placeholder="6,7,8" />
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-header">Отели в туре</div>
+                        <div class="card-body" style="max-height: 250px; overflow-y: auto;">
+                            @if (hotels != null && hotels.Any())
+                            {
+                                foreach (var hotel in hotels)
+                                {
+                                    <div class="form-check">
+                                        <input type="checkbox" name="selectedHotels" value="@hotel.Id" class="form-check-input" id="hotel_@hotel.Id" 
+                                               checked="@(selectedHotels.Contains(hotel.Id))" />
+                                        <label class="form-check-label" for="hotel_@hotel.Id">
+                                            @hotel.Name <small class="text-muted">(@hotel.City?.Name)</small>
+                                        </label>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-header">Достопримечательности</div>
+                        <div class="card-body" style="max-height: 250px; overflow-y: auto;">
+                            @if (sights != null && sights.Any())
+                            {
+                                foreach (var sight in sights)
+                                {
+                                    <div class="form-check">
+                                        <input type="checkbox" name="selectedSights" value="@sight.Id" class="form-check-input" id="sight_@sight.Id"
+                                               checked="@(selectedSights.Contains(sight.Id))" />
+                                        <label class="form-check-label" for="sight_@sight.Id">
+                                            @sight.Name <small class="text-muted">(@sight.City?.Name)</small>
+                                        </label>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header">Фото тура</div>
+                <div class="card-body">
+                    @if (!string.IsNullOrEmpty(Model.PhotoUrl))
+                    {
+                        <div class="mb-3 text-center">
+                            <img src="@Model.PhotoUrl" alt="@Model.Name" class="img-thumbnail" style="max-height: 150px;" />
+                        </div>
+                    }
+                    <div class="mb-3">
+                        <label for="photo" class="form-label">Новое изображение</label>
+                        <input type="file" name="photo" id="photo" class="form-control" accept="image/*" />
+                    </div>
+                    <div id="photoPreview" class="text-center" style="display: none;">
+                        <img id="previewImg" src="" alt="Preview" class="img-thumbnail" style="max-height: 150px;" />
+                    </div>
+                </div>
+            </div>
+            
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary btn-lg">💾 Сохранить</button>
+                <a asp-action="Tours" class="btn btn-outline-secondary">Отмена</a>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.getElementById('photo').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('previewImg').src = e.target.result;
+                    document.getElementById('photoPreview').style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+}

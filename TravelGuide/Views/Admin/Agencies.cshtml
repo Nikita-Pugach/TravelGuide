@@ -1,0 +1,71 @@
+@model IEnumerable<TravelGuide.Models.Entities.Agency>
+@{
+    ViewData["Title"] = "Управление агентствами";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>🏢 Управление агентствами</h2>
+    <a asp-action="CreateAgency" class="btn btn-primary">➕ Добавить агентство</a>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+<div class="row">
+    @foreach (var agency in Model)
+    {
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        @if (!string.IsNullOrEmpty(agency.LogoUrl))
+                        {
+                            <img src="@agency.LogoUrl" alt="@agency.Name" class="rounded me-3" style="width: 60px; height: 60px; object-fit: cover;" />
+                        }
+                        else
+                        {
+                            <div class="bg-light rounded me-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                <span style="font-size: 1.5rem;">🏢</span>
+                            </div>
+                        }
+                        <div>
+                            <h5 class="card-title mb-0">@agency.Name</h5>
+                            @if (agency.Rating.HasValue)
+                            {
+                                <small class="text-warning">⭐ @agency.Rating.Value.ToString("F1")</small>
+                            }
+                        </div>
+                    </div>
+                    <p class="card-text small text-muted mb-2">
+                        <strong>Контакт:</strong> @agency.ContactInfo
+                    </p>
+                    @if (!string.IsNullOrEmpty(agency.Description))
+                    {
+                        <p class="card-text small">@(agency.Description.Length > 100 ? agency.Description.Substring(0, 100) + "..." : agency.Description)</p>
+                    }
+                    <p class="card-text">
+                        <span class="badge bg-info">Туров: @agency.Tours?.Count ?? 0</span>
+                    </p>
+                </div>
+                <div class="card-footer bg-white">
+                    <div class="btn-group btn-group-sm w-100">
+                        <a asp-action="EditAgency" asp-route-id="@agency.Id" class="btn btn-outline-primary">✏️</a>
+                        <form asp-action="DeleteAgency" asp-route-id="@agency.Id" method="post" style="display: inline;">
+                            <button type="submit" class="btn btn-outline-danger w-100" onclick="return confirm('Удалить агентство?')">🗑️</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@if (!Model.Any())
+{
+    <div class="text-center py-5">
+        <p class="text-muted">Агентства не найдены</p>
+        <a asp-action="CreateAgency" class="btn btn-primary">Добавить агентство</a>
+    </div>
+}
