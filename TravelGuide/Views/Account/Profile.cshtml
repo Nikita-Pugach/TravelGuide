@@ -11,14 +11,7 @@
     initials = initials.ToUpper();
 }
 
-<div class="hero-section py-5 text-center">
-    <div class="container">
-        <h1>👤 Личный кабинет</h1>
-        <p class="lead">Управляйте своим профилем и избранным</p>
-    </div>
-</div>
-
-<div class="container mt-4">
+<div class="container py-5">
     @if (TempData["SuccessMessage"] != null)
     {
         <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -30,8 +23,8 @@
     <div class="row g-4">
         <!-- Профиль -->
         <div class="col-lg-4">
-            <div class="card profile-card h-100">
-                <div class="card-body text-center py-5">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center py-4">
                     <div class="avatar-circle mx-auto mb-4 position-relative" id="avatarContainer">
                         @if (!string.IsNullOrEmpty(Model.AvatarUrl))
                         {
@@ -42,7 +35,7 @@
                             <span class="avatar-initials" id="avatarInitials">@initials</span>
                         }
                         <label for="avatarInput" class="avatar-upload-btn" title="Изменить фото">
-                            📷
+                            <small>Изменить</small>
                         </label>
                         <input type="file" id="avatarInput" accept="image/*" style="display:none" />
                     </div>
@@ -51,30 +44,31 @@
                         <small class="text-muted ms-1">Загрузка...</small>
                     </div>
                     <div id="uploadError" class="alert alert-danger py-1 px-2 mb-2" style="display:none;font-size:0.85rem;"></div>
-                    <h3 class="mb-1">@Model.FullName</h3>
+                    
+                    <h4 class="mb-1">@Model.FullName</h4>
                     <p class="text-muted mb-3">@Model.Email</p>
                     
                     <div class="mb-3">
                         @switch (Model.Role)
                         {
                             case "Admin":
-                                <span class="badge bg-danger fs-6">🔧 Администратор</span>
+                                <span class="badge bg-danger">Администратор</span>
                                 break;
                             case "Manager":
-                                <span class="badge bg-primary fs-6">👔 Менеджер</span>
+                                <span class="badge bg-primary">Менеджер</span>
                                 break;
                             default:
-                                <span class="badge bg-success fs-6">🌍 Турист</span>
+                                <span class="badge bg-success">Турист</span>
                                 break;
                         }
                     </div>
                     
                     @if (!string.IsNullOrEmpty(Model.Phone))
                     {
-                        <p class="text-muted mb-1">📞 @Model.Phone</p>
+                        <p class="text-muted mb-1">@Model.Phone</p>
                     }
                     
-                    <p class="text-muted mb-0">📅 С нами с @Model.RegistrationDate.ToString("dd.MM.yyyy")</p>
+                    <p class="text-muted small mb-0">На сайте с @Model.RegistrationDate.ToString("dd.MM.yyyy")</p>
                     
                     @if (!string.IsNullOrEmpty(Model.AgencyName))
                     {
@@ -84,16 +78,12 @@
                         </div>
                     }
                 </div>
-                <div class="card-footer bg-transparent border-0 pb-4">
+                <div class="card-footer bg-white border-top-0 pb-4">
                     <div class="d-grid gap-2">
-                        <a asp-action="Edit" class="btn btn-primary-gradient btn-lg">
-                            ✏️ Редактировать профиль
-                        </a>
+                        <a asp-action="Edit" class="btn btn-primary">Редактировать профиль</a>
                         <form asp-action="Logout" method="post">
                             @Html.AntiForgeryToken()
-                            <button type="submit" class="btn btn-outline-danger w-100">
-                                🚪 Выйти из аккаунта
-                            </button>
+                            <button type="submit" class="btn btn-outline-danger w-100">Выйти из аккаунта</button>
                         </form>
                     </div>
                 </div>
@@ -104,36 +94,33 @@
         <div class="col-lg-8">
             <div class="row g-4">
                 <!-- Карточки статистики -->
-                <div class="col-sm-6 col-md-4">
+                <div class="col-sm-4">
                     <a asp-controller="Favorites" asp-action="Index" class="text-decoration-none">
-                        <div class="card stat-card stat-card-favorites h-100">
+                        <div class="card shadow-sm h-100 hover-card">
                             <div class="card-body text-center py-4">
-                                <div class="stat-icon mb-2">❤️</div>
-                                <h4 class="mb-1">@ViewBag.FavoritesCount</h4>
+                                <h2 class="mb-1">@ViewBag.FavoritesCount</h2>
                                 <small class="text-muted">Избранных туров</small>
                             </div>
                         </div>
                     </a>
                 </div>
                 
-                <div class="col-sm-6 col-md-4">
+                <div class="col-sm-4">
                     <a asp-controller="Chat" asp-action="Index" class="text-decoration-none">
-                        <div class="card stat-card stat-card-chat h-100">
+                        <div class="card shadow-sm h-100 hover-card">
                             <div class="card-body text-center py-4">
-                                <div class="stat-icon mb-2">💬</div>
-                                <h4 class="mb-1">@ViewBag.ChatsCount</h4>
+                                <h2 class="mb-1">@ViewBag.ChatsCount</h2>
                                 <small class="text-muted">Чатов поддержки</small>
                             </div>
                         </div>
                     </a>
                 </div>
                 
-                <div class="col-sm-12 col-md-4">
+                <div class="col-sm-4">
                     <a asp-controller="Tours" asp-action="Index" class="text-decoration-none">
-                        <div class="card stat-card stat-card-tours h-100">
+                        <div class="card shadow-sm h-100 hover-card">
                             <div class="card-body text-center py-4">
-                                <div class="stat-icon mb-2">🌍</div>
-                                <h4 class="mb-1">Каталог</h4>
+                                <h5 class="mb-1">Каталог туров</h5>
                                 <small class="text-muted">Искать туры</small>
                             </div>
                         </div>
@@ -142,30 +129,30 @@
                 
                 <!-- Быстрые действия -->
                 <div class="col-12">
-                    <div class="card">
-                        <div class="card-header bg-transparent">
-                            <h5 class="mb-0">⚡ Быстрые действия</h5>
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-white">
+                            <h5 class="mb-0">Быстрые действия</h5>
                         </div>
                         <div class="card-body">
                             <div class="row g-3">
                                 <div class="col-md-6 col-lg-3">
-                                    <a asp-controller="Tours" asp-action="Index" class="btn btn-outline-primary w-100 py-3">
-                                        🔍 Поиск туров
+                                    <a asp-controller="Tours" asp-action="Index" class="btn btn-outline-primary w-100">
+                                        Поиск туров
                                     </a>
                                 </div>
                                 <div class="col-md-6 col-lg-3">
-                                    <a asp-controller="Hotels" asp-action="Index" class="btn btn-outline-success w-100 py-3">
-                                        🏨 Отели
+                                    <a asp-controller="Hotels" asp-action="Index" class="btn btn-outline-success w-100">
+                                        Отели
                                     </a>
                                 </div>
                                 <div class="col-md-6 col-lg-3">
-                                    <a asp-controller="Sights" asp-action="Index" class="btn btn-outline-info w-100 py-3">
-                                        📍 Достопримечательности
+                                    <a asp-controller="Sights" asp-action="Index" class="btn btn-outline-info w-100">
+                                        Достопримечательности
                                     </a>
                                 </div>
                                 <div class="col-md-6 col-lg-3">
-                                    <a asp-controller="Chat" asp-action="Create" class="btn btn-outline-warning w-100 py-3">
-                                        💬 Написать в чат
+                                    <a asp-controller="Chat" asp-action="Create" class="btn btn-outline-warning w-100">
+                                        Написать в чат
                                     </a>
                                 </div>
                             </div>
@@ -177,9 +164,9 @@
                 @if (ViewBag.RecentFavorites != null && ((IEnumerable<TravelGuide.Models.Entities.FavoriteTour>)ViewBag.RecentFavorites).Any())
                 {
                     <div class="col-12">
-                        <div class="card">
+                        <div class="card shadow-sm">
                             <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                                <h5 class="mb-0">❤️ Последние избранные</h5>
+                                <h5 class="mb-0">Последние избранные</h5>
                                 <a asp-controller="Favorites" asp-action="Index" class="btn btn-sm btn-outline-primary">Все</a>
                             </div>
                             <div class="card-body">
