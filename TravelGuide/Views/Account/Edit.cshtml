@@ -6,10 +6,10 @@
 
 <div class="container py-5">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">✏️ Редактирование профиля</h4>
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h4 class="mb-0">Редактирование профиля</h4>
                 </div>
                 <div class="card-body">
                     <form asp-action="Edit" method="post">
@@ -18,19 +18,19 @@
                         <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
                         
                         <div class="mb-3">
-                            <label asp-for="FullName" class="form-label"></label>
+                            <label asp-for="FullName" class="form-label">ФИО</label>
                             <input asp-for="FullName" class="form-control" placeholder="Введите ваше ФИО">
                             <span asp-validation-for="FullName" class="text-danger"></span>
                         </div>
                         
                         <div class="mb-3">
-                            <label asp-for="Phone" class="form-label"></label>
+                            <label asp-for="Phone" class="form-label">Телефон</label>
                             <input asp-for="Phone" class="form-control" placeholder="+7 (999) 123-45-67">
                             <span asp-validation-for="Phone" class="text-danger"></span>
                         </div>
                         
                         <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-primary-gradient">💾 Сохранить</button>
+                            <button type="submit" class="btn btn-primary">Сохранить</button>
                             <a asp-action="Profile" class="btn btn-outline-secondary">Отмена</a>
                         </div>
                     </form>
