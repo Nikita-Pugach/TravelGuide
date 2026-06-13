@@ -312,6 +312,25 @@
             <div class="card sticky-top" style="top: 20px;">
                 <div class="card-body">
                     <h5 class="mb-3">Действия</h5>
+                    
+                    <!-- Кнопка бронирования -->
+                    @if (Context.Session.GetInt32("UserId") != null)
+                    {
+                        <a asp-controller="Bookings" asp-action="Create" asp-route-id="@Model.Id" 
+                           class="btn btn-primary btn-lg d-grid mb-3">
+                            📝 Забронировать тур
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-controller="Account" asp-action="Login" 
+                           class="btn btn-primary btn-lg d-grid mb-3">
+                            Войдите для бронирования
+                        </a>
+                    }
+                    
+                    <hr class="my-3">
+                    
                     @if (Context.Session.GetInt32("UserId") != null)
                     {
                         @if (ViewBag.IsFavorite == true)
@@ -331,7 +350,7 @@
                     }
                     else
                     {
-                        <a asp-controller="Account" asp-action="Login" class="btn btn-primary d-grid mb-2">Войдите для избранного</a>
+                        <a asp-controller="Account" asp-action="Login" class="btn btn-outline-primary d-grid mb-2">Войдите для избранного</a>
                     }
                     <a asp-action="Index" class="btn btn-outline-secondary d-grid">← К списку туров</a>
                 </div>

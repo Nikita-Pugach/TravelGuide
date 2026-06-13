@@ -935,6 +935,104 @@ public class AdminController : Controller
 
     #endregion
 
+    #region Управление бронированиями
+
+    // GET: /Admin/Bookings
+    public async Task<IActionResult> Bookings(BookingStatus? status = null)
+    {
+        if (!IsAdmin())
+            return RedirectToAction("Login", "Account");
+
+        var query = _context.Bookings
+            .Include(b => b.Tour)
+                .ThenInclude(t => t!.Country)
+            .Include(b => b.User)
+            .Include(b => b.ProcessedByUser)
+            .AsQueryable();
+
+        if (status.HasValue)
+            query = query.Where(b => b.Status == status.Value);
+
+        var bookings = await query
+            .OrderByDescending(b => b.CreatedAt)
+            .Select(b => new TravelGuide.ViewModels.BookingManageViewModel
+            {
+                Id = b.Id,
+                TourId = b.TourId,
+                TourName = b.Tour!.Name,
+                TourPhotoUrl = b.Tour.PhotoUrl,
+                CountryName = b.Tour.Country!.Name,
+                Duration = b.Tour.Duration,
+                TourPrice = b.Tour.Price,
+                UserId = b.UserId,
+                UserFullName = b.User!.FullName,
+                UserEmail = b.User.Email,
+                UserPhone = b.Phone,
+                BookingDate = b.BookingDate,
+                GuestsCount = b.GuestsCount,
+                TotalPrice = b.TotalPrice,
+                Status = b.Status,
+                Notes = b.Notes,
+                CreatedAt = b.CreatedAt,
+                ProcessedByUserName = b.ProcessedByUser != null ? b.ProcessedByUser.FullName : null,
+                ProcessedAt = b.ProcessedAt,
+                ManagerNotes = b.ManagerNotes
+            })
+            .ToListAsync();
+
+        ViewBag.CurrentStatus = status;
+        return View(bookings);
+    }
+
+    // POST: /Admin/ConfirmBooking/5
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ConfirmBooking(int id, string? managerNotes)
+    {
+        if (!IsAdmin())
+            return RedirectToAction("Login", "Account");
+
+        var booking = await _context.Bookings.FindAsync(id);
+        if (booking == null)
+            return NotFound();
+
+        if (booking.Status == BookingStatus.New)
+        {
+            booking.Status = BookingStatus.Confirmed;
+            booking.ProcessedByUserId = HttpContext.Session.GetInt32("UserId");
+            booking.ProcessedAt = DateTime.Now;
+            booking.ManagerNotes = managerNotes;
+            await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = "Заявка подтверждена";
+        }
+
+        return RedirectToAction(nameof(Bookings));
+    }
+
+    // POST: /Admin/CancelBooking/5
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> CancelBooking(int id, string? managerNotes)
+    {
+        if (!IsAdmin())
+            return RedirectToAction("Login", "Account");
+
+        var booking = await _context.Bookings.FindAsync(id);
+        if (booking == null)
+            return NotFound();
+
+        booking.Status = BookingStatus.Cancelled;
+        booking.ProcessedByUserId = HttpContext.Session.GetInt32("UserId");
+        booking.ProcessedAt = DateTime.Now;
+        booking.ManagerNotes = managerNotes;
+        await _context.SaveChangesAsync();
+        TempData["SuccessMessage"] = "Заявка отменена";
+
+        return RedirectToAction(nameof(Bookings));
+    }
+
+    #endregion
+
     #region Вспомогательные методы
 
     private async Task<string> SavePhotoAsync(IFormFile photo, string folder)

@@ -74,6 +74,16 @@ public enum ChatStatus
 }
 
 /// <summary>
+/// Статус бронирования
+/// </summary>
+public enum BookingStatus
+{
+    New = 0,        // Новая заявка
+    Confirmed = 1,  // Подтверждена
+    Cancelled = 2   // Отменена
+}
+
+/// <summary>
 /// Тип достопримечательности
 /// </summary>
 public enum SightType
