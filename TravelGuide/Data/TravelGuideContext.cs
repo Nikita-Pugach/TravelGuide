@@ -34,6 +34,9 @@ public class TravelGuideContext : DbContext
     public DbSet<TourSight> TourSights { get; set; } = null!;
     public DbSet<FavoriteTour> FavoriteTours { get; set; } = null!;
 
+    // Бронирования
+    public DbSet<Booking> Bookings { get; set; } = null!;
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -230,6 +233,28 @@ public class TravelGuideContext : DbContext
                 .WithMany(t => t.Favorites)
                 .HasForeignKey(ft => ft.TourId)
                 .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // Конфигурация Booking
+        modelBuilder.Entity<Booking>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.TotalPrice).HasPrecision(12, 2);
+            
+            entity.HasOne(e => e.Tour)
+                .WithMany()
+                .HasForeignKey(e => e.TourId)
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            entity.HasOne(e => e.User)
+                .WithMany()
+                .HasForeignKey(e => e.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            entity.HasOne(e => e.ProcessedByUser)
+                .WithMany()
+                .HasForeignKey(e => e.ProcessedByUserId)
+                .OnDelete(DeleteBehavior.SetNull);
         });
 
         // Заполнение начальными данными

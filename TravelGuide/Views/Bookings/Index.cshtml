@@ -1,0 +1,81 @@
+@model IEnumerable<TravelGuide.ViewModels.BookingListViewModel>
+
+@{
+    ViewData["Title"] = "Мои бронирования";
+}
+
+<div class="container py-4">
+    <h2 class="mb-4">📋 Мои бронирования</h2>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5">
+            <div class="display-1 mb-3">📭</div>
+            <h4>У вас пока нет бронирований</h4>
+            <p class="text-muted">Выберите тур и оставьте заявку на бронирование</p>
+            <a asp-controller="Tours" asp-action="Index" class="btn btn-primary mt-2">Смотреть туры</a>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var booking in Model)
+            {
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="position-relative">
+                            @if (!string.IsNullOrEmpty(booking.TourPhotoUrl))
+                            {
+                                <img src="@booking.TourPhotoUrl" class="card-img-top" style="height: 180px; object-fit: cover;" alt="@booking.TourName">
+                            }
+                            else
+                            {
+                                <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 180px;">
+                                    <span class="display-4">🗺️</span>
+                                </div>
+                            }
+                            <span class="badge bg-@booking.StatusClass position-absolute top-0 end-0 m-2">@booking.StatusText</span>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">@booking.TourName</h5>
+                            <p class="text-muted small mb-2">📍 @booking.CountryName</p>
+                            
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>📅 Дата:</span>
+                                <strong>@booking.BookingDate.ToString("dd.MM.yyyy")</strong>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>👥 Туристов:</span>
+                                <strong>@booking.GuestsCount</strong>
+                            </div>
+                            <div class="d-flex justify-content-between mb-3">
+                                <span>💰 Итого:</span>
+                                <strong class="text-primary">@booking.TotalPrice.ToString("N0") ₽</strong>
+                            </div>
+                            
+                            <div class="d-flex gap-2">
+                                <a asp-controller="Tours" asp-action="Details" asp-route-id="@booking.TourId" 
+                                   class="btn btn-outline-primary btn-sm flex-fill">О туре</a>
+                                @if (booking.Status == TravelGuide.Models.Entities.BookingStatus.New)
+                                {
+                                    <form asp-action="Cancel" asp-route-id="@booking.Id" method="post" 
+                                          onsubmit="return confirm('Отменить заявку?')">
+                                        <button type="submit" class="btn btn-outline-danger btn-sm">Отменить</button>
+                                    </form>
+                                }
+                            </div>
+                        </div>
+                        <div class="card-footer text-muted small">
+                            Заявка от @booking.CreatedAt.ToString("dd.MM.yyyy HH:mm")
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
