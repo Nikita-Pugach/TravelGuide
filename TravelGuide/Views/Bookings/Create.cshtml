@@ -9,7 +9,7 @@
         <div class="col-lg-8">
             <div class="card shadow">
                 <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">📝 Заявка на бронирование тура</h4>
+                    <h4 class="mb-0">Заявка на бронирование тура</h4>
                 </div>
                 <div class="card-body">
                     <!-- Информация о туре -->
@@ -21,16 +21,16 @@
                             }
                             else
                             {
-                                <div class="bg-secondary rounded d-flex align-items-center justify-content-center" style="height: 150px;">
-                                    <span class="display-4">🗺️</span>
+                                <div class="bg-light rounded d-flex align-items-center justify-content-center" style="height: 150px; border: 1px solid #dee2e6;">
+                                    <span class="text-muted">Нет фото</span>
                                 </div>
                             }
                         </div>
                         <div class="col-md-8">
                             <h5>@Model.TourName</h5>
-                            <p class="text-muted mb-2">📍 @Model.CountryName</p>
-                            <p class="mb-1">⏱️ Продолжительность: <strong>@Model.Duration дн.</strong></p>
-                            <p class="mb-0">💰 Цена за человека: <strong class="text-primary">@Model.TourPrice.ToString("N0") ₽</strong></p>
+                            <p class="text-muted mb-2">@Model.CountryName</p>
+                            <p class="mb-1 text-muted">Продолжительность: <strong>@Model.Duration дн.</strong></p>
+                            <p class="mb-0 text-muted">Цена за человека: <strong class="text-primary">@Model.TourPrice.ToString("N0") ₽</strong></p>
                         </div>
                     </div>
 

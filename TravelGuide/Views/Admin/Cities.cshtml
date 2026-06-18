@@ -4,8 +4,8 @@
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>🏙️ Управление городами</h2>
-    <a asp-action="CreateCity" class="btn btn-primary">➕ Добавить город</a>
+    <h2>Управление городами</h2>
+    <a asp-action="CreateCity" class="btn btn-primary">Добавить город</a>
 </div>
 
 @if (TempData["SuccessMessage"] != null)
@@ -34,9 +34,9 @@
                     <td>@(city.Sights?.Count ?? 0)</td>
                     <td>
                         <div class="btn-group btn-group-sm">
-                            <a asp-action="EditCity" asp-route-id="@city.Id" class="btn btn-outline-primary">✏️</a>
+                            <a asp-action="EditCity" asp-route-id="@city.Id" class="btn btn-outline-primary">Изм.</a>
                             <form asp-action="DeleteCity" asp-route-id="@city.Id" method="post" style="display: inline;">
-                                <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Удалить город?')">🗑️</button>
+                                <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Удалить город?')">Удал.</button>
                             </form>
                         </div>
                     </td>

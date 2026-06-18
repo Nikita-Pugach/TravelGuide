@@ -4,35 +4,38 @@
     ViewData["Title"] = $"Чат с {Model.UserName}";
 }
 
-<div class="container mt-4">
-    <div class="card shadow-sm">
+<div class="container py-3">
+    <div class="card tour-card">
         <!-- Заголовок чата -->
-        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+        <div class="card-header d-flex justify-content-between align-items-center py-3" 
+             style="background: var(--primary); color: white; border-radius: 12px 12px 0 0;">
             <div class="d-flex align-items-center">
-                <a asp-action="Index" class="btn btn-outline-light btn-sm me-3">
-                    <i class="bi bi-arrow-left"></i>
+                <a asp-action="Index" class="btn btn-sm me-3" style="background: rgba(255,255,255,0.2); color: white; border: none;">
+                    Назад
                 </a>
-                <div class="avatar-placeholder me-2 bg-white text-primary rounded-circle d-flex align-items-center justify-content-center" 
-                     style="width: 40px; height: 40px; font-weight: bold;">
+                <div class="me-2">
                     @if (!string.IsNullOrEmpty(Model.UserAvatar))
                     {
-                        <img src="@Model.UserAvatar" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;" />
+                        <img src="@Model.UserAvatar" class="rounded-circle" style="width: 38px; height: 38px; object-fit: cover;" />
                     }
                     else
                     {
-                        <span>@Model.UserName.FirstOrDefault()</span>
+                        <div class="rounded-circle d-flex align-items-center justify-content-center" 
+                             style="width: 38px; height: 38px; background: rgba(255,255,255,0.2); color: white; font-weight: 600; font-size: 0.9rem;">
+                            @Model.UserName.FirstOrDefault()
+                        </div>
                     }
                 </div>
                 <div>
-                    <h6 class="mb-0">@Model.UserName</h6>
-                    <small>
+                    <h6 class="mb-0" style="font-weight: 600;">@Model.UserName</h6>
+                    <small style="opacity: 0.8;">
                         @if (Model.Status == ChatStatus.Active)
                         {
-                            <span class="text-success">● Активен</span>
+                            <span>Активен</span>
                         }
                         else
                         {
-                            <span class="text-warning">● Закрыт</span>
+                            <span>Закрыт</span>
                         }
                     </small>
                 </div>
@@ -40,20 +43,20 @@
             @if (Model.Status == ChatStatus.Active)
             {
                 <form asp-action="Close" asp-route-id="@Model.ChatId" method="post">
-                    <button type="submit" class="btn btn-outline-light btn-sm">
-                        <i class="bi bi-x-circle me-1"></i> Закрыть чат
+                    <button type="submit" class="btn btn-sm" style="background: rgba(255,255,255,0.2); color: white; border: none;">
+                        Закрыть чат
                     </button>
                 </form>
             }
         </div>
 
         <!-- Сообщения -->
-        <div class="card-body messages-container" style="height: 400px; overflow-y: auto;" id="messagesContainer">
+        <div class="card-body messages-container" style="height: 420px; overflow-y: auto; background: var(--bg-light);" id="messagesContainer">
             @if (!Model.Messages.Any())
             {
                 <div class="text-center text-muted py-5">
-                    <i class="bi bi-chat-square-text display-4"></i>
-                    <p class="mt-2">Начните общение!</p>
+                    <h5>Начните общение!</h5>
+                    <p>Напишите первое сообщение менеджеру</p>
                 </div>
             }
             else
@@ -61,17 +64,18 @@
                 @foreach (var msg in Model.Messages)
                 {
                     <div class="message mb-3 @(msg.IsMyMessage ? "text-end" : "")">
-                        <div class="d-inline-block @(msg.IsMyMessage ? "bg-primary text-white" : "bg-light") rounded p-2 px-3" 
-                             style="max-width: 70%;">
-                            <small class="@(msg.IsMyMessage ? "text-white-50" : "text-muted")">
-                                @msg.SenderName
-                            </small>
+                        <div class="d-inline-block rounded-3 p-2 px-3" 
+                             style="max-width: 70%; @(msg.IsMyMessage ? "background: var(--primary); color: white;" : "background: white; border: 1px solid var(--border-color);")">
+                            @if (!msg.IsMyMessage)
+                            {
+                                <small class="d-block mb-1" style="color: var(--text-muted); font-weight: 500;">@msg.SenderName</small>
+                            }
                             <p class="mb-1">@msg.Text</p>
-                            <small class="@(msg.IsMyMessage ? "text-white-50" : "text-muted")">
+                            <small style="@(msg.IsMyMessage ? "opacity: 0.7;" : "color: var(--text-muted);")">
                                 @msg.Timestamp.ToString("dd.MM HH:mm")
                                 @if (msg.IsMyMessage)
                                 {
-                                    <i class="bi @(msg.IsRead ? "bi-check-all text-info" : "bi-check")"></i>
+                                    <span class="ms-1">@(msg.IsRead ? "✓✓" : "✓")</span>
                                 }
                             </small>
                         </div>
@@ -83,26 +87,22 @@
         <!-- Форма отправки -->
         @if (Model.Status == ChatStatus.Active)
         {
-            <div class="card-footer">
+            <div class="card-footer py-3" style="background: white; border-top: 1px solid var(--border-color);">
                 <form asp-action="SendMessage" method="post" id="messageForm">
                     <input type="hidden" name="ChatId" value="@Model.ChatId" />
-                    <div class="input-group">
+                    <div class="d-flex gap-2">
                         <input type="text" name="Text" class="form-control" 
                                placeholder="Введите сообщение..." required maxlength="5000" id="messageInput" />
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-send"></i>
-                        </button>
+                        <button type="submit" class="btn btn-primary px-3">Отправить</button>
                     </div>
                 </form>
             </div>
         }
         else
         {
-            <div class="card-footer text-center text-muted">
-                <i class="bi bi-lock me-1"></i> Чат закрыт
-                <a asp-action="Create" class="btn btn-outline-primary btn-sm ms-2">
-                    Создать новый чат
-                </a>
+            <div class="card-footer text-center py-3" style="background: var(--bg-light); border-top: 1px solid var(--border-color);">
+                <span class="text-muted">Чат закрыт</span>
+                <a asp-action="Create" class="btn btn-outline-primary btn-sm ms-2">Создать новый чат</a>
             </div>
         }
     </div>
@@ -110,13 +110,11 @@
 
 @section Scripts {
     <script>
-        // Прокрутка к последнему сообщению
         document.addEventListener('DOMContentLoaded', function() {
             const container = document.getElementById('messagesContainer');
             container.scrollTop = container.scrollHeight;
         });
         
-        // SignalR подключение
         const chatId = @Model.ChatId;
         const connection = new signalR.HubConnectionBuilder()
             .withUrl("/chathub")
@@ -129,9 +127,9 @@
             const messageDiv = document.createElement('div');
             messageDiv.className = 'message mb-3 ' + (isMyMessage ? 'text-end' : '');
             messageDiv.innerHTML = `
-                <div class="d-inline-block ${isMyMessage ? 'bg-primary text-white' : 'bg-light'} rounded p-2 px-3" style="max-width: 70%;">
+                <div class="d-inline-block rounded-3 p-2 px-3" style="max-width: 70%; ${isMyMessage ? 'background: var(--primary); color: white;' : 'background: white; border: 1px solid var(--border-color);'}">
                     <p class="mb-1">${escapeHtml(message.text)}</p>
-                    <small class="${isMyMessage ? 'text-white-50' : 'text-muted'}">${message.timestamp}</small>
+                    <small style="${isMyMessage ? 'opacity: 0.7;' : 'color: var(--text-muted);'}">${message.timestamp}</small>
                 </div>
             `;
             container.appendChild(messageDiv);
@@ -152,7 +150,6 @@
             console.error(err.toString());
         });
         
-        // Отправка через SignalR
         document.getElementById('messageForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const input = document.getElementById('messageInput');

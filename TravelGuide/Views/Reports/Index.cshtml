@@ -1,0 +1,64 @@
+@{
+    ViewData["Title"] = "Отчёты";
+}
+
+<div class="container">
+    <h2 class="mb-4">Отчёты</h2>
+    <p class="text-muted mb-4">Просмотр статистики и экспорт данных в Excel.</p>
+
+    <div class="row g-4">
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 tour-card">
+                <div class="card-body">
+                    <h5 class="card-title">Популярные туры</h5>
+                    <p class="text-muted small mb-3">Рейтинг туров по количеству отзывов и средней оценке</p>
+                    <a asp-action="PopularTours" class="btn btn-outline-primary w-100">Смотреть</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 tour-card">
+                <div class="card-body">
+                    <h5 class="card-title">Активность пользователей</h5>
+                    <p class="text-muted small mb-3">Регистрации, отзывы, чаты, бронирования</p>
+                    <a asp-action="UserActivity" class="btn btn-outline-primary w-100">Смотреть</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 tour-card">
+                <div class="card-body">
+                    <h5 class="card-title">Статистика отзывов</h5>
+                    <p class="text-muted small mb-3">Средние оценки по турам, отелям и достопримечательностям</p>
+                    <a asp-action="ReviewStats" class="btn btn-outline-primary w-100">Смотреть</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 tour-card">
+                <div class="card-body">
+                    <h5 class="card-title">Работа менеджеров</h5>
+                    <p class="text-muted small mb-3">Количество чатов и среднее время ответа</p>
+                    <a asp-action="ManagerPerformance" class="btn btn-outline-primary w-100">Смотреть</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 tour-card">
+                <div class="card-body">
+                    <h5 class="card-title">Агентства</h5>
+                    <p class="text-muted small mb-3">Количество туров, рейтинг и отзывы</p>
+                    <a asp-action="AgencyReport" class="btn btn-outline-primary w-100">Смотреть</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a asp-controller="Admin" asp-action="Index" class="btn btn-outline-secondary">Назад в админку</a>
+    </div>
+</div>
