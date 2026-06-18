@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Curs\\Tests\\TravelGuide.Tests.csproj": {}
+    "C:\\Curs\\Tests\\TravelGuide.Tests.csproj": {}
   },
   "projects": {
-    "c:\\Curs\\Tests\\TravelGuide.Tests.csproj": {
+    "C:\\Curs\\Tests\\TravelGuide.Tests.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Curs\\Tests\\TravelGuide.Tests.csproj",
+        "projectUniqueName": "C:\\Curs\\Tests\\TravelGuide.Tests.csproj",
         "projectName": "TravelGuide.Tests",
-        "projectPath": "c:\\Curs\\Tests\\TravelGuide.Tests.csproj",
+        "projectPath": "C:\\Curs\\Tests\\TravelGuide.Tests.csproj",
         "packagesPath": "C:\\Users\\Nikita\\.nuget\\packages\\",
-        "outputPath": "c:\\Curs\\Tests\\obj\\",
+        "outputPath": "C:\\Curs\\Tests\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -32,8 +32,8 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "c:\\Curs\\TravelGuide\\TravelGuide.csproj": {
-                "projectPath": "c:\\Curs\\TravelGuide\\TravelGuide.csproj"
+              "C:\\Curs\\TravelGuide\\TravelGuide.csproj": {
+                "projectPath": "C:\\Curs\\TravelGuide\\TravelGuide.csproj"
               }
             }
           }
@@ -99,14 +99,14 @@
         }
       }
     },
-    "c:\\Curs\\TravelGuide\\TravelGuide.csproj": {
+    "C:\\Curs\\TravelGuide\\TravelGuide.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Curs\\TravelGuide\\TravelGuide.csproj",
+        "projectUniqueName": "C:\\Curs\\TravelGuide\\TravelGuide.csproj",
         "projectName": "TravelGuide",
-        "projectPath": "c:\\Curs\\TravelGuide\\TravelGuide.csproj",
+        "projectPath": "C:\\Curs\\TravelGuide\\TravelGuide.csproj",
         "packagesPath": "C:\\Users\\Nikita\\.nuget\\packages\\",
-        "outputPath": "c:\\Curs\\TravelGuide\\obj\\",
+        "outputPath": "C:\\Curs\\TravelGuide\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -149,6 +149,10 @@
               "target": "Package",
               "version": "[4.1.0, )"
             },
+            "ClosedXML": {
+              "target": "Package",
+              "version": "[0.105.0, )"
+            },
             "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
               "target": "Package",
               "version": "[9.0.0, )"
@@ -166,6 +170,10 @@
               "suppressParent": "All",
               "target": "Package",
               "version": "[9.0.0, )"
+            },
+            "QuestPDF": {
+              "target": "Package",
+              "version": "[2026.6.0, )"
             }
           },
           "imports": [
