@@ -67,6 +67,9 @@ using (var scope = app.Services.CreateScope())
     var context = scope.ServiceProvider.GetRequiredService<TravelGuideContext>();
     context.Database.EnsureCreated();
     
+    // Заполняем начальными данными
+    SeedData.Initialize(context);
+    
     // Находим админа и обновляем пароль
     var admin = context.Users.FirstOrDefault(u => u.Role == UserRole.Admin);
     if (admin != null)
