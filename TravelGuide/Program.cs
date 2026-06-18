@@ -45,6 +45,9 @@ if (!app.Environment.IsDevelopment())
 }
 app.UseRouting();
 
+// 404 handler
+app.UseStatusCodePagesWithReExecute("/Home/StatusCode", "?code={0}");
+
 app.UseSession();
 app.UseAuthorization();
 
