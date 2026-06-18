@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TravelGuide.Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fc765275dcfe010b09ec618b142d25c3b7ed7455")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4e4be12076f9e159ef145d34cdb3c0901aa2adbf")]
 [assembly: System.Reflection.AssemblyProductAttribute("TravelGuide.Tests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TravelGuide.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
