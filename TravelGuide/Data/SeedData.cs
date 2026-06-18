@@ -70,40 +70,40 @@ public static class SeedData
         var hotels = new List<Hotel>
         {
             // Египет
-            new Hotel { Name = "Steigenberger Al Dau Beach", CityId = hurghada.Id, Stars = 5, MealType = MealType.AI, DistanceToBeach = 50, DistanceToCenter = 8, PricePerNight = 12000, Description = "Роскошный пляжный курорт с собственным коралловым рифом." },
-            new Hotel { Name = "Jaz Aquaviva", CityId = hurghada.Id, Stars = 5, MealType = MealType.AI, DistanceToBeach = 100, DistanceToCenter = 5, PricePerNight = 9500, Description = "Современный отель с аквапарком и анимацией." },
-            new Hotel { Name = "Baron Palace Sahl Hasheesh", CityId = sharm.Id, Stars = 5, MealType = MealType.UAI, DistanceToBeach = 30, DistanceToCenter = 12, PricePerNight = 15000, Description = "Премиальный отель с безупречным сервисом." },
-            new Hotel { Name = "Radisson Blu Resort", CityId = sharm.Id, Stars = 5, MealType = MealType.AI, DistanceToBeach = 200, DistanceToCenter = 7, PricePerNight = 11000, Description = "Отель у подножия гор Синай." },
+            new Hotel { Name = "Steigenberger Al Dau Beach", CityId = hurghada.Id, Stars = 5, MealType = MealType.AI, DistanceToBeach = 50, DistanceToCenter = 8, PricePerNight = 12000, Description = "Роскошный пляжный курорт с собственным коралловым рифом.", Latitude = 27.1825, Longitude = 33.8322 },
+            new Hotel { Name = "Jaz Aquaviva", CityId = hurghada.Id, Stars = 5, MealType = MealType.AI, DistanceToBeach = 100, DistanceToCenter = 5, PricePerNight = 9500, Description = "Современный отель с аквапарком и анимацией.", Latitude = 27.1755, Longitude = 33.8280 },
+            new Hotel { Name = "Baron Palace Sahl Hasheesh", CityId = sharm.Id, Stars = 5, MealType = MealType.UAI, DistanceToBeach = 30, DistanceToCenter = 12, PricePerNight = 15000, Description = "Премиальный отель с безупречным сервисом.", Latitude = 27.9486, Longitude = 34.3899 },
+            new Hotel { Name = "Radisson Blu Resort", CityId = sharm.Id, Stars = 5, MealType = MealType.AI, DistanceToBeach = 200, DistanceToCenter = 7, PricePerNight = 11000, Description = "Отель у подножия гор Синай.", Latitude = 27.9100, Longitude = 34.3200 },
 
             // Турция
-            new Hotel { Name = "Rixos Premium Belek", CityId = antalya.Id, Stars = 5, MealType = MealType.UAI, DistanceToBeach = 30, DistanceToCenter = 15, PricePerNight = 18000, Description = "Один из лучших отелей мира по версии World Travel Awards." },
-            new Hotel { Name = "Conrad Istanbul Bosphorus", CityId = istanbul.Id, Stars = 5, MealType = MealType.BB, DistanceToBeach = null, DistanceToCenter = 2, PricePerNight = 22000, Description = "Отель с видом на Босфор и Айя-Софию." },
-            new Hotel { Name = "Hilton Dalaman Sarigerme", CityId = bodrum.Id, Stars = 5, MealType = MealType.AI, DistanceToBeach = 50, DistanceToCenter = 10, PricePerNight = 14000, Description = "Семейный курорт с пляжем и спа." },
+            new Hotel { Name = "Rixos Premium Belek", CityId = antalya.Id, Stars = 5, MealType = MealType.UAI, DistanceToBeach = 30, DistanceToCenter = 15, PricePerNight = 18000, Description = "Один из лучших отелей мира по версии World Travel Awards.", Latitude = 36.8567, Longitude = 31.0574 },
+            new Hotel { Name = "Conrad Istanbul Bosphorus", CityId = istanbul.Id, Stars = 5, MealType = MealType.BB, DistanceToBeach = null, DistanceToCenter = 2, PricePerNight = 22000, Description = "Отель с видом на Босфор и Айя-Софию.", Latitude = 41.0435, Longitude = 29.0070 },
+            new Hotel { Name = "Hilton Dalaman Sarigerme", CityId = bodrum.Id, Stars = 5, MealType = MealType.AI, DistanceToBeach = 50, DistanceToCenter = 10, PricePerNight = 14000, Description = "Семейный курорт с пляжем и спа.", Latitude = 36.7167, Longitude = 28.4667 },
 
             // Таиланд
-            new Hotel { Name = "Banyan Tree Phuket", CityId = phuket.Id, Stars = 5, MealType = MealType.BB, DistanceToBeach = 100, DistanceToCenter = 20, PricePerNight = 25000, Description = "Роскошные виллы с приватными бассейнами." },
-            new Hotel { Name = "Anantara Riverside", CityId = bangkok.Id, Stars = 5, MealType = MealType.BB, DistanceToBeach = null, DistanceToCenter = 5, PricePerNight = 16000, Description = "Отель на берегу реки Чао Пхрая." },
-            new Hotel { Name = "Hilton Pattaya", CityId = pattaya.Id, Stars = 5, MealType = MealType.BB, DistanceToBeach = 50, DistanceToCenter = 3, PricePerNight = 10000, Description = "Панорамный отель на пляже Паттайя." },
+            new Hotel { Name = "Banyan Tree Phuket", CityId = phuket.Id, Stars = 5, MealType = MealType.BB, DistanceToBeach = 100, DistanceToCenter = 20, PricePerNight = 25000, Description = "Роскошные виллы с приватными бассейнами.", Latitude = 7.8883, Longitude = 98.2971 },
+            new Hotel { Name = "Anantara Riverside", CityId = bangkok.Id, Stars = 5, MealType = MealType.BB, DistanceToBeach = null, DistanceToCenter = 5, PricePerNight = 16000, Description = "Отель на берегу реки Чао Пхрая.", Latitude = 13.7409, Longitude = 100.5423 },
+            new Hotel { Name = "Hilton Pattaya", CityId = pattaya.Id, Stars = 5, MealType = MealType.BB, DistanceToBeach = 50, DistanceToCenter = 3, PricePerNight = 10000, Description = "Панорамный отель на пляже Паттайя.", Latitude = 12.9236, Longitude = 100.8825 },
 
             // Италия
-            new Hotel { Name = "Hotel Eden Roma", CityId = rome.Id, Stars = 5, MealType = MealType.BB, DistanceToBeach = null, DistanceToCenter = 1, PricePerNight = 35000, Description = "Бутик-отель рядом с Ватиканом." },
-            new Hotel { Name = "The Gritti Palace", CityId = venice.Id, Stars = 5, MealType = MealType.BB, DistanceToBeach = null, DistanceToCenter = 0, PricePerNight = 55000, Description = "Легендарный отель на Гранд-канале." },
+            new Hotel { Name = "Hotel Eden Roma", CityId = rome.Id, Stars = 5, MealType = MealType.BB, DistanceToBeach = null, DistanceToCenter = 1, PricePerNight = 35000, Description = "Бутик-отель рядом с Ватиканом.", Latitude = 41.9058, Longitude = 12.4877 },
+            new Hotel { Name = "The Gritti Palace", CityId = venice.Id, Stars = 5, MealType = MealType.BB, DistanceToBeach = null, DistanceToCenter = 0, PricePerNight = 55000, Description = "Легендарный отель на Гранд-канале.", Latitude = 45.4310, Longitude = 12.3374 },
 
             // Испания
-            new Hotel { Name = "W Barcelona", CityId = barcelona.Id, Stars = 5, MealType = MealType.BB, DistanceToBeach = 10, DistanceToCenter = 3, PricePerNight = 28000, Description = "Иконический отель в виде паруса на пляже Барселонета." },
-            new Hotel { Name = "Hotel Ritz Madrid", CityId = madrid.Id, Stars = 5, MealType = MealType.BB, DistanceToBeach = null, DistanceToCenter = 1, PricePerNight = 32000, Description = "Классический отель в стиле ар-деко." },
+            new Hotel { Name = "W Barcelona", CityId = barcelona.Id, Stars = 5, MealType = MealType.BB, DistanceToBeach = 10, DistanceToCenter = 3, PricePerNight = 28000, Description = "Иконический отель в виде паруса на пляже Барселонета.", Latitude = 41.3674, Longitude = 2.1965 },
+            new Hotel { Name = "Hotel Ritz Madrid", CityId = madrid.Id, Stars = 5, MealType = MealType.BB, DistanceToBeach = null, DistanceToCenter = 1, PricePerNight = 32000, Description = "Классический отель в стиле ар-деко.", Latitude = 40.4405, Longitude = -3.6893 },
 
             // Греция
-            new Hotel { Name = "Grace Hotel Santorini", CityId = santorini.Id, Stars = 5, MealType = MealType.BB, DistanceToBeach = 200, DistanceToCenter = 2, PricePerNight = 40000, Description = "Бутик-отель с видом на кальдеру." },
-            new Hotel { Name = "Athens Marriott Hotel", CityId = athens.Id, Stars = 5, MealType = MealType.BB, DistanceToBeach = null, DistanceToCenter = 3, PricePerNight = 18000, Description = "Современный отель в центре Афин." },
+            new Hotel { Name = "Grace Hotel Santorini", CityId = santorini.Id, Stars = 5, MealType = MealType.BB, DistanceToBeach = 200, DistanceToCenter = 2, PricePerNight = 40000, Description = "Бутик-отель с видом на кальдеру.", Latitude = 36.4165, Longitude = 25.4313 },
+            new Hotel { Name = "Athens Marriott Hotel", CityId = athens.Id, Stars = 5, MealType = MealType.BB, DistanceToBeach = null, DistanceToCenter = 3, PricePerNight = 18000, Description = "Современный отель в центре Афин.", Latitude = 37.9838, Longitude = 23.7308 },
 
             // ОАЭ
-            new Hotel { Name = "Burj Al Arab Jumeirah", CityId = dubai.Id, Stars = 5, MealType = MealType.BB, DistanceToBeach = 50, DistanceToCenter = 15, PricePerNight = 85000, Description = "Самый роскошный отель мира — парус на искусственном острове." },
-            new Hotel { Name = "Atlantis The Palm", CityId = dubai.Id, Stars = 5, MealType = MealType.AI, DistanceToBeach = 30, DistanceToCenter = 20, PricePerNight = 45000, Description = "Отель на Пальмовом острове с аквапарком Aquaventure." },
+            new Hotel { Name = "Burj Al Arab Jumeirah", CityId = dubai.Id, Stars = 5, MealType = MealType.BB, DistanceToBeach = 50, DistanceToCenter = 15, PricePerNight = 85000, Description = "Самый роскошный отель мира — парус на искусственном острове.", Latitude = 25.1412, Longitude = 55.1853 },
+            new Hotel { Name = "Atlantis The Palm", CityId = dubai.Id, Stars = 5, MealType = MealType.AI, DistanceToBeach = 30, DistanceToCenter = 20, PricePerNight = 45000, Description = "Отель на Пальмовом острове с аквапарком Aquaventure.", Latitude = 25.1304, Longitude = 55.1174 },
 
             // Мальдивы
-            new Hotel { Name = "Soneva Fushi", CityId = male.Id, Stars = 5, MealType = MealType.FB, DistanceToBeach = 0, DistanceToCenter = null, PricePerNight = 70000, Description = "Эко-люкс на частном острове с бунгало." },
-            new Hotel { Name = "Conrad Maldives", CityId = male.Id, Stars = 5, MealType = MealType.AI, DistanceToBeach = 0, DistanceToCenter = null, PricePerNight = 55000, Description = "Два острова: один — пляжный, другой — водные виллы." },
+            new Hotel { Name = "Soneva Fushi", CityId = male.Id, Stars = 5, MealType = MealType.FB, DistanceToBeach = 0, DistanceToCenter = null, PricePerNight = 70000, Description = "Эко-люкс на частном острове с бунгало.", Latitude = 5.1089, Longitude = 73.0710 },
+            new Hotel { Name = "Conrad Maldives", CityId = male.Id, Stars = 5, MealType = MealType.AI, DistanceToBeach = 0, DistanceToCenter = null, PricePerNight = 55000, Description = "Два острова: один — пляжный, другой — водные виллы.", Latitude = 3.5847, Longitude = 73.2114 },
         };
 
         context.Hotels.AddRange(hotels);
@@ -160,7 +160,13 @@ public static class SeedData
         var tourist3 = new User { FullName = "Алексей Сидоров", Email = "alex@test.com", Phone = "+79005556677", Role = UserRole.Tourist, RegistrationDate = DateTime.Now.AddDays(-15) };
         tourist3.PasswordHash = BCrypt.Net.BCrypt.HashPassword("password123");
 
-        context.Users.AddRange(tourist1, tourist2, tourist3);
+        var admin = new User { FullName = "Администратор", Email = "admin@travelguide.com", Phone = "+79000000001", Role = UserRole.Admin, RegistrationDate = DateTime.Now.AddDays(-90) };
+        admin.PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin123");
+
+        var manager = new User { FullName = "Менеджер Ольга", Email = "manager@travelguide.com", Phone = "+79000000002", Role = UserRole.Manager, RegistrationDate = DateTime.Now.AddDays(-80) };
+        manager.PasswordHash = BCrypt.Net.BCrypt.HashPassword("manager123");
+
+        context.Users.AddRange(tourist1, tourist2, tourist3, admin, manager);
         context.SaveChanges();
 
         // =====================
@@ -236,23 +242,23 @@ public static class SeedData
         // =====================
         var reviews = new List<Review>
         {
-            new Review { UserId = tourist1.Id, TourId = tours[0].Id, Rating = 5, Text = "Потрясающий тур! Красное море — это что-то невероятное. Дайвинг на коралловом рифе — лучший опыт в жизни. Отель отличный, питание на высоте.", Status = ReviewStatus.Approved, Date = DateTime.Now.AddDays(-20) },
-            new Review { UserId = tourist2.Id, TourId = tours[0].Id, Rating = 4, Text = "Хороший отдых, но жарко очень. Экскурсия в Луксор — must have! Пирамиды — это另个ое. Рекомендую.", Status = ReviewStatus.Approved, Date = DateTime.Now.AddDays(-15) },
-            new Review { UserId = tourist3.Id, TourId = tours[2].Id, Rating = 5, Text = "Лучший all-inclusive в моей жизни! Rixos — это另个ое. Аквапарк, шоу, еда — всё на 10+. Дети в восторге.", Status = ReviewStatus.Approved, Date = DateTime.Now.AddDays(-10) },
-            new Review { UserId = tourist1.Id, TourId = tours[4].Id, Rating = 5, Text = "Пхукет — это另个ое! Острова красивые, море бирюзовое. Экскурсия на Пхи-Пхи — must see. Ночные рынки —另个ое.", Status = ReviewStatus.Approved, Date = DateTime.Now.AddDays(-8) },
-            new Review { UserId = tourist2.Id, TourId = tours[6].Id, Rating = 4, Text = "Рим —另个ое город! Колизей впечатляет. Еда —另个ое. Но очень много туристов. Лучше ехать в межсезонье.", Status = ReviewStatus.Approved, Date = DateTime.Now.AddDays(-5) },
-            new Review { UserId = tourist3.Id, TourId = tours[7].Id, Rating = 5, Text = "Барселона + Коста Брава = идеальное сочетание! Гауди —另个ое. Пляжи —另个ое. Шопинг —另个ое.", Status = ReviewStatus.Approved, Date = DateTime.Now.AddDays(-3) },
-            new Review { UserId = tourist1.Id, TourId = tours[8].Id, Rating = 5, Text = "Санторини — это另个ое! Закаты в Ойе —另个ое. Акрополь в Афинах —另个ое. Лучший тур в жизни.", Status = ReviewStatus.Approved, Date = DateTime.Now.AddDays(-2) },
-            new Review { UserId = tourist2.Id, TourId = tours[9].Id, Rating = 4, Text = "Дубай —另个ое город! Бурдж-Халифа —另кое. Пустыня —另кое. Дорого, но另кое.", Status = ReviewStatus.Approved, Date = DateTime.Now.AddDays(-1) },
-            new Review { UserId = tourist3.Id, TourId = tours[10].Id, Rating = 5, Text = "Мальдивы —另кое! Бунгало на воде —另кое. Рыба плавает под вами —另кое. Стоит каждой копейки.", Status = ReviewStatus.Approved, Date = DateTime.Now },
+            new Review { UserId = tourist1.Id, TourId = tours[0].Id, Rating = 5, Text = "Классный тур, все понравилось! Добрались отлично, море красивое, отели аккуратные. Дайвинг — просто огонь, дети в восторге. Рекомендую всем!", Status = ReviewStatus.Approved, Date = DateTime.Now.AddDays(-20) },
+            new Review { UserId = tourist2.Id, TourId = tours[0].Id, Rating = 4, Text = "Хороший отдых, но жарко очень. Экскурсия в Луксор — обязательно! Пирамиды — это нечто невероятное. Рекомендую.", Status = ReviewStatus.Approved, Date = DateTime.Now.AddDays(-15) },
+            new Review { UserId = tourist3.Id, TourId = tours[2].Id, Rating = 5, Text = "Лучший all-inclusive в моей жизни! Rixos — это отдельный уровень. Аквапарк, шоу, еда — всё на 10+. Дети в восторге.", Status = ReviewStatus.Approved, Date = DateTime.Now.AddDays(-10) },
+            new Review { UserId = tourist1.Id, TourId = tours[4].Id, Rating = 5, Text = "Пхукет — это сказка! Острова красивые, море бирюзовое. Экскурсия на Пхи-Пхи — must see. Ночные рынки —must visit.", Status = ReviewStatus.Approved, Date = DateTime.Now.AddDays(-8) },
+            new Review { UserId = tourist2.Id, TourId = tours[6].Id, Rating = 4, Text = "Рим — удивительный город! Колизей впечатляет. Еда потрясающая. Но очень много туристов. Лучше ехать в межсезонье.", Status = ReviewStatus.Approved, Date = DateTime.Now.AddDays(-5) },
+            new Review { UserId = tourist3.Id, TourId = tours[7].Id, Rating = 5, Text = "Барселона + Коста Брава = идеальное сочетание! Гауди — гений. Пляжи — шикарные. Шопинг — на высоте.", Status = ReviewStatus.Approved, Date = DateTime.Now.AddDays(-3) },
+            new Review { UserId = tourist1.Id, TourId = tours[8].Id, Rating = 5, Text = "Санторини — это мечта! Закаты в Ойе — непередаваемые. Акрополь в Афинах — величественный. Лучший тур в жизни.", Status = ReviewStatus.Approved, Date = DateTime.Now.AddDays(-2) },
+            new Review { UserId = tourist2.Id, TourId = tours[9].Id, Rating = 4, Text = "Дубай — город будущего! Бурдж-Халифа — впечатляет. Пустыня — волшебная. Дорого, но стоит того.", Status = ReviewStatus.Approved, Date = DateTime.Now.AddDays(-1) },
+            new Review { UserId = tourist3.Id, TourId = tours[10].Id, Rating = 5, Text = "Мальдивы — рай на земле! Бунгало на воде — незабываемо. Рыба плавает под вами — чудесно. Стоит каждой копейки.", Status = ReviewStatus.Approved, Date = DateTime.Now },
 
             // Отзывы на отели
             new Review { UserId = tourist1.Id, HotelId = hotels[0].Id, Rating = 5, Text = "Отличный отель! Пляж чистый, кораллы прямо у берега. Питание разнообразное.", Status = ReviewStatus.Approved, Date = DateTime.Now.AddDays(-18) },
-            new Review { UserId = tourist2.Id, HotelId = hotels[4].Id, Rating = 5, Text = "Rixos —另кое! Всё включено на另кое уровне. Аквапарк, шоу, еда —另кое.", Status = ReviewStatus.Approved, Date = DateTime.Now.AddDays(-12) },
+            new Review { UserId = tourist2.Id, HotelId = hotels[4].Id, Rating = 5, Text = "Rixos — это уровень! Всё включено на высшем уровне. Аквапарк, шоу, еда — всё превосходно.", Status = ReviewStatus.Approved, Date = DateTime.Now.AddDays(-12) },
 
             // Отзывы на достопримечательности
-            new Review { UserId = tourist1.Id, SightId = sights[0].Id, Rating = 5, Text = "Пирамиды —另кое! Величие另кое. Обязательно к посещению.", Status = ReviewStatus.Approved, Date = DateTime.Now.AddDays(-22) },
-            new Review { UserId = tourist2.Id, SightId = sights[6].Id, Rating = 5, Text = "Колизей —另кое! Представьте, как здесь сражались гладиаторы.另кое.", Status = ReviewStatus.Approved, Date = DateTime.Now.AddDays(-7) },
+            new Review { UserId = tourist1.Id, SightId = sights[0].Id, Rating = 5, Text = "Пирамиды — шедевр! Величие захватывает дух. Обязательно к посещению.", Status = ReviewStatus.Approved, Date = DateTime.Now.AddDays(-22) },
+            new Review { UserId = tourist2.Id, SightId = sights[6].Id, Rating = 5, Text = "Колизей — потрясающе! Представьте, как здесь сражались гладиаторы. Невероятные эмоции.", Status = ReviewStatus.Approved, Date = DateTime.Now.AddDays(-7) },
         };
 
         context.Reviews.AddRange(reviews);
