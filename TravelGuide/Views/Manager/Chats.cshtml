@@ -4,7 +4,7 @@
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>💬 Чаты с клиентами</h2>
+    <h2>Чаты с клиентами</h2>
 </div>
 
 <!-- Фильтры -->
@@ -57,7 +57,7 @@ else
                         <td>
                             @if (chat.Status == TravelGuide.Models.Entities.ChatStatus.Active)
                             {
-                                <span class="badge bg-success">🟢 Активен</span>
+                                <span class="badge bg-success">Активен</span>
                             }
                             else
                             {
@@ -80,7 +80,7 @@ else
                         <td>
                             <div class="btn-group btn-group-sm">
                                 <a asp-action="Chat" asp-route-id="@chat.Id" class="btn btn-outline-primary" title="Открыть">
-                                    💬 Открыть
+                                    Открыть
                                 </a>
                                 @if (chat.Status == TravelGuide.Models.Entities.ChatStatus.Active)
                                 {

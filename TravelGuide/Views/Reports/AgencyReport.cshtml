@@ -1,0 +1,64 @@
+@model List<TravelGuide.Services.AgencyReport>
+@{
+    ViewData["Title"] = "Агентства";
+}
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Агентства</h2>
+        <div class="d-flex gap-2">
+            <a asp-action="Index" class="btn btn-outline-secondary">← Назад</a>
+            <form asp-action="ExportAgencyReportExcel" method="post" class="d-inline">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-success">Скачать Excel</button>
+            </form>
+        </div>
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="row g-4">
+            @foreach (var a in Model)
+            {
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 tour-card">
+                        <div class="card-body">
+                            <h5 class="card-title">@a.AgencyName</h5>
+                            <p class="text-muted small mb-2">@a.ContactInfo</p>
+                            <div class="d-flex align-items-center mb-2">
+                                <span class="star-rating">
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        if (i <= Math.Round(a.Rating))
+                                        {
+                                            <span>★</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="empty">★</span>
+                                        }
+                                    }
+                                </span>
+                                <span class="ms-2">@a.Rating.ToString("F1")</span>
+                            </div>
+                            <div class="d-flex gap-3">
+                                <span class="badge bg-primary">Туров: @a.TourCount</span>
+                                <span class="badge bg-secondary">Отзывов: @a.TotalReviews</span>
+                            </div>
+                            @if (a.AverageTourRating > 0)
+                            {
+                                <p class="mt-2 mb-0 small">
+                                    Средний рейтинг туров: <strong>@a.AverageTourRating.ToString("F2")</strong>
+                                </p>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">Нет данных об агентствах.</div>
+    }
+</div>

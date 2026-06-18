@@ -4,8 +4,8 @@
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>🏢 Управление агентствами</h2>
-    <a asp-action="CreateAgency" class="btn btn-primary">➕ Добавить агентство</a>
+    <h2>Управление агентствами</h2>
+    <a asp-action="CreateAgency" class="btn btn-primary">Добавить агентство</a>
 </div>
 
 @if (TempData["SuccessMessage"] != null)
@@ -26,15 +26,15 @@
                         }
                         else
                         {
-                            <div class="bg-light rounded me-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
-                                <span style="font-size: 1.5rem;">🏢</span>
+                            <div class="bg-light rounded me-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; border: 1px solid #dee2e6;">
+                                <span class="text-muted small">Нет лого</span>
                             </div>
                         }
                         <div>
                             <h5 class="card-title mb-0">@agency.Name</h5>
                             @if (agency.Rating.HasValue)
                             {
-                                <small class="text-warning">⭐ @agency.Rating.Value.ToString("F1")</small>
+                                <small class="text-warning">@agency.Rating.Value.ToString("F1") ★</small>
                             }
                         </div>
                     </div>
@@ -51,9 +51,9 @@
                 </div>
                 <div class="card-footer bg-white">
                     <div class="btn-group btn-group-sm w-100">
-                        <a asp-action="EditAgency" asp-route-id="@agency.Id" class="btn btn-outline-primary">✏️</a>
+                        <a asp-action="EditAgency" asp-route-id="@agency.Id" class="btn btn-outline-primary">Изм.</a>
                         <form asp-action="DeleteAgency" asp-route-id="@agency.Id" method="post" style="display: inline;">
-                            <button type="submit" class="btn btn-outline-danger w-100" onclick="return confirm('Удалить агентство?')">🗑️</button>
+                            <button type="submit" class="btn btn-outline-danger w-100" onclick="return confirm('Удалить агентство?')">Удал.</button>
                         </form>
                     </div>
                 </div>

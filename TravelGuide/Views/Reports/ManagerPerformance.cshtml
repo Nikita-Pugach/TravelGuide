@@ -1,0 +1,59 @@
+@model List<TravelGuide.Services.ManagerPerformanceReport>
+@{
+    ViewData["Title"] = "Работа менеджеров";
+}
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Работа менеджеров</h2>
+        <div class="d-flex gap-2">
+            <a asp-action="Index" class="btn btn-outline-secondary">← Назад</a>
+            <form asp-action="ExportManagerPerformanceExcel" method="post" class="d-inline">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-success">Скачать Excel</button>
+            </form>
+        </div>
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Менеджер</th>
+                        <th>Email</th>
+                        <th>Всего чатов</th>
+                        <th>Завершено</th>
+                        <th>Среднее время ответа</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var m in Model)
+                    {
+                        <tr>
+                            <td>@m.ManagerName</td>
+                            <td>@m.Email</td>
+                            <td>@m.TotalChats</td>
+                            <td>@m.ClosedChats</td>
+                            <td>
+                                @if (m.AverageResponseMinutes > 0)
+                                {
+                                    <span>@m.AverageResponseMinutes мин</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">—</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">Нет данных о работе менеджеров.</div>
+    }
+</div>

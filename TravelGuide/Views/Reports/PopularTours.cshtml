@@ -1,0 +1,101 @@
+@model List<TravelGuide.Services.PopularTourReport>
+@{
+    ViewData["Title"] = "Популярные туры";
+    var dateFrom = ViewBag.DateFrom as DateTime?;
+    var dateTo = ViewBag.DateTo as DateTime?;
+}
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Популярные туры</h2>
+        <div class="d-flex gap-2">
+            <a asp-action="Index" class="btn btn-outline-secondary">← Назад</a>
+            <form asp-action="ExportPopularToursExcel" method="post" class="d-inline">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="dateFrom" value="@dateFrom?.ToString("yyyy-MM-dd")" />
+                <input type="hidden" name="dateTo" value="@dateTo?.ToString("yyyy-MM-dd")" />
+                <button type="submit" class="btn btn-success">Скачать Excel</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Фильтр -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form asp-action="PopularTours" method="get" class="row g-3 align-items-end">
+                <div class="col-md-3">
+                    <label class="form-label">Дата от</label>
+                    <input type="date" name="dateFrom" class="form-control"
+                           value="@dateFrom?.ToString("yyyy-MM-dd")" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Дата до</label>
+                    <input type="date" name="dateTo" class="form-control"
+                           value="@dateTo?.ToString("yyyy-MM-dd")" />
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary">Фильтровать</button>
+                    <a asp-action="PopularTours" class="btn btn-outline-secondary">Сбросить</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>№</th>
+                        <th>Тур</th>
+                        <th>Страна</th>
+                        <th>Агентство</th>
+                        <th>Цена</th>
+                        <th>Дней</th>
+                        <th>Отзывов</th>
+                        <th>Рейтинг</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.Count; i++)
+                    {
+                        <tr>
+                            <td>@(i + 1)</td>
+                            <td>
+                                <a asp-controller="Tours" asp-action="Details" asp-route-id="@Model[i].TourId">
+                                    @Model[i].TourName
+                                </a>
+                            </td>
+                            <td>@Model[i].CountryName</td>
+                            <td>@Model[i].AgencyName</td>
+                            <td class="price-tag">@Model[i].Price.ToString("N0") ₽</td>
+                            <td>@Model[i].Duration</td>
+                            <td>@Model[i].ReviewCount</td>
+                            <td>
+                                <span class="star-rating">
+                                    @for (int s = 1; s <= 5; s++)
+                                    {
+                                        if (s <= Math.Round(Model[i].AverageRating))
+                                        {
+                                            <span>★</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="empty">★</span>
+                                        }
+                                    }
+                                </span>
+                                <span class="text-muted small">(@Model[i].AverageRating.ToString("F1"))</span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">Нет данных за выбранный период.</div>
+    }
+</div>

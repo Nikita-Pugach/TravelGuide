@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TravelGuide.Data;
 using TravelGuide.Models.Entities;
@@ -7,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace TravelGuide.Controllers
 {
-    [Authorize(Roles = "Manager")]
     public class ManagerController : Controller
     {
         private readonly TravelGuideContext _context;
@@ -36,9 +34,16 @@ namespace TravelGuide.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
+        private bool IsManager()
+        {
+            return HttpContext.Session.GetString("UserRole") == "Manager";
+        }
+
         // GET: Manager
         public async Task<IActionResult> Index()
         {
+            if (!IsManager()) return RedirectToAction("Login", "Account");
+
             var tours = await _tourRepository.GetAllAsync();
             var chats = await _chatRepository.GetAllAsync();
             var reviews = await _reviewRepository.GetAllAsync();
@@ -70,6 +75,7 @@ namespace TravelGuide.Controllers
         // GET: Manager/Tours
         public async Task<IActionResult> Tours(string search, int page = 1)
         {
+            if (!IsManager()) return RedirectToAction("Login", "Account");
             var tours = await _tourRepository.GetAllAsync();
             var hotels = await _hotelRepository.GetAllAsync();
             var sights = await _sightRepository.GetAllAsync();
@@ -120,6 +126,7 @@ namespace TravelGuide.Controllers
         // GET: Manager/CreateTour
         public async Task<IActionResult> CreateTour()
         {
+            if (!IsManager()) return RedirectToAction("Login", "Account");
             ViewBag.Countries = await _context.Countries.OrderBy(c => c.Name).ToListAsync();
             ViewBag.Cities = await _context.Cities.OrderBy(c => c.Name).ToListAsync();
             ViewBag.Agencies = await _context.Agencies.OrderBy(a => a.Name).ToListAsync();
@@ -135,6 +142,7 @@ namespace TravelGuide.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateTour(Tour tour, int[] selectedHotels, int[] selectedSights, List<IFormFile> images)
         {
+            if (!IsManager()) return RedirectToAction("Login", "Account");
             if (ModelState.IsValid)
             {
                 // Обработка изображений
@@ -194,6 +202,7 @@ namespace TravelGuide.Controllers
         // GET: Manager/EditTour/5
         public async Task<IActionResult> EditTour(int id)
         {
+            if (!IsManager()) return RedirectToAction("Login", "Account");
             var tour = await _tourRepository.GetByIdAsync(id);
             if (tour == null)
             {
@@ -227,6 +236,7 @@ namespace TravelGuide.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditTour(int id, Tour tour, int[] selectedHotels, int[] selectedSights, List<IFormFile> images, bool removeImages = false)
         {
+            if (!IsManager()) return RedirectToAction("Login", "Account");
             if (id != tour.Id)
             {
                 return NotFound();
@@ -318,6 +328,7 @@ namespace TravelGuide.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteTour(int id)
         {
+            if (!IsManager()) return RedirectToAction("Login", "Account");
             var tour = await _tourRepository.GetByIdAsync(id);
             if (tour != null)
             {
@@ -329,6 +340,7 @@ namespace TravelGuide.Controllers
         // GET: Manager/Chats
         public async Task<IActionResult> Chats(ChatStatus? status)
         {
+            if (!IsManager()) return RedirectToAction("Login", "Account");
             var chats = await _chatRepository.GetAllAsync();
 
             // Подгружаем пользователей
@@ -357,6 +369,7 @@ namespace TravelGuide.Controllers
         // GET: Manager/Chat/5
         public async Task<IActionResult> Chat(int id)
         {
+            if (!IsManager()) return RedirectToAction("Login", "Account");
             var chat = await _chatRepository.GetByIdAsync(id);
             if (chat == null)
             {
@@ -376,6 +389,7 @@ namespace TravelGuide.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CloseChat(int id)
         {
+            if (!IsManager()) return RedirectToAction("Login", "Account");
             var chat = await _chatRepository.GetByIdAsync(id);
             if (chat != null)
             {
@@ -389,6 +403,7 @@ namespace TravelGuide.Controllers
         // GET: Manager/Statistics
         public async Task<IActionResult> Statistics()
         {
+            if (!IsManager()) return RedirectToAction("Login", "Account");
             var tours = await _tourRepository.GetAllAsync();
             var reviews = await _reviewRepository.GetAllAsync();
 

@@ -2,112 +2,80 @@
     ViewData["Title"] = "Панель менеджера";
 }
 
+<!-- Hero Section -->
+<section class="hero-section text-center">
+    <div class="container position-relative">
+        <h1>Панель менеджера</h1>
+        <p class="lead">Управление турами и чатами</p>
+    </div>
+</section>
+
 <div class="container">
-    <h2 class="mb-4">👤 Панель менеджера</h2>
-    
-    <div class="row">
-        <div class="col-md-3 mb-4">
-            <div class="card bg-primary text-white h-100">
-                <div class="card-body text-center">
-                    <h3>@ViewBag.ToursCount</h3>
-                    <p class="mb-0">🗺️ Туры</p>
-                </div>
-                <div class="card-footer">
-                    <a asp-action="Tours" class="text-white text-decoration-none">Управление →</a>
-                </div>
+    <!-- Статистика -->
+    <div class="search-card mt-4 mb-4">
+            <div class="row text-center g-4">
+            <div class="col-md-4">
+                <div class="fw-bold" style="font-size:2rem;color:var(--primary)">@ViewBag.ToursCount</div>
+                <div class="text-muted small">Туров</div>
+                <a asp-action="Tours" class="btn btn-outline-primary btn-sm mt-2">Управление</a>
             </div>
-        </div>
-        
-        <div class="col-md-3 mb-4">
-            <div class="card bg-success text-white h-100">
-                <div class="card-body text-center">
-                    <h3>@ViewBag.ActiveChatsCount</h3>
-                    <p class="mb-0">💬 Активных чатов</p>
-                </div>
-                <div class="card-footer">
-                    <a asp-action="Chats" class="text-white text-decoration-none">Открыть →</a>
-                </div>
+            <div class="col-md-4" style="border-left:1px solid var(--border-color)">
+                <div class="fw-bold" style="font-size:2rem;color:var(--primary)">@ViewBag.ActiveChatsCount</div>
+                <div class="text-muted small">Активных чатов</div>
+                <a asp-action="Chats" class="btn btn-outline-primary btn-sm mt-2">Открыть</a>
             </div>
-        </div>
-        
-        <div class="col-md-3 mb-4">
-            <div class="card bg-warning text-dark h-100">
-                <div class="card-body text-center">
-                    <h3>@ViewBag.PendingReviewsCount</h3>
-                    <p class="mb-0">⏳ Отзывов на модерации</p>
-                </div>
-                <div class="card-footer">
-                    <a asp-controller="Admin" asp-action="Reviews" asp-route-status="Pending" class="text-dark text-decoration-none">Модерация →</a>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-md-3 mb-4">
-            <div class="card bg-info text-white h-100">
-                <div class="card-body text-center">
-                    <h3>@ViewBag.TotalReviewsCount</h3>
-                    <p class="mb-0">⭐ Опубликованных отзывов</p>
-                </div>
-                <div class="card-footer">
-                    <a asp-action="Statistics" class="text-white text-decoration-none">Статистика →</a>
-                </div>
+            <div class="col-md-4" style="border-left:1px solid var(--border-color)">
+                <div class="fw-bold" style="font-size:2rem;color:var(--primary)">@ViewBag.TotalReviewsCount</div>
+                <div class="text-muted small">Отзывов</div>
+                <a asp-action="Statistics" class="btn btn-outline-primary btn-sm mt-2">Статистика</a>
             </div>
         </div>
     </div>
-    
-    <div class="row">
-        <div class="col-md-6 mb-4">
-            <div class="card h-100">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">⚡ Быстрые действия</h5>
+
+    <!-- Быстрые действия -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-6">
+            <div class="card tour-card h-100">
+                <div class="card-header">
+                    <h5 class="mb-0">Быстрые действия</h5>
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-2">
-                        <a asp-action="CreateTour" class="btn btn-primary">
-                            ➕ Добавить тур
-                        </a>
-                        <a asp-action="Tours" class="btn btn-outline-primary">
-                            🗺️ Управление турами
-                        </a>
-                        <a asp-action="Chats" class="btn btn-success">
-                            💬 Чаты с клиентами
+                        <a asp-action="CreateTour" class="btn btn-primary">Добавить тур</a>
+                        <a asp-action="Tours" class="btn btn-outline-primary">Управление турами</a>
+                        <a asp-action="Chats" class="btn btn-outline-primary">
+                            Чаты с клиентами
                             @if (ViewBag.ActiveChatsCount > 0)
                             {
-                                <span class="badge bg-light text-dark">@ViewBag.ActiveChatsCount</span>
+                                <span class="badge bg-primary ms-1">@ViewBag.ActiveChatsCount</span>
                             }
                         </a>
-                        <a asp-action="Statistics" class="btn btn-outline-secondary">
-                            📊 Статистика
-                        </a>
+                        <a asp-action="Statistics" class="btn btn-outline-secondary">Статистика</a>
                     </div>
                 </div>
             </div>
         </div>
-        
-        <div class="col-md-6 mb-4">
-            <div class="card h-100">
+
+        <div class="col-md-6">
+            <div class="card tour-card h-100">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">💬 Активные чаты</h5>
+                    <h5 class="mb-0">Активные чаты</h5>
                     <a asp-action="Chats" class="btn btn-sm btn-outline-primary">Все чаты</a>
                 </div>
                 <div class="card-body">
                     @if (ViewBag.ActiveChats != null && ViewBag.ActiveChats.Count > 0)
                     {
-                        <div class="list-group list-group-flush">
-                            @foreach (var chat in ViewBag.ActiveChats)
-                            {
-                                <a asp-action="Chat" asp-route-id="@chat.Id" class="list-group-item list-group-item-action">
-                                    <div class="d-flex justify-content-between">
-                                        <span>Чат #@(chat.Id)</span>
-                                        <small class="text-muted">@chat.StartTime.ToString("dd.MM HH:mm")</small>
-                                    </div>
-                                </a>
-                            }
-                        </div>
+                        @foreach (var chat in ViewBag.ActiveChats)
+                        {
+                            <a asp-action="Chat" asp-route-id="@chat.Id" class="d-flex justify-content-between align-items-center p-2 mb-2 rounded text-decoration-none" style="background:var(--bg-light);color:var(--text-dark);transition:all 0.2s" onmouseover="this.style.background='var(--primary-light)'" onmouseout="this.style.background='var(--bg-light)'">
+                                <span class="fw-semibold small">Чат #@chat.Id</span>
+                                <small class="text-muted">@chat.StartTime.ToString("dd.MM HH:mm")</small>
+                            </a>
+                        }
                     }
                     else
                     {
-                        <p class="text-muted text-center mb-0">Нет активных чатов</p>
+                        <p class="text-muted text-center mb-0 py-3">Нет активных чатов</p>
                     }
                 </div>
             </div>

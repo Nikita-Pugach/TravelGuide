@@ -1,0 +1,220 @@
+@model TravelGuide.Services.ReviewStatsReport
+@{
+    ViewData["Title"] = "Статистика отзывов";
+}
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Статистика отзывов</h2>
+        <div class="d-flex gap-2">
+            <a asp-action="Index" class="btn btn-outline-secondary">← Назад</a>
+            <form asp-action="ExportReviewStatsExcel" method="post" class="d-inline">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="dateFrom" value="@Model.DateFrom?.ToString("yyyy-MM-dd")" />
+                <input type="hidden" name="dateTo" value="@Model.DateTo?.ToString("yyyy-MM-dd")" />
+                <button type="submit" class="btn btn-success">Скачать Excel</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Фильтр -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form asp-action="ReviewStats" method="get" class="row g-3 align-items-end">
+                <div class="col-md-3">
+                    <label class="form-label">Дата от</label>
+                    <input type="date" name="dateFrom" class="form-control"
+                           value="@Model.DateFrom?.ToString("yyyy-MM-dd")" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Дата до</label>
+                    <input type="date" name="dateTo" class="form-control"
+                           value="@Model.DateTo?.ToString("yyyy-MM-dd")" />
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary">Фильтровать</button>
+                    <a asp-action="ReviewStats" class="btn btn-outline-secondary">Сбросить</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Общая статистика -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <h3>@Model.TotalReviews</h3>
+                    <p class="text-muted mb-0">Всего отзывов</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <h3>
+                        <span class="star-rating">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                if (i <= Math.Round(Model.AverageRating))
+                                {
+                                    <span>★</span>
+                                }
+                                else
+                                {
+                                    <span class="empty">★</span>
+                                }
+                            }
+                        </span>
+                        @Model.AverageRating.ToString("F2")
+                    </h3>
+                    <p class="text-muted mb-0">Средняя оценка</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- По турам -->
+    @if (Model.TourStats.Any())
+    {
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">По турам</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Тур</th>
+                                <th>Отзывов</th>
+                                <th>Средняя оценка</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var t in Model.TourStats)
+                            {
+                                <tr>
+                                    <td>@t.ObjectName</td>
+                                    <td>@t.ReviewCount</td>
+                                    <td>
+                                        <span class="star-rating">
+                                            @for (int i = 1; i <= 5; i++)
+                                            {
+                                                if (i <= Math.Round(t.AverageRating))
+                                                {
+                                                    <span>★</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="empty">★</span>
+                                                }
+                                            }
+                                        </span>
+                                        @t.AverageRating.ToString("F2")
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- По отелям -->
+    @if (Model.HotelStats.Any())
+    {
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">По отелям</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Отель</th>
+                                <th>Отзывов</th>
+                                <th>Средняя оценка</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var h in Model.HotelStats)
+                            {
+                                <tr>
+                                    <td>@h.ObjectName</td>
+                                    <td>@h.ReviewCount</td>
+                                    <td>
+                                        <span class="star-rating">
+                                            @for (int i = 1; i <= 5; i++)
+                                            {
+                                                if (i <= Math.Round(h.AverageRating))
+                                                {
+                                                    <span>★</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="empty">★</span>
+                                                }
+                                            }
+                                        </span>
+                                        @h.AverageRating.ToString("F2")
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- По достопримечательностям -->
+    @if (Model.SightStats.Any())
+    {
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">По достопримечательностям</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Достопримечательность</th>
+                                <th>Отзывов</th>
+                                <th>Средняя оценка</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var s in Model.SightStats)
+                            {
+                                <tr>
+                                    <td>@s.ObjectName</td>
+                                    <td>@s.ReviewCount</td>
+                                    <td>
+                                        <span class="star-rating">
+                                            @for (int i = 1; i <= 5; i++)
+                                            {
+                                                if (i <= Math.Round(s.AverageRating))
+                                                {
+                                                    <span>★</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="empty">★</span>
+                                                }
+                                            }
+                                        </span>
+                                        @s.AverageRating.ToString("F2")
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+</div>

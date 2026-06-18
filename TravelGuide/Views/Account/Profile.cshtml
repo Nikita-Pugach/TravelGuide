@@ -11,7 +11,7 @@
     initials = initials.ToUpper();
 }
 
-<div class="container py-5">
+<div class="container py-3">
     @if (TempData["SuccessMessage"] != null)
     {
         <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -20,183 +20,150 @@
         </div>
     }
 
-    <div class="row g-4">
-        <!-- Профиль -->
-        <div class="col-lg-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-body text-center py-4">
-                    <div class="avatar-circle mx-auto mb-4 position-relative" id="avatarContainer">
-                        @if (!string.IsNullOrEmpty(Model.AvatarUrl))
-                        {
-                            <img src="@Model.AvatarUrl" alt="Avatar" class="avatar-img" id="avatarImage" />
-                        }
-                        else
-                        {
-                            <span class="avatar-initials" id="avatarInitials">@initials</span>
-                        }
-                        <label for="avatarInput" class="avatar-upload-btn" title="Изменить фото">
-                            <small>Изменить</small>
-                        </label>
-                        <input type="file" id="avatarInput" accept="image/*" style="display:none" />
-                    </div>
-                    <div id="uploadProgress" class="mb-2" style="display:none;">
-                        <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
-                        <small class="text-muted ms-1">Загрузка...</small>
-                    </div>
-                    <div id="uploadError" class="alert alert-danger py-1 px-2 mb-2" style="display:none;font-size:0.85rem;"></div>
-                    
-                    <h4 class="mb-1">@Model.FullName</h4>
-                    <p class="text-muted mb-3">@Model.Email</p>
-                    
-                    <div class="mb-3">
+    <!-- Шапка профиля -->
+    <div class="card tour-card mb-3">
+        <div class="card-body p-3">
+            <div class="d-flex align-items-center gap-4">
+                <!-- Аватар -->
+                <div class="position-relative flex-shrink-0" id="avatarContainer" style="width: 80px; height: 80px;">
+                    @if (!string.IsNullOrEmpty(Model.AvatarUrl))
+                    {
+                        <img src="@Model.AvatarUrl" alt="Avatar" class="w-100 h-100 rounded-circle" style="object-fit: cover;" id="avatarImage" />
+                    }
+                    else
+                    {
+                        <div class="w-100 h-100 rounded-circle d-flex align-items-center justify-content-center" style="background: var(--primary); color: white; font-size: 1.5rem; font-weight: 600;" id="avatarInitials">
+                            @initials
+                        </div>
+                    }
+                    <label for="avatarInput" class="position-absolute bottom-0 end-0 rounded-circle d-flex align-items-center justify-content-center" 
+                           style="width: 28px; height: 28px; background: var(--primary); color: white; cursor: pointer; font-size: 0.7rem; border: 2px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.15);"
+                           title="Изменить фото">
+                        Фото
+                    </label>
+                    <input type="file" id="avatarInput" accept="image/*" style="display:none" />
+                </div>
+                
+                <!-- Информация -->
+                <div class="flex-grow-1 min-width-0">
+                    <div class="d-flex align-items-center gap-2 mb-1">
+                        <h4 class="mb-0" style="font-weight: 600;">@Model.FullName</h4>
                         @switch (Model.Role)
                         {
                             case "Admin":
                                 <span class="badge bg-danger">Администратор</span>
                                 break;
                             case "Manager":
-                                <span class="badge bg-primary">Менеджер</span>
+                                <span class="badge" style="background: var(--primary-light); color: var(--primary);">Менеджер</span>
                                 break;
                             default:
-                                <span class="badge bg-success">Турист</span>
+                                <span class="badge" style="background: #d4edda; color: #155724;">Турист</span>
                                 break;
                         }
                     </div>
-                    
-                    @if (!string.IsNullOrEmpty(Model.Phone))
-                    {
-                        <p class="text-muted mb-1">@Model.Phone</p>
-                    }
-                    
-                    <p class="text-muted small mb-0">На сайте с @Model.RegistrationDate.ToString("dd.MM.yyyy")</p>
-                    
-                    @if (!string.IsNullOrEmpty(Model.AgencyName))
-                    {
-                        <div class="mt-3 p-2 bg-light rounded">
-                            <small class="text-muted">Агентство:</small>
-                            <br><strong>@Model.AgencyName</strong>
-                        </div>
-                    }
-                </div>
-                <div class="card-footer bg-white border-top-0 pb-4">
-                    <div class="d-grid gap-2">
-                        <a asp-action="Edit" class="btn btn-primary">Редактировать профиль</a>
-                        <form asp-action="Logout" method="post">
-                            @Html.AntiForgeryToken()
-                            <button type="submit" class="btn btn-outline-danger w-100">Выйти из аккаунта</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Статистика и действия -->
-        <div class="col-lg-8">
-            <div class="row g-4">
-                <!-- Карточки статистики -->
-                <div class="col-sm-4">
-                    <a asp-controller="Favorites" asp-action="Index" class="text-decoration-none">
-                        <div class="card shadow-sm h-100 hover-card">
-                            <div class="card-body text-center py-4">
-                                <h2 class="mb-1">@ViewBag.FavoritesCount</h2>
-                                <small class="text-muted">Избранных туров</small>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                
-                <div class="col-sm-4">
-                    <a asp-controller="Chat" asp-action="Index" class="text-decoration-none">
-                        <div class="card shadow-sm h-100 hover-card">
-                            <div class="card-body text-center py-4">
-                                <h2 class="mb-1">@ViewBag.ChatsCount</h2>
-                                <small class="text-muted">Чатов поддержки</small>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                
-                <div class="col-sm-4">
-                    <a asp-controller="Tours" asp-action="Index" class="text-decoration-none">
-                        <div class="card shadow-sm h-100 hover-card">
-                            <div class="card-body text-center py-4">
-                                <h5 class="mb-1">Каталог туров</h5>
-                                <small class="text-muted">Искать туры</small>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                
-                <!-- Быстрые действия -->
-                <div class="col-12">
-                    <div class="card shadow-sm">
-                        <div class="card-header bg-white">
-                            <h5 class="mb-0">Быстрые действия</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="row g-3">
-                                <div class="col-md-6 col-lg-3">
-                                    <a asp-controller="Tours" asp-action="Index" class="btn btn-outline-primary w-100">
-                                        Поиск туров
-                                    </a>
-                                </div>
-                                <div class="col-md-6 col-lg-3">
-                                    <a asp-controller="Hotels" asp-action="Index" class="btn btn-outline-success w-100">
-                                        Отели
-                                    </a>
-                                </div>
-                                <div class="col-md-6 col-lg-3">
-                                    <a asp-controller="Sights" asp-action="Index" class="btn btn-outline-info w-100">
-                                        Достопримечательности
-                                    </a>
-                                </div>
-                                <div class="col-md-6 col-lg-3">
-                                    <a asp-controller="Chat" asp-action="Create" class="btn btn-outline-warning w-100">
-                                        Написать в чат
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
+                    <p class="text-muted mb-1 small">@Model.Email</p>
+                    <div class="d-flex align-items-center gap-3 text-muted small">
+                        @if (!string.IsNullOrEmpty(Model.Phone))
+                        {
+                            <span>@Model.Phone</span>
+                        }
+                        <span>На сайте с @Model.RegistrationDate.ToString("dd.MM.yyyy")</span>
                     </div>
                 </div>
                 
-                <!-- Последние избранные туры -->
-                @if (ViewBag.RecentFavorites != null && ((IEnumerable<TravelGuide.Models.Entities.FavoriteTour>)ViewBag.RecentFavorites).Any())
-                {
-                    <div class="col-12">
-                        <div class="card shadow-sm">
-                            <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                                <h5 class="mb-0">Последние избранные</h5>
-                                <a asp-controller="Favorites" asp-action="Index" class="btn btn-sm btn-outline-primary">Все</a>
-                            </div>
-                            <div class="card-body">
-                                <div class="row g-3">
-                                    @foreach (var fav in (IEnumerable<TravelGuide.Models.Entities.FavoriteTour>)ViewBag.RecentFavorites)
-                                    {
-                                        <div class="col-md-6 col-lg-4">
-                                            <div class="card bg-light border-0 h-100">
-                                                <div class="card-body">
-                                                    <h6 class="mb-1">@fav.Tour?.Name</h6>
-                                                    <small class="text-muted">@fav.Tour?.Country?.Name</small>
-                                                    <div class="mt-2">
-                                                        <strong class="text-primary">@fav.Tour?.Price.ToString("N0") ₽</strong>
-                                                    </div>
-                                                </div>
-                                                <div class="card-footer bg-transparent border-0 pt-0">
-                                                    <a asp-controller="Tours" asp-action="Details" asp-route-id="@fav.TourId" 
-                                                       class="btn btn-sm btn-primary w-100">Подробнее</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    }
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                }
+                <!-- Кнопки -->
+                <div class="flex-shrink-0 d-flex gap-2">
+                    <a asp-action="Edit" class="btn btn-primary btn-sm">Редактировать</a>
+                    <form asp-action="Logout" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-outline-secondary btn-sm">Выйти</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
+
+    <div id="uploadProgress" class="mb-2" style="display:none;">
+        <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+        <small class="text-muted ms-1">Загрузка...</small>
+    </div>
+    <div id="uploadError" class="alert alert-danger py-1 px-2 mb-2" style="display:none;font-size:0.85rem;"></div>
+
+    <!-- Статистика -->
+    <div class="row g-3 mb-3">
+        <div class="col-sm-4">
+            <a asp-controller="Favorites" asp-action="Index" class="text-decoration-none">
+                <div class="card tour-card h-100">
+                    <div class="card-body text-center py-3">
+                        <div style="font-weight: 600; color: var(--primary); font-size: 1.5rem;">@ViewBag.FavoritesCount</div>
+                        <div class="text-muted small">Избранных туров</div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-sm-4">
+            <a asp-controller="Chat" asp-action="Index" class="text-decoration-none">
+                <div class="card tour-card h-100">
+                    <div class="card-body text-center py-3">
+                        <div style="font-weight: 600; color: var(--primary); font-size: 1.5rem;">@ViewBag.ChatsCount</div>
+                        <div class="text-muted small">Чатов поддержки</div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-sm-4">
+            <a asp-controller="Bookings" asp-action="Index" class="text-decoration-none">
+                <div class="card tour-card h-100">
+                    <div class="card-body text-center py-3">
+                        <div style="font-weight: 600; color: var(--primary); font-size: 1.5rem;">Брони</div>
+                        <div class="text-muted small">Мои бронирования</div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Быстрые действия -->
+    <div class="card tour-card mb-3">
+        <div class="card-body p-3">
+            <h5 class="mb-3" style="font-weight: 600;">Быстрые действия</h5>
+            <div class="d-flex flex-wrap gap-2">
+                <a asp-controller="Tours" asp-action="Index" class="btn btn-outline-primary btn-sm">Поиск туров</a>
+                <a asp-controller="Hotels" asp-action="Index" class="btn btn-outline-primary btn-sm">Отели</a>
+                <a asp-controller="Sights" asp-action="Index" class="btn btn-outline-primary btn-sm">Достопримечательности</a>
+                <a asp-controller="Chat" asp-action="Create" class="btn btn-outline-primary btn-sm">Написать в чат</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Последние избранные туры -->
+    @if (ViewBag.RecentFavorites != null && ((IEnumerable<TravelGuide.Models.Entities.FavoriteTour>)ViewBag.RecentFavorites).Any())
+    {
+        <div class="card tour-card">
+            <div class="card-body p-3">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0" style="font-weight: 600;">Последние избранные</h5>
+                    <a asp-controller="Favorites" asp-action="Index" class="btn btn-sm btn-outline-primary">Все</a>
+                </div>
+                <div class="row g-2">
+                    @foreach (var fav in (IEnumerable<TravelGuide.Models.Entities.FavoriteTour>)ViewBag.RecentFavorites)
+                    {
+                        <div class="col-md-6 col-lg-4">
+                            <div class="d-flex align-items-center p-2 rounded-3" style="background: var(--bg-light);">
+                                <div class="flex-grow-1 min-width-0">
+                                    <a asp-controller="Tours" asp-action="Details" asp-route-id="@fav.TourId" class="text-decoration-none">
+                                        <strong class="d-block text-truncate small" style="color: var(--text-dark);">@fav.Tour?.Name</strong>
+                                    </a>
+                                    <small class="text-muted">@fav.Tour?.Country?.Name</small>
+                                    <div class="small" style="font-weight: 600; color: var(--primary);">@fav.Tour?.Price.ToString("N0") ₽</div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
 </div>
 
 @section Scripts {
@@ -237,7 +204,8 @@
                         const img = document.createElement('img');
                         img.src = result.avatarUrl + '?t=' + Date.now();
                         img.alt = 'Avatar';
-                        img.className = 'avatar-img';
+                        img.className = 'w-100 h-100 rounded-circle';
+                        img.style.objectFit = 'cover';
                         img.id = 'avatarImage';
                         container.insertBefore(img, container.firstChild);
                     }

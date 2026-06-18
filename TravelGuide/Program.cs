@@ -19,6 +19,7 @@ builder.Services.AddDbContext<TravelGuideContext>(options =>
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IChatService, ChatService>();
+builder.Services.AddScoped<ReportService>();
 
 // Add session support
 builder.Services.AddDistributedMemoryCache();
@@ -85,6 +86,30 @@ using (var scope = app.Services.CreateScope())
         context.Users.Add(admin);
         context.SaveChanges();
         Console.WriteLine("Создан администратор: admin@admin.com / admin123");
+    }
+    
+    // Находим менеджера и обновляем пароль
+    var manager = context.Users.FirstOrDefault(u => u.Role == UserRole.Manager);
+    if (manager != null)
+    {
+        manager.PasswordHash = BCrypt.Net.BCrypt.HashPassword("manager123");
+        context.SaveChanges();
+        Console.WriteLine($"Пароль менеджера обновлён: {manager.Email} / manager123");
+    }
+    else
+    {
+        // Создаём менеджера если его нет
+        manager = new User
+        {
+            FullName = "Менеджер",
+            Email = "manager@travelguide.com",
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword("manager123"),
+            Role = UserRole.Manager,
+            RegistrationDate = DateTime.Now
+        };
+        context.Users.Add(manager);
+        context.SaveChanges();
+        Console.WriteLine("Создан менеджер: manager@travelguide.com / manager123");
     }
 }
 

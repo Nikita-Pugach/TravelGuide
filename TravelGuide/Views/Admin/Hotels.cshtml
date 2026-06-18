@@ -57,10 +57,10 @@
                                 <td><span class="badge bg-info">@hotel.MealType</span></td>
                                 <td>@(hotel.PricePerNight?.ToString("N0") ?? "-") ₽</td>
                                 <td>
-                                    <a asp-action="EditHotel" asp-route-id="@hotel.Id" class="btn btn-sm btn-outline-primary">✏️</a>
+                                    <a asp-action="EditHotel" asp-route-id="@hotel.Id" class="btn btn-sm btn-outline-primary">Изм.</a>
                                     <form asp-action="DeleteHotel" asp-route-id="@hotel.Id" method="post" class="d-inline" onsubmit="return confirm('Удалить отель?')">
                                         @Html.AntiForgeryToken()
-                                        <button type="submit" class="btn btn-sm btn-outline-danger">🗑️</button>
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Удал.</button>
                                     </form>
                                 </td>
                             </tr>

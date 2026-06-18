@@ -42,7 +42,7 @@
                                     }
                                     else
                                     {
-                                        <div class="bg-light d-flex align-items-center justify-content-center" style="width: 60px; height: 40px; border-radius: 4px;">🏛️</div>
+                                        <div class="bg-light d-flex align-items-center justify-content-center" style="width: 60px; height: 40px; border-radius: 4px; border: 1px solid #dee2e6;"><span class="text-muted small">Нет</span></div>
                                     }
                                 </td>
                                 <td>@sight.Name</td>
@@ -50,10 +50,10 @@
                                 <td><span class="badge bg-secondary">@sight.Type</span></td>
                                 <td>@(sight.Address ?? "-")</td>
                                 <td>
-                                    <a asp-action="EditSight" asp-route-id="@sight.Id" class="btn btn-sm btn-outline-primary">✏️</a>
+                                    <a asp-action="EditSight" asp-route-id="@sight.Id" class="btn btn-sm btn-outline-primary">Изм.</a>
                                     <form asp-action="DeleteSight" asp-route-id="@sight.Id" method="post" class="d-inline" onsubmit="return confirm('Удалить достопримечательность?')">
                                         @Html.AntiForgeryToken()
-                                        <button type="submit" class="btn btn-sm btn-outline-danger">🗑️</button>
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Удал.</button>
                                     </form>
                                 </td>
                             </tr>

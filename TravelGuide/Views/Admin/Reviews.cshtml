@@ -6,7 +6,7 @@
 
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>⏳ Модерация отзывов</h2>
+        <h2>Модерация отзывов</h2>
         <a asp-action="Index" class="btn btn-secondary">← Назад</a>
     </div>
     
@@ -16,7 +16,7 @@
             Все
         </a>
         <a asp-action="Reviews" asp-route-status="Pending" class="btn @(ViewBag.CurrentStatus?.ToString() == "Pending" ? "btn-warning" : "btn-outline-warning")">
-            ⏳ На модерации
+            На модерации
         </a>
         <a asp-action="Reviews" asp-route-status="Approved" class="btn @(ViewBag.CurrentStatus?.ToString() == "Approved" ? "btn-success" : "btn-outline-success")">
             ✓ Опубликованные
@@ -64,15 +64,15 @@
                             <td>
                                 @if (review.Tour != null)
                                 {
-                                    <span class="badge bg-primary">🗺️ Тур: @review.Tour.Name</span>
+                                    <span class="badge bg-primary">Тур: @review.Tour.Name</span>
                                 }
                                 else if (review.Hotel != null)
                                 {
-                                    <span class="badge bg-info">🏨 Отель: @review.Hotel.Name</span>
+                                    <span class="badge bg-info">Отель: @review.Hotel.Name</span>
                                 }
                                 else if (review.Sight != null)
                                 {
-                                    <span class="badge bg-secondary">🏛️ Достопр.: @review.Sight.Name</span>
+                                    <span class="badge bg-secondary">Достопр.: @review.Sight.Name</span>
                                 }
                             </td>
                             <td>
@@ -90,7 +90,7 @@
                                 @switch (review.Status)
                                 {
                                     case ReviewStatus.Pending:
-                                        <span class="badge bg-warning text-dark">⏳ На модерации</span>
+                                        <span class="badge bg-warning text-dark">На модерации</span>
                                         break;
                                     case ReviewStatus.Approved:
                                         <span class="badge bg-success">✓ Опубликован</span>

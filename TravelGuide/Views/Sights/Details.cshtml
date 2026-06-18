@@ -5,224 +5,493 @@
         ? Model.Reviews.Average(r => r.Rating) 
         : 0;
     var reviewCount = Model.Reviews?.Count ?? 0;
+    var hasCoords = Model.Latitude.HasValue && Model.Longitude.HasValue;
+    var approvedReviews = Model.Reviews?.Where(r => r.Status == ReviewStatus.Approved).OrderByDescending(r => r.CreatedAt).ToList() ?? new List<Review>();
 }
 
-<div class="container py-4">
-    <nav aria-label="breadcrumb" class="mb-3">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a asp-action="Index">Достопримечательности</a></li>
-            <li class="breadcrumb-item active">@Model.Name</li>
-        </ol>
-    </nav>
-    
-    <div class="row g-4">
-        <div class="col-lg-8">
-            <!-- Главное фото -->
-            <div class="detail-card mb-4">
-                @if (!string.IsNullOrEmpty(Model.PhotoUrl))
+<style>
+    .tour-hero {
+        position: relative;
+        height: 60vh;
+        min-height: 400px;
+        max-height: 600px;
+        background: linear-gradient(135deg, var(--primary) 0%, #5ba4e5 100%);
+        overflow: hidden;
+    }
+    .tour-hero-bg {
+        position: absolute;
+        inset: 0;
+        background-size: cover;
+        background-position: center;
+        filter: brightness(0.6);
+        transition: transform 0.3s ease;
+    }
+    .tour-hero:hover .tour-hero-bg {
+        transform: scale(1.02);
+    }
+    .tour-hero-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.5) 100%);
+    }
+    .tour-hero-content {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 3rem;
+        color: white;
+    }
+    .tour-hero-content h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    .info-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        background: rgba(255,255,255,0.15);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.2);
+        padding: 0.4rem 0.9rem;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        color: white;
+        margin-right: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+    .booking-sticky {
+        position: sticky;
+        top: 80px;
+    }
+    .booking-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        border: none;
+        overflow: hidden;
+    }
+    .booking-card-header {
+        background: linear-gradient(135deg, var(--primary) 0%, #5ba4e5 100%);
+        color: white;
+        padding: 1.5rem;
+        text-align: center;
+    }
+    .booking-card-body {
+        padding: 1.5rem;
+    }
+    .section-divider {
+        border: none;
+        border-top: 1px solid var(--border-color);
+        margin: 2rem 0;
+    }
+    .detail-section {
+        margin-bottom: 2rem;
+    }
+    .detail-section-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .detail-section-title::before {
+        content: '';
+        width: 4px;
+        height: 20px;
+        background: var(--primary);
+        border-radius: 2px;
+    }
+    .rating-bar {
+        height: 8px;
+        background: var(--bg-gray);
+        border-radius: 4px;
+        overflow: hidden;
+        flex-grow: 1;
+    }
+    .rating-bar-fill {
+        height: 100%;
+        background: var(--warning);
+        border-radius: 4px;
+    }
+    .review-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.25rem;
+        border: 1px solid var(--border-color);
+        margin-bottom: 1rem;
+        transition: all 0.2s ease;
+    }
+    .review-card:hover {
+        box-shadow: var(--shadow);
+    }
+    .cta-button {
+        width: 100%;
+        padding: 1rem;
+        font-size: 1.05rem;
+        font-weight: 600;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+    }
+    .cta-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(74,144,217,0.4);
+    }
+    .fade-in {
+        animation: fadeIn 0.6s ease-out;
+    }
+    @@keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--text-muted);
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: color 0.2s ease;
+    }
+    .back-link:hover {
+        color: var(--primary);
+    }
+    .info-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid var(--border-color);
+    }
+    .info-item:last-child {
+        border-bottom: none;
+    }
+    .info-icon {
+        width: 40px;
+        height: 40px;
+        background: var(--primary-light);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+    .info-icon svg {
+        width: 18px;
+        height: 18px;
+        stroke: var(--primary);
+        fill: none;
+        stroke-width: 2;
+    }
+</style>
+
+<!-- Hero -->
+<section class="tour-hero">
+    @if (!string.IsNullOrEmpty(Model.PhotoUrl))
+    {
+        <div class="tour-hero-bg" style="background-image: url('@Model.PhotoUrl')"></div>
+    }
+    <div class="tour-hero-overlay"></div>
+    <div class="tour-hero-content">
+        <div class="container">
+            <a href="#" class="back-link text-white mb-3 d-inline-block" onclick="history.back(); return false;">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                Назад
+            </a>
+            <h1>@Model.Name</h1>
+            <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+                <span class="info-chip">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l8-4v18M13 21V3l6 4v14"/></svg>
+                    @Model.Type.GetDisplayName()
+                </span>
+                <span class="info-chip">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    @Model.City?.Name, @Model.City?.Country?.Name
+                </span>
+                @if (reviewCount > 0)
                 {
-                    <img src="@Model.PhotoUrl" class="img-fluid rounded-4 w-100" alt="@Model.Name" style="max-height: 450px; object-fit: cover;">
-                }
-                else
-                {
-                    <div class="bg-light rounded-4 d-flex align-items-center justify-content-center" style="height: 450px;">
-                        <span style="font-size: 6rem;">🏛️</span>
-                    </div>
+                    <span class="info-chip">
+                        <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                        @avgRating.ToString("0.0")
+                    </span>
                 }
             </div>
-            
-            <!-- Информация о достопримечательности -->
-            <div class="detail-card">
-                <div class="d-flex justify-content-between align-items-start mb-3">
-                    <div>
-                        <h1 class="h2 mb-2">@Model.Name</h1>
-                        <div class="d-flex align-items-center gap-3">
-                            <span class="badge bg-light text-dark fs-6">@Model.Type.GetDisplayName()</span>
-                            @if (reviewCount > 0)
-                            {
-                                <span class="star-rating fs-5">
-                                    @for (int i = 1; i <= 5; i++)
-                                    {
-                                        if (i <= Math.Round(avgRating))
-                                        {
-                                            <span>★</span>
-                                        }
-                                        else
-                                        {
-                                            <span class="empty">★</span>
-                                        }
-                                    }
-                                </span>
-                                <span class="text-muted">(@reviewCount отзывов)</span>
-                            }
-                        </div>
-                    </div>
+        </div>
+    </div>
+</section>
+
+<!-- Контент -->
+<div class="container py-5 fade-in">
+    <div class="row g-5">
+
+        <!-- Левая колонка -->
+        <div class="col-lg-8">
+
+            <!-- Описание -->
+            @if (!string.IsNullOrEmpty(Model.Description))
+            {
+                <div class="detail-section">
+                    <h3 class="detail-section-title">Описание</h3>
+                    <p style="line-height: 1.9; color: var(--text-dark); font-size: 1.05rem;">@Model.Description</p>
                 </div>
-                
-                <p class="text-muted mb-4">
-                    <i class="bi bi-geo-alt-fill text-primary"></i>
-                    @Model.City?.Name, @Model.City?.Country?.Name
-                </p>
-                
-                @if (!string.IsNullOrEmpty(Model.Description))
-                {
-                    <div class="mb-4">
-                        <h5>Описание</h5>
-                        <p class="text-muted">@Model.Description</p>
-                    </div>
-                }
-                
-                <div class="row g-3 mb-4">
-                    @if (!string.IsNullOrEmpty(Model.Address))
-                    {
-                        <div class="col-md-6">
-                            <div class="info-box">
-                                <span class="icon">📍</span>
+                <hr class="section-divider">
+            }
+
+            <!-- Информация -->
+            <div class="detail-section">
+                <h3 class="detail-section-title">Информация</h3>
+                <div class="card tour-card">
+                    <div class="card-body p-4">
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l8-4v18M13 21V3l6 4v14"/></svg>
+                            </div>
+                            <div>
+                                <div class="text-muted small">Тип</div>
+                                <div class="fw-semibold">@Model.Type.GetDisplayName()</div>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            </div>
+                            <div>
+                                <div class="text-muted small">Город</div>
+                                <div class="fw-semibold">@Model.City?.Name, @Model.City?.Country?.Name</div>
+                            </div>
+                        </div>
+                        @if (!string.IsNullOrEmpty(Model.Address))
+                        {
+                            <div class="info-item">
+                                <div class="info-icon">
+                                    <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                </div>
                                 <div>
-                                    <strong>Адрес</strong>
-                                    <p class="mb-0 text-muted">@Model.Address</p>
+                                    <div class="text-muted small">Адрес</div>
+                                    <div class="fw-semibold">@Model.Address</div>
                                 </div>
                             </div>
-                        </div>
-                    }
-                    <div class="col-md-6">
-                        <div class="info-box">
-                            <span class="icon">🏷️</span>
-                            <div>
-                                <strong>Тип</strong>
-                                <p class="mb-0 text-muted">@Model.Type.GetDisplayName()</p>
-                            </div>
-                        </div>
+                        }
                     </div>
                 </div>
             </div>
-            
+            <hr class="section-divider">
+
+            <!-- Карта -->
+            @if (hasCoords)
+            {
+                <div class="detail-section">
+                    <h3 class="detail-section-title">Расположение</h3>
+                    <div class="card tour-card">
+                        <div class="card-body p-3">
+                            <div id="detailMap" style="height:400px;border-radius:12px;overflow:hidden"></div>
+                        </div>
+                    </div>
+                </div>
+                <hr class="section-divider">
+            }
+
             <!-- Сообщения -->
             @if (TempData["ReviewSuccess"] != null)
             {
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    @TempData["ReviewSuccess"]
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
+                <div class="alert alert-success alert-dismissible fade show mb-4">@TempData["ReviewSuccess"]<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
             }
             @if (TempData["ReviewError"] != null)
             {
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    @TempData["ReviewError"]
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
+                <div class="alert alert-danger alert-dismissible fade show mb-4">@TempData["ReviewError"]<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
             }
 
             <!-- Отзывы -->
-            <div class="detail-card">
-                <h5 class="mb-4">💬 Отзывы</h5>
-                
+            <div class="detail-section">
+                <h3 class="detail-section-title">Отзывы</h3>
+
                 @if (Context.Session.GetInt32("UserId") != null)
                 {
-                    <div class="card bg-light border-0 mb-4">
-                        <div class="card-body">
-                            <h6 class="card-title">Оставить отзыв</h6>
+                    <div class="card tour-card mb-4">
+                        <div class="card-body p-4">
+                            <h6 class="mb-3 fw-semibold">Оставить отзыв</h6>
                             <form asp-action="AddReview" asp-controller="Sights" method="post">
                                 @Html.AntiForgeryToken()
                                 <input type="hidden" name="SightId" value="@Model.Id" />
-                                
                                 <div class="mb-3">
-                                    <label class="form-label">Оценка</label>
                                     <div class="star-rating-input">
                                         @for (int i = 5; i >= 1; i--)
                                         {
                                             <input type="radio" name="Rating" value="@i" id="star@(i)" @(i == 5 ? "checked" : "") class="d-none" />
-                                            <label for="star@(i)" class="star-label" title="@i звёзд">★</label>
+                                            <label for="star@(i)" class="star-label">★</label>
                                         }
                                     </div>
                                 </div>
-                                
-                                <div class="mb-3">
-                                    <label class="form-label">Ваш отзыв</label>
-                                    <textarea name="Text" class="form-control" rows="3" placeholder="Поделитесь впечатлениями..." required minlength="10"></textarea>
-                                </div>
-                                
-                                <button type="submit" class="btn btn-primary">Отправить отзыв</button>
+                                <textarea name="Text" class="form-control mb-3" rows="3" placeholder="Поделитесь впечатлениями..." required minlength="10"></textarea>
+                                <button type="submit" class="btn btn-primary">Отправить</button>
                             </form>
                         </div>
                     </div>
                 }
                 else
                 {
-                    <div class="alert alert-info mb-4">
-                        <a asp-controller="Account" asp-action="Login" class="text-decoration-none">Войдите</a>, чтобы оставить отзыв
+                    <div class="card tour-card mb-4">
+                        <div class="card-body p-4 text-center">
+                            <p class="mb-2 text-muted">Хотите оставить отзыв?</p>
+                            <a asp-controller="Account" asp-action="Login" class="btn btn-outline-primary">Войдите</a>
+                        </div>
                     </div>
                 }
-                
-                @if (Model.Reviews == null || !Model.Reviews.Any())
+
+                @if (approvedReviews.Any())
                 {
-                    <p class="text-muted text-center py-4">Отзывов пока нет. Будьте первым!</p>
+                    <!-- Средний рейтинг -->
+                    <div class="card tour-card mb-4">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center gap-4">
+                                <div class="text-center">
+                                    <div style="font-size:3rem;font-weight:700;color:var(--primary);line-height:1">@avgRating.ToString("0.0")</div>
+                                    <div class="text-muted small">из 5</div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    @for (int i = 5; i >= 1; i--)
+                                    {
+                                        var count = approvedReviews.Count(r => r.Rating == i);
+                                        var pct = approvedReviews.Count > 0 ? (double)count / approvedReviews.Count * 100 : 0;
+                                        <div class="d-flex align-items-center gap-2 mb-1">
+                                            <span class="small" style="width:12px;color:var(--warning)">★</span>
+                                            <span class="small text-muted" style="width:8px">@i</span>
+                                            <div class="rating-bar">
+                                                <div class="rating-bar-fill" style="width:@pct%"></div>
+                                            </div>
+                                            <span class="small text-muted" style="width:24px;text-align:right">@count</span>
+                                        </div>
+                                    }
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-muted small">@approvedReviews.Count</div>
+                                    <div class="text-muted small">отзывов</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                @if (!approvedReviews.Any())
+                {
+                    <div class="text-center py-5 text-muted">
+                        <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" class="mb-3" style="opacity:0.3"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+                        <p>Отзывов пока нет. Будьте первым!</p>
+                    </div>
                 }
                 else
                 {
-                    @foreach (var review in Model.Reviews.OrderByDescending(r => r.CreatedAt))
+                    @foreach (var review in approvedReviews)
                     {
-                        <div class="review-item">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <div class="d-flex align-items-center gap-2">
-                                    @if (!string.IsNullOrEmpty(review.User?.AvatarUrl))
-                                    {
-                                        <img src="@review.User.AvatarUrl" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;" alt="Avatar">
-                                    }
-                                    else
-                                    {
-                                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                                            @(review.User?.FullName?.FirstOrDefault() ?? '?')
-                                        </div>
-                                    }
-                                    <div>
-                                        <strong>@review.User?.FullName</strong>
-                                        <div class="star-rating small">
-                                            @for (int i = 1; i <= 5; i++)
-                                            {
-                                                <span class="@(i <= review.Rating ? "" : "empty")">★</span>
-                                            }
-                                        </div>
+                        <div class="review-card">
+                            <div class="d-flex gap-3">
+                                @if (!string.IsNullOrEmpty(review.User?.AvatarUrl))
+                                {
+                                    <img src="@review.User.AvatarUrl" class="rounded-circle flex-shrink-0" style="width:44px;height:44px;object-fit:cover" />
+                                }
+                                else
+                                {
+                                    <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width:44px;height:44px;background:linear-gradient(135deg,var(--primary),#5ba4e5);color:white;font-size:.9rem;font-weight:600">
+                                        @(review.User?.FullName?.FirstOrDefault() ?? '?')
                                     </div>
+                                }
+                                <div class="min-width-0 flex-grow-1">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <strong style="color:var(--text-dark)">@review.User?.FullName</strong>
+                                        <small class="text-muted">@review.CreatedAt.ToString("dd.MM.yyyy")</small>
+                                    </div>
+                                    <div class="mb-2">
+                                        @for (int i = 1; i <= 5; i++)
+                                        {
+                                            <span style="color:@(i <= review.Rating ? "var(--warning)" : "var(--text-light)");font-size:.9rem">★</span>
+                                        }
+                                    </div>
+                                    <p class="mb-0" style="line-height:1.7;">@review.Text</p>
                                 </div>
-                                <small class="text-muted">@review.CreatedAt.ToString("dd.MM.yyyy")</small>
                             </div>
-                            <p class="mt-2 mb-0">@review.Text</p>
                         </div>
                     }
                 }
             </div>
+
         </div>
-        
+
+        <!-- Правая колонка -->
         <div class="col-lg-4">
-            <!-- Боковая панель -->
-            <div class="detail-card mb-4">
-                <h5 class="mb-3">ℹ️ Информация</h5>
-                <ul class="list-unstyled mb-0">
-                    <li class="d-flex justify-content-between py-2 border-bottom">
-                        <span class="text-muted">Тип</span>
-                        <span class="badge bg-light text-dark">@Model.Type.GetDisplayName()</span>
-                    </li>
-                    <li class="d-flex justify-content-between py-2 border-bottom">
-                        <span class="text-muted">Город</span>
-                        <span>@Model.City?.Name</span>
-                    </li>
-                    <li class="d-flex justify-content-between py-2">
-                        <span class="text-muted">Страна</span>
-                        <span>@Model.City?.Country?.Name</span>
-                    </li>
-                </ul>
-            </div>
-            
-            <div class="detail-card">
-                <a asp-action="Index" class="btn btn-outline-primary w-100 mb-3">← К списку достопримечательностей</a>
-                @if (Context.Session.GetInt32("UserId") != null)
-                {
-                    <a asp-controller="Chat" asp-action="Create" asp-route-sightId="@Model.Id" class="btn btn-primary w-100">
-                        Задать вопрос
+            <div class="booking-sticky">
+                <div class="booking-card mb-4">
+                    <div class="booking-card-header">
+                        <div style="font-size:1.5rem;font-weight:700;">@Model.Name</div>
+                        @if (reviewCount > 0)
+                        {
+                            <div class="mt-2">
+                                <span class="text-warning">★</span>
+                                <strong>@avgRating.ToString("0.0")</strong>
+                                <span style="opacity:0.8;font-size:0.85rem;">(@reviewCount)</span>
+                            </div>
+                        }
+                    </div>
+                    <div class="booking-card-body">
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between py-2" style="border-bottom:1px solid var(--border-color)">
+                                <span class="text-muted small">Тип</span>
+                                <span class="fw-semibold small">@Model.Type.GetDisplayName()</span>
+                            </div>
+                            <div class="d-flex justify-content-between py-2" style="border-bottom:1px solid var(--border-color)">
+                                <span class="text-muted small">Город</span>
+                                <span class="fw-semibold small">@Model.City?.Name</span>
+                            </div>
+                            <div class="d-flex justify-content-between py-2">
+                                <span class="text-muted small">Страна</span>
+                                <span class="fw-semibold small">@Model.City?.Country?.Name</span>
+                            </div>
+                        </div>
+
+                        @if (Context.Session.GetInt32("UserId") != null)
+                        {
+                            <a asp-controller="Chat" asp-action="Create" asp-route-sightId="@Model.Id" class="btn btn-primary cta-button">
+                                Задать вопрос
+                            </a>
+                        }
+                        else
+                        {
+                            <a asp-controller="Account" asp-action="Login" class="btn btn-primary cta-button">
+                                Войдите для связи
+                            </a>
+                        }
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <a asp-action="Index" class="back-link">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        Ко всем местам
                     </a>
-                }
+                </div>
             </div>
         </div>
+
     </div>
 </div>
+
+@section Scripts {
+    @if (hasCoords)
+    {
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+        <script>
+            (function() {
+                var lat = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Latitude));
+                var lng = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Longitude));
+                var name = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Name));
+                var map = L.map('detailMap').setView([lat, lng], 14);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution:'© OpenStreetMap'}).addTo(map);
+                L.marker([lat, lng]).bindPopup('<b>' + name + '</b>').addTo(map);
+            })();
+        </script>
+    }
+}
