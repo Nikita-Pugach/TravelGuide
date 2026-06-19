@@ -3,53 +3,53 @@
     ViewData["Title"] = "Управление городами";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>Управление городами</h2>
-    <a asp-action="CreateCity" class="btn btn-primary">Добавить город</a>
-</div>
-
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
-}
-
-<div class="table-responsive">
-    <table class="table table-hover">
-        <thead class="table-light">
-            <tr>
-                <th>Город</th>
-                <th>Страна</th>
-                <th>Отели</th>
-                <th>Достопримечательности</th>
-                <th>Действия</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var city in Model)
-            {
-                <tr>
-                    <td><strong>@city.Name</strong></td>
-                    <td>@city.Country?.GetFlag() @city.Country?.Name</td>
-                    <td>@(city.Hotels?.Count ?? 0)</td>
-                    <td>@(city.Sights?.Count ?? 0)</td>
-                    <td>
-                        <div class="btn-group btn-group-sm">
-                            <a asp-action="EditCity" asp-route-id="@city.Id" class="btn btn-outline-primary">Изм.</a>
-                            <form asp-action="DeleteCity" asp-route-id="@city.Id" method="post" style="display: inline;">
-                                <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Удалить город?')">Удал.</button>
-                            </form>
-                        </div>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
-
-@if (!Model.Any())
-{
-    <div class="text-center py-5">
-        <p class="text-muted">Города не найдены</p>
-        <a asp-action="CreateCity" class="btn btn-primary">Добавить город</a>
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Управление городами</h2>
+        <a asp-action="CreateCity" class="btn btn-primary">+ Добавить город</a>
     </div>
-}
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="card shadow">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Город</th>
+                            <th>Страна</th>
+                            <th>Отели</th>
+                            <th>Достопримечательности</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var city in Model)
+                        {
+                            <tr>
+                                <td><strong>@city.Name</strong></td>
+                                <td>@city.Country?.GetFlag() @city.Country?.Name</td>
+                                <td>@(city.Hotels?.Count ?? 0)</td>
+                                <td>@(city.Sights?.Count ?? 0)</td>
+                                <td>
+                                    <a asp-action="EditCity" asp-route-id="@city.Id" class="btn btn-sm btn-outline-primary">Изм.</a>
+                                    <form asp-action="DeleteCity" asp-route-id="@city.Id" method="post" class="d-inline" onsubmit="return confirm('Удалить город?')">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Удал.</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
