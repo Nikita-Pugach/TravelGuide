@@ -41,7 +41,8 @@ public class Country : BaseEntity
     /// </summary>
     public string GetFlag()
     {
-        return Name?.ToLower() switch
+        var name = Name.ToLower();
+        return name switch
         {
             var n when n.Contains("россия") || n.Contains("russia") => "🇷🇺",
             var n when n.Contains("турция") || n.Contains("turkey") => "🇹🇷",
