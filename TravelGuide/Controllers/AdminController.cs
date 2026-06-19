@@ -276,6 +276,8 @@ public class AdminController : Controller
 
         var cities = await _context.Cities
             .Include(c => c.Country)
+            .Include(c => c.Hotels)
+            .Include(c => c.Sights)
             .OrderBy(c => c.Name)
             .ToListAsync();
 
