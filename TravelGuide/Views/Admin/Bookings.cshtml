@@ -1,101 +1,126 @@
 @model IEnumerable<TravelGuide.ViewModels.BookingManageViewModel>
+@using TravelGuide.Models.Entities
 
 @{
     ViewData["Title"] = "Управление заявками на бронирование";
 }
 
-<div class="container py-4">
+<div class="container">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Заявки на бронирование</h2>
-        <div>
-            <a asp-action="Bookings" class="btn @(ViewBag.CurrentStatus == null ? "btn-primary" : "btn-outline-primary")">Все</a>
-            <a asp-action="Bookings" asp-route-status="New" class="btn @(ViewBag.CurrentStatus?.ToString() == "New" ? "btn-warning" : "btn-outline-warning")">Новые</a>
-            <a asp-action="Bookings" asp-route-status="Confirmed" class="btn @(ViewBag.CurrentStatus?.ToString() == "Confirmed" ? "btn-success" : "btn-outline-success")">Подтверждённые</a>
-            <a asp-action="Bookings" asp-route-status="Cancelled" class="btn @(ViewBag.CurrentStatus?.ToString() == "Cancelled" ? "btn-danger" : "btn-outline-danger")">Отменённые</a>
-        </div>
+        <a asp-action="Index" class="btn btn-secondary">Назад</a>
     </div>
-
+    
+    <!-- Фильтры -->
+    <div class="d-flex flex-wrap gap-2 mb-4">
+        <a asp-action="Bookings" class="btn @(ViewBag.CurrentStatus == null ? "btn-primary" : "btn-outline-primary")">Все</a>
+        <a asp-action="Bookings" asp-route-status="New" class="btn @(ViewBag.CurrentStatus?.ToString() == "New" ? "btn-warning" : "btn-outline-warning")">Новые</a>
+        <a asp-action="Bookings" asp-route-status="Confirmed" class="btn @(ViewBag.CurrentStatus?.ToString() == "Confirmed" ? "btn-success" : "btn-outline-success")">Подтверждённые</a>
+        <a asp-action="Bookings" asp-route-status="Cancelled" class="btn @(ViewBag.CurrentStatus?.ToString() == "Cancelled" ? "btn-danger" : "btn-outline-danger")">Отменённые</a>
+    </div>
+    
     @if (TempData["SuccessMessage"] != null)
     {
-        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
     }
-
+    
     @if (!Model.Any())
     {
         <div class="text-center py-5">
-            <h4 class="text-muted">Заявок нет</h4>
+            <p class="text-muted">Заявок нет</p>
         </div>
     }
     else
     {
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead class="table-light">
-                    <tr>
-                        <th>Тур</th>
-                        <th>Клиент</th>
-                        <th>Дата тура</th>
-                        <th>Гостей</th>
-                        <th>Сумма</th>
-                        <th>Статус</th>
-                        <th>Создана</th>
-                        <th>Действия</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var b in Model)
-                    {
-                        <tr>
-                            <td>
-                                <div class="d-flex align-items-center">
-                                    @if (!string.IsNullOrEmpty(b.TourPhotoUrl))
-                                    {
-                                        <img src="@b.TourPhotoUrl" class="rounded me-2" style="width: 40px; height: 40px; object-fit: cover;">
-                                    }
-                                    <div>
-                                        <strong>@b.TourName</strong><br>
-                                        <small class="text-muted">@b.CountryName</small>
-                                    </div>
+        <div class="row g-4">
+            @foreach (var b in Model)
+            {
+                var statusBadgeClass = b.Status switch
+                {
+                    BookingStatus.New => "bg-warning text-dark",
+                    BookingStatus.Confirmed => "bg-success",
+                    BookingStatus.Cancelled => "bg-danger",
+                    _ => "bg-secondary"
+                };
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 tour-card border-0">
+                        @if (!string.IsNullOrEmpty(b.TourPhotoUrl))
+                        {
+                            <img src="@b.TourPhotoUrl" class="card-img-top" alt="@b.TourName" style="height: 160px; object-fit: cover; border-radius: 12px 12px 0 0;">
+                        }
+                        else
+                        {
+                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 160px; border-radius: 12px 12px 0 0;">
+                                <span class="text-muted">Нет фото</span>
+                            </div>
+                        }
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h6 class="card-title mb-0 text-truncate">@b.TourName</h6>
+                                <span class="badge @statusBadgeClass ms-2">@b.StatusText</span>
+                            </div>
+                            <p class="text-muted small mb-2">@b.CountryName</p>
+                            
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="avatar-circle me-2" style="width: 36px; height: 36px; font-size: 0.8rem;">
+                                    <span class="avatar-initials">@(b.UserFullName.Length >= 2 ? b.UserFullName.Substring(0, 2).ToUpper() : "?")</span>
                                 </div>
-                            </td>
-                            <td>
-                                <strong>@b.UserFullName</strong><br>
-                                <small class="text-muted">@b.UserEmail</small><br>
-                                <small class="text-muted">@b.UserPhone</small>
-                            </td>
-                            <td>@b.BookingDate.ToString("dd.MM.yyyy")</td>
-                            <td>@b.GuestsCount</td>
-                            <td><strong class="text-primary">@b.TotalPrice.ToString("N0") ₽</strong></td>
-                            <td><span class="badge bg-@b.StatusClass">@b.StatusText</span></td>
-                            <td>
-                                @b.CreatedAt.ToString("dd.MM.yy HH:mm")
+                                <div>
+                                    <div class="small fw-medium">@b.UserFullName</div>
+                                    <div class="text-muted" style="font-size: 0.75rem;">@b.UserPhone</div>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="price-tag">@b.TotalPrice.ToString("N0") &#8381;</span>
+                                <span class="duration-badge">@b.GuestsCount гостей</span>
+                            </div>
+                            
+                            <div class="text-muted small">
+                                <div>Дата тура: @b.BookingDate.ToString("dd.MM.yyyy")</div>
+                                <div>Создана: @b.CreatedAt.ToString("dd.MM.yy HH:mm")</div>
                                 @if (b.ProcessedAt.HasValue)
                                 {
-                                    <br><small class="text-muted">обработал: @b.ProcessedByUserName</small>
+                                    <div>Обработал: @b.ProcessedByUserName</div>
                                 }
-                            </td>
-                            <td class="text-nowrap">
-                                @if (b.Status == TravelGuide.Models.Entities.BookingStatus.New)
-                                {
-                                    <form asp-action="ConfirmBooking" asp-route-id="@b.Id" method="post" class="d-inline">
+                            </div>
+                        </div>
+                        <div class="card-footer bg-white border-0 pt-0">
+                            @if (b.Status == BookingStatus.New)
+                            {
+                                <div class="d-flex gap-2">
+                                    <form asp-action="ConfirmBooking" asp-route-id="@b.Id" method="post" class="flex-grow-1">
                                         @Html.AntiForgeryToken()
                                         <input type="hidden" name="managerNotes" value="">
-                                        <button type="submit" class="btn btn-success btn-sm">Подтвердить</button>
+                                        <button type="submit" class="btn btn-success btn-sm w-100">Подтвердить</button>
                                     </form>
-                                }
-                                @if (b.Status != TravelGuide.Models.Entities.BookingStatus.Cancelled)
-                                {
-                                    <form asp-action="CancelBooking" asp-route-id="@b.Id" method="post" class="d-inline">
+                                    <form asp-action="CancelBooking" asp-route-id="@b.Id" method="post" class="flex-grow-1">
                                         @Html.AntiForgeryToken()
                                         <input type="hidden" name="managerNotes" value="">
-                                        <button type="submit" class="btn btn-danger btn-sm">Отменить</button>
+                                        <button type="submit" class="btn btn-danger btn-sm w-100">Отменить</button>
                                     </form>
-                                }
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+                                </div>
+                            }
+                            else if (b.Status == BookingStatus.Confirmed)
+                            {
+                                <form asp-action="CancelBooking" asp-route-id="@b.Id" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="managerNotes" value="">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm w-100">Отменить</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <span class="text-muted small d-block text-center py-1">Обработан</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
     }
 </div>
