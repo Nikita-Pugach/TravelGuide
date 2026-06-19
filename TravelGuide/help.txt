@@ -1,0 +1,50 @@
+TravelGuide - Каталог туров
+Курсовой проект, РСПО, Пугач Никита, Т-393, Колледж бизнеса и права
+Дедлайн: 22.06.2026
+
+Стек: ASP.NET Core MVC 9.0, EF Core 9.0, SQLite, Bootstrap 5, Leaflet.js, SignalR, BCrypt, ClosedXML, xUnit
+
+Учётки:
+- admin@travelguide.com / admin123 (Admin)
+- manager@travelguide.com / manager123 (Manager)
+- ivan@test.com / password123 (Tourist)
+- maria@test.com / password123 (Tourist)
+- alex@test.com / password123 (Tourist)
+
+Запуск: dotnet run --urls=http://localhost:5107
+Тесты: dotnet test (из папки Tests, 36 штук)
+БД пересоздать: удалить TravelGuide.db и запустить заново
+
+Сид-данные: 8 стран, 17 городов, 3 агентства, 20 отелей, 13 достопримечательностей, 11 туров, 5 пользователей, 13 отзывов, 3 бронирования, 7 избранных, 2 чата
+
+Правила:
+- Никаких эмодзи в UI
+- Никаких длинных тире (—) в текстах, использовать запятые или обычные тире
+- Кириллица везде, без китайских символов
+- Вся аутентификация на сессиях ( HttpContext.Session )
+- Role enum: Admin=1, Manager=2, Tourist=3
+
+Что сделано:
+- UI: hero-секции, sticky-сайдбар, Leaflet-карты, карточки туров/отелей/достопримечательностей
+- Сид-данные с координатами отелей для карт
+- Пагинация со стрелками (← →)
+- About, Privacy, 404 страницы
+- Reports: 5 отчётов, Excel-экспорт
+- Manager: туры, чаты, статистика
+- Admin: полный CRUD
+- SignalR чат
+- 36 unit-тестов
+- .gitignore добавлен
+
+Файлы проекта:
+- Data/SeedData.cs - сид-данные
+- Services/AccountService.cs - авторизация
+- Services/ChatService.cs - чат
+- Services/ReportService.cs - отчёты
+- Controllers/AccountController.cs - логин/регистрация
+- Controllers/ManagerController.cs - панель менеджера (session-based)
+- Controllers/AdminController.cs - панель админа
+- Views/Shared/_Layout.cshtml - основной layout
+- Views/Shared/_Pagination.cshtml - пагинация
+- wwwroot/css/site.css - стили
+- wwwroot/js/site.js - скрипты
