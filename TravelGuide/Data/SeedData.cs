@@ -308,7 +308,7 @@ public static class SeedData
         var messages = new List<Message>
         {
             new Message { ChatId = chat1.Id, SenderId = tourist1.Id, Text = "Здравствуйте! Подскажите, возможен ли ранний заезд в отель?", Timestamp = DateTime.Now.AddDays(-5), IsRead = true },
-            new Message { ChatId = chat1.Id, SenderId = tourist1.Id, Text = "И ещё — можно ли забронировать экскурсию заранее?", Timestamp = DateTime.Now.AddDays(-5).AddMinutes(1), IsRead = true },
+            new Message { ChatId = chat1.Id, SenderId = tourist1.Id, Text = "И ещё, можно ли забронировать экскурсию заранее?", Timestamp = DateTime.Now.AddDays(-5).AddMinutes(1), IsRead = true },
             new Message { ChatId = chat2.Id, SenderId = tourist2.Id, Text = "Добрый день! Хотела бы узнать про скидки для детей.", Timestamp = DateTime.Now.AddDays(-2), IsRead = true },
         };
 
