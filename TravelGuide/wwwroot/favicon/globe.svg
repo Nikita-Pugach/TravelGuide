@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="ocean" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4a90d9"/>
+      <stop offset="100%" style="stop-color:#357abd"/>
+    </linearGradient>
+    <linearGradient id="land" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#28a745"/>
+      <stop offset="100%" style="stop-color:#1e7e34"/>
+    </linearGradient>
+  </defs>
+  <circle cx="32" cy="32" r="30" fill="url(#ocean)" stroke="#2c5282" stroke-width="2"/>
+  <ellipse cx="32" cy="32" rx="30" ry="30" fill="none" stroke="#2c5282" stroke-width="1" opacity="0.3"/>
+  <path d="M 18 18 Q 22 15 28 18 Q 32 22 28 28 Q 22 32 18 28 Q 14 22 18 18 Z" fill="url(#land)"/>
+  <path d="M 35 20 Q 42 18 48 22 Q 52 28 48 35 Q 42 38 35 34 Q 30 28 35 20 Z" fill="url(#land)"/>
+  <path d="M 20 38 Q 28 36 35 40 Q 40 46 35 52 Q 28 56 22 52 Q 16 46 20 38 Z" fill="url(#land)"/>
+  <ellipse cx="32" cy="32" rx="30" ry="12" fill="none" stroke="#2c5282" stroke-width="1" opacity="0.2" transform="rotate(-23 32 32)"/>
+  <ellipse cx="32" cy="32" rx="30" ry="12" fill="none" stroke="#2c5282" stroke-width="1" opacity="0.2" transform="rotate(23 32 32)"/>
+</svg>
