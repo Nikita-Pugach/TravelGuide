@@ -341,9 +341,11 @@ namespace TravelGuide.Controllers
         public async Task<IActionResult> Chats(ChatStatus? status)
         {
             if (!IsManager()) return RedirectToAction("Login", "Account");
-            var chats = await _chatRepository.GetAllAsync();
+            var chats = await _context.Chats
+                .Include(c => c.User)
+                .ToListAsync();
 
-            // Подгружаем пользователей
+            // Подгружаем сообщения
             var chatIds = chats.Select(c => c.Id).ToList();
             var messages = await _context.Messages
                 .Where(m => chatIds.Contains(m.ChatId))
@@ -357,7 +359,7 @@ namespace TravelGuide.Controllers
 
             if (status.HasValue)
             {
-                chats = chats.Where(c => c.Status == status.Value);
+                chats = chats.Where(c => c.Status == status.Value).ToList();
             }
 
             chats = chats.OrderByDescending(c => c.StartTime).ToList();
