@@ -45,7 +45,7 @@
                 <tbody>
                     @foreach (var b in Model)
                     {
-                        <tr class="@(b.Status == TravelGuide.Models.Entities.BookingStatus.New ? "table-warning" : "")">
+                        <tr>
                             <td>
                                 <div class="d-flex align-items-center">
                                     @if (!string.IsNullOrEmpty(b.TourPhotoUrl))
@@ -74,13 +74,13 @@
                                     <br><small class="text-muted">обработал: @b.ProcessedByUserName</small>
                                 }
                             </td>
-                            <td>
+                            <td class="text-nowrap">
                                 @if (b.Status == TravelGuide.Models.Entities.BookingStatus.New)
                                 {
                                     <form asp-action="ConfirmBooking" asp-route-id="@b.Id" method="post" class="d-inline">
                                         @Html.AntiForgeryToken()
                                         <input type="hidden" name="managerNotes" value="">
-                                        <button type="submit" class="btn btn-success btn-sm">✓</button>
+                                        <button type="submit" class="btn btn-success btn-sm">Подтвердить</button>
                                     </form>
                                 }
                                 @if (b.Status != TravelGuide.Models.Entities.BookingStatus.Cancelled)
@@ -88,7 +88,7 @@
                                     <form asp-action="CancelBooking" asp-route-id="@b.Id" method="post" class="d-inline">
                                         @Html.AntiForgeryToken()
                                         <input type="hidden" name="managerNotes" value="">
-                                        <button type="submit" class="btn btn-danger btn-sm">✗</button>
+                                        <button type="submit" class="btn btn-danger btn-sm">Отменить</button>
                                     </form>
                                 }
                             </td>
