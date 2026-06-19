@@ -3,45 +3,55 @@
     ViewData["Title"] = "Статистика туров";
 }
 
-<!-- Hero Section -->
-<section class="hero-section text-center">
-    <div class="container position-relative">
-        <h1>Статистика туров</h1>
-        <p class="lead">Просмотры, отзывы и рейтинг</p>
-    </div>
-</section>
-
 <div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Статистика туров</h2>
+        <a asp-action="Index" class="btn btn-secondary">Назад</a>
+    </div>
+    
     @if (Model.Any())
     {
-        <div class="search-card mt-4 mb-4">
-            <div class="row text-center g-4">
-                <div class="col-md-3">
-                    <div class="fw-bold" style="font-size:2rem;color:var(--primary)">@Model.Count()</div>
-                    <div class="text-muted small">Всего туров</div>
+        <!-- Статистика -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-3">
+                <div class="card tour-card h-100">
+                    <div class="card-body text-center py-3">
+                        <div class="price-tag mb-1" style="font-size: 1.25rem;">@Model.Count()</div>
+                        <p class="text-muted mb-0 small">Всего туров</p>
+                    </div>
                 </div>
-                <div class="col-md-3" style="border-left:1px solid var(--border-color)">
-                    <div class="fw-bold" style="font-size:2rem;color:var(--primary)">@Model.Sum(s => s.ViewsCount)</div>
-                    <div class="text-muted small">Просмотров</div>
+            </div>
+            <div class="col-md-3">
+                <div class="card tour-card h-100">
+                    <div class="card-body text-center py-3">
+                        <div class="price-tag mb-1" style="font-size: 1.25rem;">@Model.Sum(s => s.ViewsCount)</div>
+                        <p class="text-muted mb-0 small">Просмотров</p>
+                    </div>
                 </div>
-                <div class="col-md-3" style="border-left:1px solid var(--border-color)">
-                    <div class="fw-bold" style="font-size:2rem;color:var(--primary)">@Model.Sum(s => s.ReviewsCount)</div>
-                    <div class="text-muted small">Отзывов</div>
+            </div>
+            <div class="col-md-3">
+                <div class="card tour-card h-100">
+                    <div class="card-body text-center py-3">
+                        <div class="price-tag mb-1" style="font-size: 1.25rem;">@Model.Sum(s => s.ReviewsCount)</div>
+                        <p class="text-muted mb-0 small">Отзывов</p>
+                    </div>
                 </div>
-                <div class="col-md-3" style="border-left:1px solid var(--border-color)">
-                    <div class="fw-bold" style="font-size:2rem;color:var(--primary)">@Model.Average(s => s.AverageRating).ToString("0.0")</div>
-                    <div class="text-muted small">Средний рейтинг</div>
+            </div>
+            <div class="col-md-3">
+                <div class="card tour-card h-100">
+                    <div class="card-body text-center py-3">
+                        <div class="price-tag mb-1" style="font-size: 1.25rem;">@Model.Average(s => s.AverageRating).ToString("0.0")</div>
+                        <p class="text-muted mb-0 small">Средний рейтинг</p>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <div class="card tour-card mb-5">
-            <div class="card-header">
-                <h5 class="mb-0">По турам</h5>
-            </div>
-            <div class="card-body p-0">
+        
+        <!-- Таблица -->
+        <div class="card shadow">
+            <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-hover mb-0">
+                    <table class="table table-hover">
                         <thead>
                             <tr>
                                 <th>Тур</th>
@@ -91,8 +101,8 @@
     }
     else
     {
-        <div class="text-center py-5 text-muted">
-            <p class="mb-3">Статистика пока пуста</p>
+        <div class="text-center py-5">
+            <p class="text-muted">Статистика пока пуста</p>
             <a asp-action="Tours" class="btn btn-primary">Управление турами</a>
         </div>
     }
