@@ -1,51 +1,53 @@
 @model IEnumerable<TravelGuide.Models.Entities.Tour>
+@using TravelGuide.Models.Entities
 @{
     ViewData["Title"] = "Управление турами";
 }
 
-<!-- Hero Section -->
-<section class="hero-section text-center">
-    <div class="container position-relative">
-        <h1>Управление турами</h1>
-        <p class="lead">Создание, редактирование и удаление туров</p>
-    </div>
-</section>
-
 <div class="container">
-    <!-- Поиск + кнопка -->
-    <div class="search-card mt-4 mb-4">
-        <div class="row align-items-center">
-            <div class="col-md-8">
-                <form method="get" class="d-flex gap-2">
-                    <input type="text" name="search" value="@ViewBag.Search" class="form-control" placeholder="Поиск по названию или описанию..." />
-                    <button type="submit" class="btn btn-primary flex-shrink-0">Найти</button>
-                    @if (!string.IsNullOrEmpty(ViewBag.Search as string))
-                    {
-                        <a asp-action="Tours" class="btn btn-outline-secondary flex-shrink-0">Сбросить</a>
-                    }
-                </form>
-            </div>
-            <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                <a asp-action="CreateTour" class="btn btn-primary">Добавить тур</a>
-            </div>
-        </div>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Управление турами</h2>
+        <a asp-action="CreateTour" class="btn btn-primary">+ Добавить тур</a>
     </div>
 
-    @if (!Model.Any())
+    @if (TempData["SuccessMessage"] != null)
     {
-        <div class="text-center py-5">
-            <svg width="64" height="64" fill="none" stroke="var(--text-light)" stroke-width="1.5" viewBox="0 0 24 24" class="mb-3"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-            <h3 class="fw-bold">Туры не найдены</h3>
-            <p class="text-muted mb-4">Добавьте первый тур для начала работы</p>
-            <a asp-action="CreateTour" class="btn btn-primary btn-lg px-5">Добавить тур</a>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     }
-    else
+
+    <!-- Поиск -->
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <form method="get" class="d-flex gap-2">
+                <input type="text" name="search" value="@ViewBag.Search" class="form-control" placeholder="Поиск по названию или описанию..." />
+                <button type="submit" class="btn btn-primary flex-shrink-0">Найти</button>
+                @if (!string.IsNullOrEmpty(ViewBag.Search as string))
+                {
+                    <a asp-action="Tours" class="btn btn-outline-secondary flex-shrink-0">Сбросить</a>
+                }
+            </form>
+        </div>
+    </div>
+
+    @if (Model.Any())
     {
-        <!-- Сетка туров -->
-        <div class="row g-4 mb-5">
+        <div class="row g-4">
             @foreach (var tour in Model)
             {
+                var badgeClass = tour.TourType switch
+                {
+                    TourType.Beach => "badge-beach",
+                    TourType.Excursion => "badge-excursion",
+                    TourType.Combined => "badge-combined",
+                    TourType.Health => "badge-health",
+                    TourType.Cruise => "badge-cruise",
+                    TourType.Adventure => "badge-adventure",
+                    _ => "bg-secondary"
+                };
+
                 <div class="col-md-6 col-lg-4">
                     <div class="card h-100 tour-card border-0">
                         @if (!string.IsNullOrEmpty(tour.PhotoUrl))
@@ -60,37 +62,31 @@
                         }
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-start mb-2">
-                                <h5 class="card-title mb-0 text-truncate" style="max-width:70%">@tour.Name</h5>
-                                @if (tour.StartDate.HasValue && tour.StartDate > DateTime.Now)
-                                {
-                                    <span class="badge" style="background:#d4edda;color:#155724;font-size:0.7rem;">Активен</span>
-                                }
-                                else if (tour.IsSeasonal)
-                                {
-                                    <span class="badge" style="background:#fff3cd;color:#856404;font-size:0.7rem;">Сезонный</span>
-                                }
-                                else
-                                {
-                                    <span class="badge" style="background:var(--bg-gray);color:var(--text-dark);font-size:0.7rem;">Обычный</span>
-                                }
+                                <h5 class="card-title text-truncate mb-0">@tour.Name</h5>
+                                <span class="badge @badgeClass ms-2">@tour.TourType.GetDisplayName()</span>
                             </div>
                             <p class="text-muted small mb-2">
-                                @tour.Country?.Name &middot; @tour.TourType.GetDisplayName()
+                                <span class="country-flag">@tour.Country?.GetFlag()</span>
+                                @tour.Country?.Name
                             </p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="price-tag">@tour.Price.ToString("N0") ₽</span>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="price-tag">@tour.Price.ToString("N0") &#8381;</span>
                                 <span class="duration-badge">@tour.Duration дн.</span>
                             </div>
+                            <p class="text-muted small mb-0">Создан: @tour.CreatedDate.ToString("dd.MM.yyyy")</p>
+                            @if (tour.IsSeasonal)
+                            {
+                                <span class="badge bg-info mt-2">Сезонный</span>
+                            }
                         </div>
                         <div class="card-footer bg-white border-0 pt-0">
                             <div class="d-flex gap-2">
-                                <a asp-controller="Tours" asp-action="Details" asp-route-id="@tour.Id" class="btn btn-outline-secondary btn-sm flex-grow-1">Просмотр</a>
-                                <a asp-action="EditTour" asp-route-id="@tour.Id" class="btn btn-outline-primary btn-sm flex-grow-1">Изменить</a>
-                                <form asp-action="DeleteTour" asp-route-id="@tour.Id" method="post" style="display:inline" onsubmit="return confirm('Удалить этот тур?')">
+                                <a asp-controller="Tours" asp-action="Details" asp-route-id="@tour.Id" class="btn btn-outline-secondary btn-sm flex-grow-1">Смотр.</a>
+                                <a asp-action="EditTour" asp-route-id="@tour.Id" class="btn btn-outline-primary btn-sm flex-grow-1">Изм.</a>
+                                <form asp-action="DeleteTour" asp-route-id="@tour.Id" method="post" class="d-inline flex-grow-1"
+                                      onsubmit="return confirm('Удалить тур @tour.Name?');">
                                     @Html.AntiForgeryToken()
-                                    <button type="submit" class="btn btn-outline-danger btn-sm" title="Удалить">
-                                        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                    </button>
+                                    <button type="submit" class="btn btn-outline-danger btn-sm w-100">Удал.</button>
                                 </form>
                             </div>
                         </div>
@@ -98,32 +94,12 @@
                 </div>
             }
         </div>
-
-        <!-- Пагинация -->
-        @if (ViewBag.TotalPages > 1)
-        {
-            <div class="d-flex justify-content-center mb-5">
-                <nav>
-                    <ul class="pagination">
-                        @if (ViewBag.CurrentPage > 1)
-                        {
-                            <li class="page-item"><a class="page-link" asp-action="Tours" asp-route-page="1" asp-route-search="@ViewBag.Search">&laquo;</a></li>
-                            <li class="page-item"><a class="page-link" asp-action="Tours" asp-route-page="@(ViewBag.CurrentPage - 1)" asp-route-search="@ViewBag.Search">&lsaquo;</a></li>
-                        }
-                        @for (int i = Math.Max(1, ViewBag.CurrentPage - 2); i <= Math.Min(ViewBag.TotalPages, ViewBag.CurrentPage + 2); i++)
-                        {
-                            <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
-                                <a class="page-link" asp-action="Tours" asp-route-page="@i" asp-route-search="@ViewBag.Search">@i</a>
-                            </li>
-                        }
-                        @if (ViewBag.CurrentPage < ViewBag.TotalPages)
-                        {
-                            <li class="page-item"><a class="page-link" asp-action="Tours" asp-route-page="@(ViewBag.CurrentPage + 1)" asp-route-search="@ViewBag.Search">&rsaquo;</a></li>
-                            <li class="page-item"><a class="page-link" asp-action="Tours" asp-route-page="@ViewBag.TotalPages" asp-route-search="@ViewBag.Search">&raquo;</a></li>
-                        }
-                    </ul>
-                </nav>
-            </div>
-        }
+    }
+    else
+    {
+        <div class="text-center py-5">
+            <p class="text-muted">Туры не найдены. Добавьте первый тур!</p>
+            <a asp-action="CreateTour" class="btn btn-primary">Добавить тур</a>
+        </div>
     }
 </div>
