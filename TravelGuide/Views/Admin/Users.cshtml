@@ -7,7 +7,7 @@
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Управление пользователями</h2>
-        <a asp-action="Index" class="btn btn-secondary">← Назад</a>
+        <a asp-action="Index" class="btn btn-secondary">Назад</a>
     </div>
     
     @if (TempData["SuccessMessage"] != null)
@@ -25,99 +25,129 @@
         </div>
     }
     
-    <div class="table-responsive">
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>ФИО</th>
-                    <th>Email</th>
-                    <th>Роль</th>
-                    <th>Агентство</th>
-                    <th>Регистрация</th>
-                    <th>Статус</th>
-                    <th>Действия</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var user in Model)
+    <!-- Статистика -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card tour-card h-100">
+                <div class="card-body text-center py-3">
+                    <div class="price-tag mb-1" style="font-size: 1.25rem;">@Model.Count()</div>
+                    <p class="text-muted mb-0 small">Всего</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card tour-card h-100">
+                <div class="card-body text-center py-3">
+                    <div class="price-tag mb-1" style="font-size: 1.25rem;">@Model.Count(u => !u.IsBlocked)</div>
+                    <p class="text-muted mb-0 small">Активных</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card tour-card h-100">
+                <div class="card-body text-center py-3">
+                    <div class="price-tag mb-1" style="font-size: 1.25rem;">@Model.Count(u => u.Role == UserRole.Admin)</div>
+                    <p class="text-muted mb-0 small">Администраторов</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card tour-card h-100">
+                <div class="card-body text-center py-3">
+                    <div class="price-tag mb-1" style="font-size: 1.25rem;">@Model.Count(u => u.Role == UserRole.Manager)</div>
+                    <p class="text-muted mb-0 small">Менеджеров</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    @if (Model.Any())
+    {
+        <div class="row g-4">
+            @foreach (var user in Model)
+            {
+                var roleBadgeClass = user.Role switch
                 {
-                    <tr class="@(user.IsBlocked ? "table-secondary" : "")">
-                        <td>@user.Id</td>
-                        <td>@user.FullName</td>
-                        <td>@user.Email</td>
-                        <td>
-                            @switch (user.Role)
-                            {
-                                case UserRole.Admin:
-                                    <span class="badge bg-danger">Администратор</span>
-                                    break;
-                                case UserRole.Manager:
-                                    <span class="badge bg-warning text-dark">Менеджер</span>
-                                    break;
-                                case UserRole.Tourist:
-                                    <span class="badge bg-primary">Турист</span>
-                                    break;
-                                default:
-                                    <span class="badge bg-secondary">Гость</span>
-                                    break;
-                            }
-                        </td>
-                        <td>@user.Agency?.Name</td>
-                        <td>@user.RegistrationDate.ToString("dd.MM.yyyy")</td>
-                        <td>
-                            @if (!user.IsBlocked)
-                            {
-                                <span class="badge bg-success">Активен</span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-secondary">Заблокирован</span>
-                            }
-                        </td>
-                        <td>
+                    UserRole.Admin => "bg-danger",
+                    UserRole.Manager => "bg-warning text-dark",
+                    UserRole.Tourist => "bg-primary",
+                    _ => "bg-secondary"
+                };
+                
+                var roleText = user.Role switch
+                {
+                    UserRole.Admin => "Администратор",
+                    UserRole.Manager => "Менеджер",
+                    UserRole.Tourist => "Турист",
+                    _ => "Гость"
+                };
+                
+                var initials = user.FullName.Length >= 2 
+                    ? user.FullName.Substring(0, 2).ToUpper() 
+                    : user.FullName.ToUpper();
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 tour-card border-0">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="avatar-circle me-3" style="width: 50px; height: 50px; font-size: 1.1rem;">
+                                    <span class="avatar-initials">@initials</span>
+                                </div>
+                                <div class="flex-grow-1 min-width-0">
+                                    <h6 class="mb-0 text-truncate">@user.FullName</h6>
+                                    <small class="text-muted text-truncate d-block">@user.Email</small>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                <span class="badge @roleBadgeClass">@roleText</span>
+                                @if (user.IsBlocked)
+                                {
+                                    <span class="badge bg-secondary">Заблокирован</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-success">Активен</span>
+                                }
+                            </div>
+                            
+                            <div class="text-muted small mb-2">
+                                @if (!string.IsNullOrEmpty(user.Agency?.Name))
+                                {
+                                    <div>Агентство: @user.Agency.Name</div>
+                                }
+                                <div>Регистрация: @user.RegistrationDate.ToString("dd.MM.yyyy")</div>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-white border-0 pt-0">
                             @if (user.Role != UserRole.Admin)
                             {
-                                <form asp-action="ToggleUserBlock" asp-route-id="@user.Id" method="post" class="d-inline">
+                                <form asp-action="ToggleUserBlock" asp-route-id="@user.Id" method="post">
                                     @Html.AntiForgeryToken()
                                     @if (!user.IsBlocked)
                                     {
-                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Заблокировать">&#128683;</button>
+                                        <button type="submit" class="btn btn-outline-danger btn-sm w-100">Заблокировать</button>
                                     }
                                     else
                                     {
-                                        <button type="submit" class="btn btn-sm btn-outline-success" title="Разблокировать">✓</button>
+                                        <button type="submit" class="btn btn-outline-success btn-sm w-100">Разблокировать</button>
                                     }
                                 </form>
                             }
                             else
                             {
-                                <span class="text-muted small">Нельзя</span>
+                                <span class="text-muted small d-block text-center py-1">Нельзя заблокировать</span>
                             }
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-    
-    <div class="card mt-4">
-        <div class="card-body">
-            <h6>Статистика:</h6>
-            <div class="row">
-                <div class="col-md-3">
-                    <p class="mb-0">Всего пользователей: <strong>@Model.Count()</strong></p>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-3">
-                    <p class="mb-0">Активных: <strong>@Model.Count(u => !u.IsBlocked)</strong></p>
-                </div>
-                <div class="col-md-3">
-                    <p class="mb-0">Администраторов: <strong>@Model.Count(u => u.Role == UserRole.Admin)</strong></p>
-                </div>
-                <div class="col-md-3">
-                    <p class="mb-0">Менеджеров: <strong>@Model.Count(u => u.Role == UserRole.Manager)</strong></p>
-                </div>
-            </div>
+            }
         </div>
-    </div>
+    }
+    else
+    {
+        <div class="text-center py-5">
+            <p class="text-muted">Пользователей нет</p>
+        </div>
+    }
 </div>
