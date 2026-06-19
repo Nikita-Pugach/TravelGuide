@@ -4,6 +4,8 @@ TravelGuide - Каталог туров
 
 Стек: ASP.NET Core MVC 9.0, EF Core 9.0, SQLite, Bootstrap 5, Leaflet.js, SignalR, BCrypt, ClosedXML, xUnit
 
+Коммиты: fix: исправления, feat: новые фичи, chore: техработка, docs: документация, refactor: рефакторинг
+
 Учётки:
 - admin@travelguide.com / admin123 (Admin)
 - manager@travelguide.com / manager123 (Manager)
