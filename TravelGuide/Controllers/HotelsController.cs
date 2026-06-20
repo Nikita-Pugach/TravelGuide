@@ -26,6 +26,8 @@ public class HotelsController : Controller
         string? sortBy,
         int page = 1)
     {
+        if (page < 1) page = 1;
+
         var hotels = _context.Hotels
             .Include(h => h.City)
                 .ThenInclude(c => c!.Country)
@@ -95,16 +97,23 @@ public class HotelsController : Controller
     {
         if (id == null) return NotFound();
 
-        var hotel = await _context.Hotels
-            .Include(h => h.City)
-                .ThenInclude(c => c!.Country)
-            .Include(h => h.Reviews!)
-                .ThenInclude(r => r.User)
-            .FirstOrDefaultAsync(h => h.Id == id);
+        try
+        {
+            var hotel = await _context.Hotels
+                .Include(h => h.City)
+                    .ThenInclude(c => c!.Country)
+                .Include(h => h.Reviews!)
+                    .ThenInclude(r => r.User)
+                .FirstOrDefaultAsync(h => h.Id == id);
 
-        if (hotel == null) return NotFound();
+            if (hotel == null) return NotFound();
 
-        return View(hotel);
+            return View(hotel);
+        }
+        catch (Exception)
+        {
+            return NotFound();
+        }
     }
 
     [HttpPost]
