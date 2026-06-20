@@ -16,6 +16,7 @@
                     </div>
 
                     <form asp-action="Create" method="post">
+                        @Html.AntiForgeryToken()
                         <div class="mb-3">
                             <label asp-for="FirstMessage" class="form-label">Ваше сообщение</label>
                             <textarea asp-for="FirstMessage" class="form-control" rows="4" 

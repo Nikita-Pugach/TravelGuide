@@ -806,7 +806,7 @@ public static class SeedData
         Console.WriteLine("  - 60 отелей, 68 достопримечательностей");
         Console.WriteLine("  - 20 туров");
         Console.WriteLine("  - 3 пользователя (tourist/test)");
-        Console.WriteLine("  - 13 отзывов, 3 бронирования, 7 избранных");
+        Console.WriteLine("  - 136 отзывов, 3 бронирования, 7 избранных");
         Console.WriteLine("  - 2 чата, 3 сообщения");
     }
 }

@@ -14,6 +14,7 @@
             
             <div class="auth-body">
                 <form asp-action="Login" method="post">
+                    @Html.AntiForgeryToken()
                     <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
                     
                     <div asp-validation-summary="ModelOnly" class="alert alert-danger alert-sm"></div>

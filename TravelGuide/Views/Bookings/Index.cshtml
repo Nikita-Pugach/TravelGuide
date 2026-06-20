@@ -64,6 +64,7 @@
                                 {
                                     <form asp-action="Cancel" asp-route-id="@booking.Id" method="post" 
                                           onsubmit="return confirm('Отменить заявку?')">
+                                        @Html.AntiForgeryToken()
                                         <button type="submit" class="btn btn-outline-danger btn-sm">Отменить</button>
                                     </form>
                                 }
