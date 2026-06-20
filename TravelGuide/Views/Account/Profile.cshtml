@@ -74,6 +74,7 @@
                 <!-- Кнопки -->
                 <div class="flex-shrink-0 d-flex gap-2">
                     <a asp-action="Edit" class="btn btn-primary btn-sm">Редактировать</a>
+                    <a asp-action="ChangePassword" class="btn btn-outline-primary btn-sm">Сменить пароль</a>
                     <form asp-action="Logout" method="post" class="d-inline">
                         @Html.AntiForgeryToken()
                         <button type="submit" class="btn btn-outline-secondary btn-sm">Выйти</button>
