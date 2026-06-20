@@ -201,6 +201,48 @@ public class AccountController : Controller
         return View(model);
     }
 
+    // GET: /Account/ChangePassword
+    [HttpGet]
+    public IActionResult ChangePassword()
+    {
+        var userId = HttpContext.Session.GetInt32("UserId");
+        if (userId == null)
+            return RedirectToAction("Login");
+
+        return View();
+    }
+
+    // POST: /Account/ChangePassword
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+    {
+        var userId = HttpContext.Session.GetInt32("UserId");
+        if (userId == null)
+            return RedirectToAction("Login");
+
+        if (!ModelState.IsValid)
+            return View(model);
+
+        var user = await _accountService.GetCurrentUserAsync(userId.Value);
+        if (user == null)
+            return RedirectToAction("Login");
+
+        // Проверяем текущий пароль
+        var isCurrentPasswordValid = await _accountService.AuthenticateAsync(user.Email, model.CurrentPassword);
+        if (isCurrentPasswordValid == null)
+        {
+            ModelState.AddModelError("CurrentPassword", "Неверный текущий пароль");
+            return View(model);
+        }
+
+        // Обновляем пароль
+        await _accountService.UpdatePasswordAsync(userId.Value, model.NewPassword);
+
+        TempData["SuccessMessage"] = "Пароль успешно изменен";
+        return RedirectToAction(nameof(Profile));
+    }
+
     // POST: /Account/UploadAvatar
     [HttpPost]
     [ValidateAntiForgeryToken]
