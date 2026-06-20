@@ -1,94 +1,77 @@
-<!-- Context: project-intelligence/technical | Priority: critical | Version: 2.2 | Updated: 2026-05-23 -->
+<!-- Context: project-intelligence/technical | Priority: critical | Version 1.0 | Updated: 2026-06-20 -->
 
-# Technical Domain
+# Technical Domain — TravelGuide
 
-**Purpose**: Технический стек, архитектурные принципы и стандарты разработки EJ.
-**Last Updated**: 2026-05-23
+**Purpose**: Технический стек, архитектура и стандарты разработки TravelGuide.
+**Last Updated**: 2026-06-20
 
 ## Quick Reference
-- **Update Triggers**: Смена стека | Новые архитектурные решения | Изменение стандартов
+- **Update Triggers**: Смена стека | Новые компоненты | Изменение стандартов
 - **Audience**: Разработчики, AI-агенты
-- **Ключевой принцип**: Простая надёжная система > ультрасовременная архитектура
 
 ## Primary Stack
+
 | Layer | Technology | Примечание |
 |-------|-----------|------------|
-| Frontend | React + Vite + TypeScript + Tailwind CSS | TanStack Table, Recharts |
-| Backend | Node.js + TypeScript + Express | Микросервисы, возможен modular monolith |
-| Database | PostgreSQL | Единая БД для всех сервисов |
-| Auth | JWT (access + refresh) | CAPTCHA, lockout, invite-flow |
-| Storage | MinIO (S3-совместимое) | Docker-том |
-| Cache/Pub-Sub | Redis | WebSocket, pub-sub |
-| Containerization | Docker Compose | Self-hosted, single-tenant |
-| Monitoring | JSON-логи, health checks | Graceful degradation |
+| Backend | ASP.NET Core MVC 9.0 (C#) | Контроллеры, Razor Views |
+| ORM | Entity Framework Core 9.0 | Include/ThenInclude для навигации |
+| Database | SQLite | TravelGuide.db, EnsureCreated() |
+| Auth | Сессии (HttpContext.Session) | Role enum: Admin=1, Manager=2, Tourist=3 |
+| Realtime | SignalR | Чат поддержки |
+| Maps | Leaflet.js | Интерактивные карты отелей/достопримечательностей |
+| CSS | Bootstrap 5 + CSS Variables | Кастомные стили в site.css |
+| Passwords | BCrypt.Net | Хеширование паролей |
+| Reports | ClosedXML | Excel-экспорт отчётов |
+| Testing | xUnit + Moq | 36 unit-тестов |
+| ORM Migrations | EnsureCreated() | Не миграции — пересоздание БД |
 
-## Architecture Approach
-**Pragmatic Modular** — направление к микросервисам, но без фанатизма.
+## Architecture
 
-| Что делаем | Что НЕ делаем |
-|-----------|---------------|
-| Чёткое разделение сервисов по зонам ответственности | Overengineering ради «красоты» |
-| REST API, Redis Pub/Sub для синхронизации | DDD/CQRS/event-driven без реальной необходимости |
-| Каждый сервис — отдельное приложение | Чрезмерная декомпозиция |
-| Если modular monolith надёжнее — выбираем его | Микросервисы как религия |
+**MVC-монолит** — стандартная архитектура ASP.NET Core MVC.
 
-**Решение**: см. decisions-log.md «Architecture Approach — Pragmatic Microservices»
+```
+Controllers/        → бизнес-логика, запросы
+Models/Entities/    → сущности БД (POCO)
+Views/              → Razor-шаблоны (.cshtml)
+Data/               → DbContext + SeedData
+Services/           → бизнес-сервисы (Account, Chat, Report)
+Repositories/       → generic-репозиторий
+ViewModels/         → модели представлений
+Hubs/               → SignalR хабы
+wwwroot/            → статика (CSS, JS, загрузки)
+```
 
 ## Code Principles
-1. **TypeScript everywhere** — strict mode, строгая типизация обязательна
-2. **Минимум магии** — никакого неявного поведения
-3. **Единые паттерны API** — все эндпоинты следуют одинаковой структуре
-4. **Валидация на всех уровнях** — сервер (Zod), клиент (React Hook Form)
-5. **Чёткое разделение ответственности** — один модуль = одна зона ответственности
-6. **Документирование решений** — каждое архитектурное решение в decisions-log.md
-7. **Хорошая DX** — быстрый старт, понятные скрипты, минимум конфигурации
-8. **Комментарии на русском** — код комментируем на русском языке для единого контекста команды
-9. **Никакого хардкода** — все строки, конфиги, значения через env/константы/конфиг-файлы
-10. **Коммиты на английском** — Conventional Commits, стандартный стиль, английский язык
 
-## UX Principles
-1. **«Поймёт ли преподаватель без инструкции?»** — главный критерий любого экрана
-2. **Работа в стрессе** — интерфейс не наказывает за ошибку, не требует догадок
-3. **Минимум действий для задачи** — поставить оценку должно быть быстрее, чем в бумажном журнале
-4. **Не перегруженный экран** — одна страница = один сценарий
-5. **Мобильная адаптация** — журнал на телефоне должен быть читаем и работаем
-6. **Предсказуемое состояние** — никаких «магических» изменений данных
-
-**Ядро системы**: журнал и расписание — максимальная скорость, устойчивость, понятность.
+1. **C# 12+** — nullable references, файловые пространства
+2. **Русские комментарии** — XML-doc на русском
+3. **Русские строки в UI** — весь интерфейс на русском
+4. **Без эмодзи** — нет эмодзи в интерфейсе
+5. **Без длинных тире** — запятые или обычные тире в текстах
+6. **Сессии для auth** — HttpContext.Session, не JWT
+7. **Коммиты на английском** — Conventional Commits: fix:/feat:/chore:/docs:
 
 ## Quality Standards
-- ESLint + Prettier — обязательны, настроены на весь проект
-- Code review — обязателен для каждого PR
-- Единые conventions — именование, структура файлов, паттерны
-- Автотесты — разумно, критичные бизнес-сценарии в первую очередь
-- E2E для ключевых flows (выставление оценки, регистрация, просмотр журнала)
 
-## Security Requirements
-- Onboarding через invite-коды (10+ символов, случайные токены)
-- JWT (access + refresh), ролевая модель
-- CAPTCHA на регистрации и входе
-- Lockout: 5 неудачных попыток → 15 мин блокировки
-- WebSocket auth через Sec-WebSocket-Protocol (не query-параметр)
-- Audit logs на уровне учреждения
-- File scanning (ClamAV или аналог)
-- CSP helmet, security headers
-- Rate limiting: 60 подключений/мин на WS, pagination ≤ 100
+- EF Core Include/ThenInclude — всегда eager loading навигации
+- Review.Status = Approved — модерация отзывов через enum
+- SeedData — все FK через .Id после SaveChanges()
+- Тесты — Arrange-Act-Assert, мокаем DbContext
 
-## DevOps
-- Docker Compose — единственная команда для запуска
-- Self-hosted — установка на сервер учреждения
-- Graceful degradation — отказ одного сервиса не ломает другие
-- Non-root контейнеры (UID 1000)
-- Graceful shutdown (SIGTERM → 30s timeout)
-- Backup/restore скрипты
-- Health checks для каждого сервиса
+## Security
 
-## 📂 Codebase References
-- `TECHNICAL_SPECIFICATION.md` — полное ТЗ с архитектурой, ролями, API
-- `DESIGN.md` — дизайн-система (цвета, типографика, компоненты)
-- `Prototypes/` — текущий прототип frontend (будет заменён)
-- `docs/obsidian/` — детальная документация для команды
+- Роли: Admin > Manager > Tourist
+- Пароли через BCrypt
+- anti-CSRF: @Html.AntiForgeryToken() в формах
+- Сессия: IdleTimeout 30 мин
+
+## DB Management
+
+- `EnsureCreated()` — создание схемы при первом запуске
+- Пересоздание: удалить TravelGuide.db → запустить заново
+- SeedData.Initialize() — проверка `if (context.Tours.Any()) return;`
 
 ## Related Files
-- `decisions-log.md` — архитектурные решения (см. «Architecture Approach»)
-- `business-domain.md` — бизнес-контекст и пользователи
+
+- `decisions-log.md` — архитектурные решения
+- `business-domain.md` — бизнес-контекст
