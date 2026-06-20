@@ -57,9 +57,9 @@ public static class SeedData
         // =====================
         // АГЕНТСТВА
         // =====================
-        var travelPro = new Agency { Name = "TravelPro", ContactInfo = "info@travelpro.ru, +7 (495) 123-45-67", Description = "Туристическое агентство №1 в России. Работаем с 2015 года.", Rating = 4.7 };
-        var wanderlust = new Agency { Name = "Wanderlust Travel", ContactInfo = "hello@wanderlust.ru, +7 (495) 987-65-43", Description = "Специализация: экзотические направления и индивидуальные туры.", Rating = 4.5 };
-        var bestTours = new Agency { Name = "Лучшие Туры", ContactInfo = "info@besttours.ru, +7 (812) 555-33-22", Description = "Бюджетные и премиум туры по всему миру.", Rating = 4.3 };
+        var travelPro = new Agency { Name = "TravelPro", ContactInfo = "info@travelpro.ru, +375 (29) 123-45-67", Description = "Туристическое агентство №1 в Беларуси. Работаем с 2015 года.", Rating = 4.7 };
+        var wanderlust = new Agency { Name = "Wanderlust Travel", ContactInfo = "hello@wanderlust.ru, +375 (33) 987-65-43", Description = "Специализация: экзотические направления и индивидуальные туры.", Rating = 4.5 };
+        var bestTours = new Agency { Name = "Лучшие Туры", ContactInfo = "info@besttours.ru, +375 (29) 555-33-22", Description = "Бюджетные и премиум туры по всему миру.", Rating = 4.3 };
 
         context.Agencies.AddRange(travelPro, wanderlust, bestTours);
         context.SaveChanges();
@@ -151,19 +151,19 @@ public static class SeedData
         // =====================
         // ПОЛЬЗОВАТЕЛИ
         // =====================
-        var tourist1 = new User { FullName = "Иван Иванов", Email = "ivan@test.com", Phone = "+79001112233", Role = UserRole.Tourist, RegistrationDate = DateTime.Now.AddDays(-60) };
+        var tourist1 = new User { FullName = "Иван Иванов", Email = "ivan@test.com", Phone = "+375 (29) 111-22-33", Role = UserRole.Tourist, RegistrationDate = DateTime.Now.AddDays(-60) };
         tourist1.PasswordHash = BCrypt.Net.BCrypt.HashPassword("password123");
 
-        var tourist2 = new User { FullName = "Мария Петрова", Email = "maria@test.com", Phone = "+79003334455", Role = UserRole.Tourist, RegistrationDate = DateTime.Now.AddDays(-30) };
+        var tourist2 = new User { FullName = "Мария Петрова", Email = "maria@test.com", Phone = "+375 (33) 333-44-55", Role = UserRole.Tourist, RegistrationDate = DateTime.Now.AddDays(-30) };
         tourist2.PasswordHash = BCrypt.Net.BCrypt.HashPassword("password123");
 
-        var tourist3 = new User { FullName = "Алексей Сидоров", Email = "alex@test.com", Phone = "+79005556677", Role = UserRole.Tourist, RegistrationDate = DateTime.Now.AddDays(-15) };
+        var tourist3 = new User { FullName = "Алексей Сидоров", Email = "alex@test.com", Phone = "+375 (29) 555-66-77", Role = UserRole.Tourist, RegistrationDate = DateTime.Now.AddDays(-15) };
         tourist3.PasswordHash = BCrypt.Net.BCrypt.HashPassword("password123");
 
-        var admin = new User { FullName = "Администратор", Email = "admin@travelguide.com", Phone = "+79000000001", Role = UserRole.Admin, RegistrationDate = DateTime.Now.AddDays(-90) };
+        var admin = new User { FullName = "Администратор", Email = "admin@travelguide.com", Phone = "+375 (33) 000-00-01", Role = UserRole.Admin, RegistrationDate = DateTime.Now.AddDays(-90) };
         admin.PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin123");
 
-        var manager = new User { FullName = "Менеджер Ольга", Email = "manager@travelguide.com", Phone = "+79000000002", Role = UserRole.Manager, RegistrationDate = DateTime.Now.AddDays(-80) };
+        var manager = new User { FullName = "Менеджер Ольга", Email = "manager@travelguide.com", Phone = "+375 (29) 000-00-02", Role = UserRole.Manager, RegistrationDate = DateTime.Now.AddDays(-80) };
         manager.PasswordHash = BCrypt.Net.BCrypt.HashPassword("manager123");
 
         context.Users.AddRange(tourist1, tourist2, tourist3, admin, manager);
@@ -269,9 +269,9 @@ public static class SeedData
         // =====================
         var bookings = new List<Booking>
         {
-            new Booking { TourId = tours[0].Id, UserId = tourist1.Id, BookingDate = DateTime.Now.AddDays(14), GuestsCount = 2, TotalPrice = 90000, Status = BookingStatus.Confirmed, Phone = "+79001112233", Email = "ivan@test.com", Notes = "Хотим соседние номера", CreatedAt = DateTime.Now.AddDays(-25) },
-            new Booking { TourId = tours[2].Id, UserId = tourist2.Id, BookingDate = DateTime.Now.AddDays(21), GuestsCount = 4, TotalPrice = 260000, Status = BookingStatus.New, Phone = "+79003334455", Email = "maria@test.com", Notes = "Семья с детьми 8 и 12 лет", CreatedAt = DateTime.Now.AddDays(-18) },
-            new Booking { TourId = tours[6].Id, UserId = tourist3.Id, BookingDate = DateTime.Now.AddDays(30), GuestsCount = 2, TotalPrice = 144000, Status = BookingStatus.New, Phone = "+79005556677", Email = "alex@test.com", CreatedAt = DateTime.Now.AddDays(-5) },
+            new Booking { TourId = tours[0].Id, UserId = tourist1.Id, BookingDate = DateTime.Now.AddDays(14), GuestsCount = 2, TotalPrice = 90000, Status = BookingStatus.Confirmed, Phone = "+375 (29) 111-22-33", Email = "ivan@test.com", Notes = "Хотим соседние номера", CreatedAt = DateTime.Now.AddDays(-25) },
+            new Booking { TourId = tours[2].Id, UserId = tourist2.Id, BookingDate = DateTime.Now.AddDays(21), GuestsCount = 4, TotalPrice = 260000, Status = BookingStatus.New, Phone = "+375 (33) 333-44-55", Email = "maria@test.com", Notes = "Семья с детьми 8 и 12 лет", CreatedAt = DateTime.Now.AddDays(-18) },
+            new Booking { TourId = tours[6].Id, UserId = tourist3.Id, BookingDate = DateTime.Now.AddDays(30), GuestsCount = 2, TotalPrice = 144000, Status = BookingStatus.New, Phone = "+375 (29) 555-66-77", Email = "alex@test.com", CreatedAt = DateTime.Now.AddDays(-5) },
         };
 
         context.Bookings.AddRange(bookings);
