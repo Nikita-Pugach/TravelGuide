@@ -36,6 +36,7 @@
                     <hr style="border-color: var(--border-color);">
 
                     <form asp-action="Create" method="post">
+                        @Html.AntiForgeryToken()
                         <input type="hidden" asp-for="TourId" />
                         <input type="hidden" asp-for="TourName" />
                         <input type="hidden" asp-for="TourPrice" />

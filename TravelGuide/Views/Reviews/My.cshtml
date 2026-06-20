@@ -1,0 +1,87 @@
+@model List<TravelGuide.Models.Entities.Review>
+@{
+    ViewData["Title"] = "Мои отзывы";
+}
+
+<div class="container py-4">
+    <h2 class="mb-4" style="font-weight: 600;">Мои отзывы</h2>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">@TempData["SuccessMessage"]<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+    }
+
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5">
+            <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" class="mb-3" style="opacity:0.3"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            <p class="text-muted">Вы ещё не оставляли отзывов</p>
+            <a asp-controller="Tours" asp-action="Index" class="btn btn-primary mt-2">Смотреть туры</a>
+        </div>
+    }
+    else
+    {
+        @foreach (var review in Model)
+        {
+            <div class="card tour-card mb-3">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                            @if (review.Tour != null)
+                            {
+                                <h6 class="mb-1">
+                                    <a asp-controller="Tours" asp-action="Details" asp-route-id="@review.TourId" style="color: var(--text-dark); text-decoration: none;">
+                                        @review.Tour.Name
+                                    </a>
+                                </h6>
+                                <small class="text-muted">@review.Tour.Country?.Name</small>
+                            }
+                            else if (review.Hotel != null)
+                            {
+                                <h6 class="mb-1">
+                                    <a asp-controller="Hotels" asp-action="Details" asp-route-id="@review.HotelId" style="color: var(--text-dark); text-decoration: none;">
+                                        @review.Hotel.Name
+                                    </a>
+                                </h6>
+                                <small class="text-muted">@review.Hotel.City?.Name</small>
+                            }
+                            else if (review.Sight != null)
+                            {
+                                <h6 class="mb-1">
+                                    <a asp-controller="Sights" asp-action="Details" asp-route-id="@review.SightId" style="color: var(--text-dark); text-decoration: none;">
+                                        @review.Sight.Name
+                                    </a>
+                                </h6>
+                                <small class="text-muted">@review.Sight.City?.Name</small>
+                            }
+                        </div>
+                        <div class="text-end">
+                            <div class="mb-1">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    <span style="color:@(i <= review.Rating ? "var(--warning)" : "var(--text-light)");font-size:.9rem">★</span>
+                                }
+                            </div>
+                            <small class="text-muted">@review.Date.ToString("dd.MM.yyyy")</small>
+                        </div>
+                    </div>
+                    <p class="mb-0" style="line-height: 1.7;">@review.Text</p>
+                    <div class="mt-2">
+                        @switch (review.Status)
+                        {
+                            case ReviewStatus.Approved:
+                                <span class="badge bg-success">Опубликован</span>
+                                break;
+                            case ReviewStatus.Pending:
+                                <span class="badge bg-warning text-dark">На модерации</span>
+                                break;
+                            case ReviewStatus.Rejected:
+                                <span class="badge bg-danger">Отклонён</span>
+                                break;
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>
