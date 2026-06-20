@@ -31,6 +31,8 @@ public class ToursController : Controller
         string? sortBy,
         int page = 1)
     {
+        if (page < 1) page = 1;
+
         var tours = _context.Tours
             .Include(t => t.Country)
             .Include(t => t.Agency)
@@ -131,31 +133,38 @@ public class ToursController : Controller
         if (id == null)
             return NotFound();
 
-        var tour = await _context.Tours
-            .Include(t => t.Country)
-            .Include(t => t.Agency)
-            .Include(t => t.TourHotels!).ThenInclude(th => th.Hotel)
-            .Include(t => t.TourSights!).ThenInclude(ts => ts.Sight)
-            .Include(t => t.Reviews!).ThenInclude(r => r.User)
-            .FirstOrDefaultAsync(t => t.Id == id);
-
-        if (tour == null)
-            return NotFound();
-
-        // Увеличиваем счётчик просмотров
-        tour.ViewCount++;
-        await _context.SaveChangesAsync();
-
-        // Проверяем, добавлен ли тур в избранное
-        var userId = HttpContext.Session.GetInt32("UserId");
-        ViewBag.IsFavorite = false;
-        if (userId.HasValue)
+        try
         {
-            ViewBag.IsFavorite = await _context.FavoriteTours
-                .AnyAsync(ft => ft.UserId == userId.Value && ft.TourId == id.Value);
-        }
+            var tour = await _context.Tours
+                .Include(t => t.Country)
+                .Include(t => t.Agency)
+                .Include(t => t.TourHotels!).ThenInclude(th => th.Hotel)
+                .Include(t => t.TourSights!).ThenInclude(ts => ts.Sight)
+                .Include(t => t.Reviews!).ThenInclude(r => r.User)
+                .FirstOrDefaultAsync(t => t.Id == id);
 
-        return View(tour);
+            if (tour == null)
+                return NotFound();
+
+            // Увеличиваем счётчик просмотров
+            tour.ViewCount++;
+            await _context.SaveChangesAsync();
+
+            // Проверяем, добавлен ли тур в избранное
+            var userId = HttpContext.Session.GetInt32("UserId");
+            ViewBag.IsFavorite = false;
+            if (userId.HasValue)
+            {
+                ViewBag.IsFavorite = await _context.FavoriteTours
+                    .AnyAsync(ft => ft.UserId == userId.Value && ft.TourId == id.Value);
+            }
+
+            return View(tour);
+        }
+        catch (Exception)
+        {
+            return NotFound();
+        }
     }
 
     // GET: /Tours/Create (перенаправление на админку)

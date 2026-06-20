@@ -76,7 +76,6 @@ using (var scope = app.Services.CreateScope())
     {
         admin.PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin123");
         context.SaveChanges();
-        Console.WriteLine($"Пароль админа обновлён: {admin.Email} / admin123");
     }
     else
     {
@@ -91,7 +90,6 @@ using (var scope = app.Services.CreateScope())
         };
         context.Users.Add(admin);
         context.SaveChanges();
-        Console.WriteLine("Создан администратор: admin@admin.com / admin123");
     }
     
     // Находим менеджера и обновляем пароль
@@ -100,7 +98,6 @@ using (var scope = app.Services.CreateScope())
     {
         manager.PasswordHash = BCrypt.Net.BCrypt.HashPassword("manager123");
         context.SaveChanges();
-        Console.WriteLine($"Пароль менеджера обновлён: {manager.Email} / manager123");
     }
     else
     {
@@ -115,7 +112,6 @@ using (var scope = app.Services.CreateScope())
         };
         context.Users.Add(manager);
         context.SaveChanges();
-        Console.WriteLine("Создан менеджер: manager@travelguide.com / manager123");
     }
 }
 

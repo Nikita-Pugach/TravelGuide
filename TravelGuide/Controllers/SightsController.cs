@@ -23,6 +23,8 @@ public class SightsController : Controller
         string? sortBy,
         int page = 1)
     {
+        if (page < 1) page = 1;
+
         var sights = _context.Sights
             .Include(s => s.City)
                 .ThenInclude(c => c!.Country)
@@ -72,16 +74,23 @@ public class SightsController : Controller
     {
         if (id == null) return NotFound();
 
-        var sight = await _context.Sights
-            .Include(s => s.City)
-                .ThenInclude(c => c!.Country)
-            .Include(s => s.Reviews!)
-                .ThenInclude(r => r.User)
-            .FirstOrDefaultAsync(s => s.Id == id);
+        try
+        {
+            var sight = await _context.Sights
+                .Include(s => s.City)
+                    .ThenInclude(c => c!.Country)
+                .Include(s => s.Reviews!)
+                    .ThenInclude(r => r.User)
+                .FirstOrDefaultAsync(s => s.Id == id);
 
-        if (sight == null) return NotFound();
+            if (sight == null) return NotFound();
 
-        return View(sight);
+            return View(sight);
+        }
+        catch (Exception)
+        {
+            return NotFound();
+        }
     }
 
     [HttpPost]
