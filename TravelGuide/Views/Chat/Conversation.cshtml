@@ -43,6 +43,7 @@
             @if (Model.Status == ChatStatus.Active)
             {
                 <form asp-action="Close" asp-route-id="@Model.ChatId" method="post">
+                    @Html.AntiForgeryToken()
                     <button type="submit" class="btn btn-sm" style="background: rgba(255,255,255,0.2); color: white; border: none;">
                         Закрыть чат
                     </button>
@@ -89,6 +90,7 @@
         {
             <div class="card-footer py-3" style="background: white; border-top: 1px solid var(--border-color);">
                 <form asp-action="SendMessage" method="post" id="messageForm">
+                    @Html.AntiForgeryToken()
                     <input type="hidden" name="ChatId" value="@Model.ChatId" />
                     <div class="d-flex gap-2">
                         <input type="text" name="Text" class="form-control" 
