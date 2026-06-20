@@ -415,10 +415,9 @@ namespace TravelGuide.Controllers
                 TourName = t.Name,
                 ViewsCount = t.ViewCount,
                 ReviewsCount = reviews.Count(r => r.TourId == t.Id && r.Status == ReviewStatus.Approved),
-                AverageRating = reviews.Where(r => r.TourId == t.Id && r.Status == ReviewStatus.Approved)
-                    .Select(r => r.Rating)
-                    .DefaultIfEmpty(0)
-                    .Average()
+                AverageRating = reviews.Where(r => r.TourId == t.Id && r.Status == ReviewStatus.Approved).Any()
+                    ? reviews.Where(r => r.TourId == t.Id && r.Status == ReviewStatus.Approved).Average(r => r.Rating)
+                    : 0
             }).OrderByDescending(s => s.ViewsCount).ToList();
 
             return View(stats);
