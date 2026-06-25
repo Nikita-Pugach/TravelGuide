@@ -2,6 +2,14 @@
 
 @{
     ViewData["Title"] = "Редактирование профиля";
+    var initials = "";
+    if (!string.IsNullOrEmpty(Model.FullName))
+    {
+        var parts = Model.FullName.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        initials = parts.Length > 0 ? parts[0][0].ToString() : "";
+        if (parts.Length > 1) initials += parts[1][0];
+    }
+    initials = initials.ToUpper();
 }
 
 <div class="container py-5">
@@ -12,6 +20,36 @@
                     <h4 class="mb-0">Редактирование профиля</h4>
                 </div>
                 <div class="card-body">
+                    <!-- Аватар -->
+                    <div class="text-center mb-4">
+                        <div class="position-relative d-inline-block" id="avatarContainer" style="width: 120px; height: 120px;">
+                            @if (!string.IsNullOrEmpty(Model.AvatarUrl))
+                            {
+                                <img src="@Model.AvatarUrl" alt="Avatar" class="w-100 h-100 rounded-circle" style="object-fit: cover;" id="avatarImage" />
+                            }
+                            else
+                            {
+                                <div class="w-100 h-100 rounded-circle d-flex align-items-center justify-content-center" style="background: var(--primary); color: white; font-size: 2rem; font-weight: 600;" id="avatarInitials">
+                                    @initials
+                                </div>
+                            }
+                            <label for="avatarInput" class="position-absolute bottom-0 end-0 rounded-circle d-flex align-items-center justify-content-center" 
+                                   style="width: 36px; height: 36px; background: var(--primary); color: white; cursor: pointer; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.2);"
+                                   title="Изменить фото">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                            </label>
+                            <input type="file" id="avatarInput" accept="image/*" style="display:none" />
+                        </div>
+                        <div class="mt-2">
+                            <small class="text-muted">Нажмите на иконку, чтобы загрузить фото</small>
+                        </div>
+                        <div id="uploadProgress" class="mt-2" style="display:none;">
+                            <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+                            <small class="text-muted ms-1">Загрузка...</small>
+                        </div>
+                        <div id="uploadError" class="alert alert-danger py-1 px-2 mt-2" style="display:none;font-size:0.85rem;"></div>
+                    </div>
+
                     <form asp-action="Edit" method="post">
                         @Html.AntiForgeryToken()
                         
@@ -25,7 +63,7 @@
                         
                         <div class="mb-3">
                             <label asp-for="Phone" class="form-label">Телефон</label>
-                            <input asp-for="Phone" class="form-control" placeholder="+7 (999) 123-45-67">
+                            <input asp-for="Phone" class="form-control" placeholder="+375 (29) 123-45-67">
                             <span asp-validation-for="Phone" class="text-danger"></span>
                         </div>
                         
@@ -42,4 +80,59 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        document.getElementById('avatarInput').addEventListener('change', async function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const progress = document.getElementById('uploadProgress');
+            const errorDiv = document.getElementById('uploadError');
+            const avatarImage = document.getElementById('avatarImage');
+            const avatarInitials = document.getElementById('avatarInitials');
+            
+            errorDiv.style.display = 'none';
+            progress.style.display = 'block';
+            
+            const formData = new FormData();
+            formData.append('avatar', file);
+            
+            try {
+                const response = await fetch('/Account/UploadAvatar', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    if (avatarInitials) avatarInitials.style.display = 'none';
+                    if (avatarImage) {
+                        avatarImage.src = result.avatarUrl + '?t=' + Date.now();
+                        avatarImage.style.display = 'block';
+                    } else {
+                        const container = document.getElementById('avatarContainer');
+                        const img = document.createElement('img');
+                        img.src = result.avatarUrl + '?t=' + Date.now();
+                        img.alt = 'Avatar';
+                        img.className = 'w-100 h-100 rounded-circle';
+                        img.style.objectFit = 'cover';
+                        img.id = 'avatarImage';
+                        container.insertBefore(img, container.firstChild);
+                    }
+                } else {
+                    errorDiv.textContent = result.error;
+                    errorDiv.style.display = 'block';
+                }
+            } catch (err) {
+                errorDiv.textContent = 'Ошибка загрузки';
+                errorDiv.style.display = 'block';
+            } finally {
+                progress.style.display = 'none';
+                e.target.value = '';
+            }
+        });
+    </script>
 }

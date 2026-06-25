@@ -163,7 +163,8 @@ public class AccountController : Controller
         var model = new EditProfileViewModel
         {
             FullName = user.FullName,
-            Phone = user.Phone
+            Phone = user.Phone,
+            AvatarUrl = user.AvatarUrl
         };
 
         return View(model);

@@ -94,6 +94,9 @@ public class EditProfileViewModel
     [Phone(ErrorMessage = "Некорректный номер телефона")]
     [Display(Name = "Телефон")]
     public string? Phone { get; set; }
+
+    [Display(Name = "Аватар")]
+    public string? AvatarUrl { get; set; }
 }
 
 /// <summary>
