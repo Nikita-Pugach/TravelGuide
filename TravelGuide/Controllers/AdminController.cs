@@ -34,7 +34,8 @@ public class AdminController : Controller
 
         ViewBag.UsersCount = await _context.Users.CountAsync();
         ViewBag.ToursCount = await _context.Tours.CountAsync();
-        ViewBag.ReviewsPendingCount = await _context.Reviews.CountAsync(r => r.Status == ReviewStatus.Pending);
+        ViewBag.ReviewsCount = await _context.Reviews.CountAsync();
+        ViewBag.BookingsCount = await _context.Bookings.CountAsync();
         ViewBag.ChatsActiveCount = await _context.Chats.CountAsync(c => c.Status == ChatStatus.Active);
 
         return View();
