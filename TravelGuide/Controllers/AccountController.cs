@@ -138,6 +138,7 @@ public class AccountController : Controller
         // Статистика
         ViewBag.FavoritesCount = await _context.FavoriteTours.CountAsync(f => f.UserId == userId.Value);
         ViewBag.ChatsCount = await _context.Chats.CountAsync(c => c.UserId == userId.Value);
+        ViewBag.BookingsCount = await _context.Bookings.CountAsync(b => b.UserId == userId.Value);
         ViewBag.RecentFavorites = await _context.FavoriteTours
             .Include(f => f.Tour!).ThenInclude(t => t.Country)
             .Where(f => f.UserId == userId.Value)
