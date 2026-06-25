@@ -70,16 +70,10 @@ using (var scope = app.Services.CreateScope())
     // Заполняем начальными данными
     SeedData.Initialize(context);
     
-    // Находим админа и обновляем пароль
+    // Находим админа и создаём если его нет
     var admin = context.Users.FirstOrDefault(u => u.Role == UserRole.Admin);
-    if (admin != null)
+    if (admin == null)
     {
-        admin.PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin123");
-        context.SaveChanges();
-    }
-    else
-    {
-        // Создаём админа если его нет
         admin = new User
         {
             FullName = "Администратор",
@@ -92,16 +86,10 @@ using (var scope = app.Services.CreateScope())
         context.SaveChanges();
     }
     
-    // Находим менеджера и обновляем пароль
+    // Находим менеджера и создаём если его нет
     var manager = context.Users.FirstOrDefault(u => u.Role == UserRole.Manager);
-    if (manager != null)
+    if (manager == null)
     {
-        manager.PasswordHash = BCrypt.Net.BCrypt.HashPassword("manager123");
-        context.SaveChanges();
-    }
-    else
-    {
-        // Создаём менеджера если его нет
         manager = new User
         {
             FullName = "Менеджер",
