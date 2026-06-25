@@ -53,29 +53,24 @@
     </div>
     
     <!-- Разделы -->
-    <div class="card" style="border-top: 3px solid #198754;">
+    <div class="card" style="border-top: 3px solid var(--primary);">
         <div class="card-body">
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-7">
                     <h5 class="card-title" style="font-weight: 600;">Управление</h5>
-                    <div class="d-grid gap-2">
-                        <a asp-action="Tours" class="btn btn-outline-primary">Туры</a>
-                        <a asp-action="CreateTour" class="btn btn-outline-primary">Добавить тур</a>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <h5 class="card-title" style="font-weight: 600;">Чаты</h5>
-                    <div class="d-grid gap-2">
-                        <a asp-action="Chats" class="btn btn-outline-primary">
+                    <div class="list-group list-group-flush">
+                        <a asp-action="Tours" class="list-group-item list-group-item-action">Туры</a>
+                        <a asp-action="CreateTour" class="list-group-item list-group-item-action">Добавить тур</a>
+                        <a asp-action="Chats" class="list-group-item list-group-item-action">
                             Чаты с клиентами
                             @if (ViewBag.ActiveChatsCount > 0)
                             {
-                                <span class="badge bg-primary ms-1">@ViewBag.ActiveChatsCount</span>
+                                <span class="badge bg-primary float-end">@ViewBag.ActiveChatsCount</span>
                             }
                         </a>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-5">
                     <h5 class="card-title" style="font-weight: 600;">Статистика</h5>
                     <p class="text-muted small">Просмотры, отзывы и рейтинг туров</p>
                     <a asp-action="Statistics" class="btn btn-outline-primary">Открыть статистику</a>
