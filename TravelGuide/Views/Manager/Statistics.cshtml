@@ -1,6 +1,7 @@
 @model IEnumerable<TravelGuide.Controllers.TourStatistics>
 @{
     ViewData["Title"] = "Статистика туров";
+    var avgRating = Model.Any(s => s.ReviewsCount > 0) ? Model.Where(s => s.ReviewsCount > 0).Average(s => s.AverageRating) : 0;
 }
 
 <div class="container">
@@ -40,7 +41,7 @@
             <div class="col-md-3">
                 <div class="card tour-card h-100">
                     <div class="card-body text-center py-3">
-                        <div class="price-tag mb-1" style="font-size: 1.25rem;">@(Model.Any(s => s.ReviewsCount > 0) ? Model.Where(s => s.ReviewsCount > 0).Average(s => s.AverageRating) : 0).ToString("0.0")</div>
+                        <div class="price-tag mb-1" style="font-size: 1.25rem;">@avgRating.ToString("0.0")</div>
                         <p class="text-muted mb-0 small">Средний рейтинг</p>
                     </div>
                 </div>
