@@ -41,27 +41,6 @@
                         @if (Context.Session.GetInt32("UserId") != null)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Favorites" asp-action="Index">
-                                    @{
-                                        var userId = Context.Session.GetInt32("UserId");
-                                        var favCount = 0;
-                                        if (userId != null)
-                                        {
-                                            favCount = DbContext.FavoriteTours.Count(f => f.UserId == userId);
-                                        }
-                                    }
-                                    Избранное @if (favCount > 0) { <span class="badge bg-danger">@favCount</span> }
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Bookings" asp-action="Index">Мои брони</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Chat" asp-action="Index">
-                                    Сообщения
-                                </a>
-                            </li>
-                            <li class="nav-item">
                                 <a class="nav-link text-dark" asp-controller="Account" asp-action="Profile">Профиль</a>
                             </li>
                             @if (Context.Session.GetString("UserRole") == "Admin")
