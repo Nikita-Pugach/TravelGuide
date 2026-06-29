@@ -63,29 +63,69 @@
         </div>
     </div>
     
-    <!-- Быстрые ссылки -->
-    <div class="row g-3">
-        <div class="col-md-4">
+    <!-- Справочники -->
+    <h4 class="mb-3">Справочники</h4>
+    <div class="row g-3 mb-4">
+        <div class="col">
             <a asp-action="Countries" class="text-decoration-none">
                 <div class="card tour-card h-100">
                     <div class="card-body text-center py-4">
-                        <h5 class="mb-1">Справочники</h5>
-                        <small class="text-muted">Страны, города, отели, агентства</small>
+                        <h5 class="mb-1">Страны</h5>
                     </div>
                 </div>
             </a>
         </div>
-        <div class="col-md-4">
+        <div class="col">
+            <a asp-action="Cities" class="text-decoration-none">
+                <div class="card tour-card h-100">
+                    <div class="card-body text-center py-4">
+                        <h5 class="mb-1">Города</h5>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col">
+            <a asp-action="Hotels" class="text-decoration-none">
+                <div class="card tour-card h-100">
+                    <div class="card-body text-center py-4">
+                        <h5 class="mb-1">Отели</h5>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col">
+            <a asp-action="Sights" class="text-decoration-none">
+                <div class="card tour-card h-100">
+                    <div class="card-body text-center py-4">
+                        <h5 class="mb-1">Достопримечательности</h5>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col">
+            <a asp-action="Agencies" class="text-decoration-none">
+                <div class="card tour-card h-100">
+                    <div class="card-body text-center py-4">
+                        <h5 class="mb-1">Агентства</h5>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+    
+    <!-- Отчёты и пользователи -->
+    <div class="row g-3">
+        <div class="col-md-6">
             <a asp-controller="Reports" asp-action="Index" class="text-decoration-none">
                 <div class="card tour-card h-100">
                     <div class="card-body text-center py-4">
                         <h5 class="mb-1">Отчёты</h5>
-                        <small class="text-muted">Статистика и аналитика</small>
+                        <small class="text-muted">Статистика и аналитика по платформе</small>
                     </div>
                 </div>
             </a>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-6">
             <a asp-action="Users" class="text-decoration-none">
                 <div class="card tour-card h-100">
                     <div class="card-body text-center py-4">
