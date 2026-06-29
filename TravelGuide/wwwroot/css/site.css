@@ -782,3 +782,40 @@ footer a:hover {
 .pagination .page-link:active {
     transform: translateY(0);
 }
+
+/* Мягкие бейджи ролей */
+.badge-role-admin {
+    background: #e8e8e8;
+    color: #555;
+    font-weight: 500;
+}
+
+.badge-role-manager {
+    background: #e8e8e8;
+    color: #555;
+    font-weight: 500;
+}
+
+.badge-role-tourist {
+    background: #e8e8e8;
+    color: #555;
+    font-weight: 500;
+}
+
+.badge-role-guest {
+    background: #e8e8e8;
+    color: #555;
+    font-weight: 500;
+}
+
+.badge-status-active {
+    background: #e8f5e9;
+    color: #2e7d32;
+    font-weight: 500;
+}
+
+.badge-status-inactive {
+    background: #fce4ec;
+    color: #c62828;
+    font-weight: 500;
+}
