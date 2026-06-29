@@ -15,11 +15,14 @@ public class ReportsController : Controller
         _reportService = reportService;
     }
 
+    private bool IsLoggedIn() => HttpContext.Session.GetInt32("UserId") != null;
+
     /// <summary>
     /// Главная страница отчётов — выбор типа
     /// </summary>
     public IActionResult Index()
     {
+        if (!IsLoggedIn()) return RedirectToAction("Login", "Account");
         return View();
     }
 
@@ -28,6 +31,7 @@ public class ReportsController : Controller
     // =============================================
     public async Task<IActionResult> PopularTours(DateTime? dateFrom, DateTime? dateTo)
     {
+        if (!IsLoggedIn()) return RedirectToAction("Login", "Account");
         var data = await _reportService.GetPopularToursAsync(dateFrom, dateTo);
         ViewBag.DateFrom = dateFrom;
         ViewBag.DateTo = dateTo;
@@ -81,6 +85,7 @@ public class ReportsController : Controller
     // =============================================
     public async Task<IActionResult> UserActivity(DateTime? dateFrom, DateTime? dateTo)
     {
+        if (!IsLoggedIn()) return RedirectToAction("Login", "Account");
         var data = await _reportService.GetUserActivityAsync(dateFrom, dateTo);
         return View(data);
     }
@@ -135,6 +140,7 @@ public class ReportsController : Controller
     // =============================================
     public async Task<IActionResult> ReviewStats(DateTime? dateFrom, DateTime? dateTo)
     {
+        if (!IsLoggedIn()) return RedirectToAction("Login", "Account");
         var data = await _reportService.GetReviewStatsAsync(dateFrom, dateTo);
         return View(data);
     }
@@ -196,6 +202,7 @@ public class ReportsController : Controller
     // =============================================
     public async Task<IActionResult> ManagerPerformance(DateTime? dateFrom, DateTime? dateTo)
     {
+        if (!IsLoggedIn()) return RedirectToAction("Login", "Account");
         var data = await _reportService.GetManagerPerformanceAsync(dateFrom, dateTo);
         return View(data);
     }
@@ -237,6 +244,7 @@ public class ReportsController : Controller
     // =============================================
     public async Task<IActionResult> AgencyReport()
     {
+        if (!IsLoggedIn()) return RedirectToAction("Login", "Account");
         var data = await _reportService.GetAgencyReportAsync();
         return View(data);
     }

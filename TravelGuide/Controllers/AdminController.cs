@@ -1077,7 +1077,9 @@ public class AdminController : Controller
         var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", folder);
         Directory.CreateDirectory(uploadsFolder);
 
-        var uniqueFileName = $"{Guid.NewGuid()}_{photo.FileName}";
+        // Очищаем имя файла от опасных символов (path traversal)
+        var cleanFileName = Path.GetFileName(photo.FileName);
+        var uniqueFileName = $"{Guid.NewGuid()}_{cleanFileName}";
         var filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
         using (var fileStream = new FileStream(filePath, FileMode.Create))
