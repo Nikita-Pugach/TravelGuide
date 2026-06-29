@@ -27,7 +27,7 @@
                             <option value="">-- Выберите страну --</option>
                             @foreach (var country in countries ?? Enumerable.Empty<TravelGuide.Models.Entities.Country>())
                             {
-                                <option value="@country.Id" selected="@(Model.CountryId == country.Id)">@country.GetFlag() @country.Name</option>
+                                <option value="@country.Id" selected="@(Model.CountryId == country.Id)">@country.Name</option>
                             }
                         </select>
                     </div>
