@@ -3,16 +3,16 @@
 }
 
 <div class="container">
-    <h2 class="mb-4" style="font-weight: 600;">Администрирование</h2>
+    <h2 class="mb-4">Администрирование</h2>
     
     <!-- Статистика -->
-    <div class="row g-3 mb-5">
+    <div class="row g-3 mb-4">
         <div class="col">
             <a asp-action="Users" class="text-decoration-none">
-                <div class="card h-100" style="border-left: 4px solid var(--primary);">
-                    <div class="card-body text-center py-3">
-                        <div style="font-weight: 700; color: var(--primary); font-size: 1.8rem;">@ViewBag.UsersCount</div>
-                        <div class="text-muted small">Пользователей</div>
+                <div class="card tour-card h-100">
+                    <div class="card-body text-center">
+                        <div class="price-tag mb-2" style="font-size: 1.5rem;">@ViewBag.UsersCount</div>
+                        <p class="text-muted mb-0">Пользователей</p>
                     </div>
                 </div>
             </a>
@@ -20,10 +20,10 @@
         
         <div class="col">
             <a asp-action="Tours" class="text-decoration-none">
-                <div class="card h-100" style="border-left: 4px solid #198754;">
-                    <div class="card-body text-center py-3">
-                        <div style="font-weight: 700; color: #198754; font-size: 1.8rem;">@ViewBag.ToursCount</div>
-                        <div class="text-muted small">Туров</div>
+                <div class="card tour-card h-100">
+                    <div class="card-body text-center">
+                        <div class="price-tag mb-2" style="font-size: 1.5rem;">@ViewBag.ToursCount</div>
+                        <p class="text-muted mb-0">Туров</p>
                     </div>
                 </div>
             </a>
@@ -31,10 +31,10 @@
         
         <div class="col">
             <a asp-action="Reviews" class="text-decoration-none">
-                <div class="card h-100" style="border-left: 4px solid #ffc107;">
-                    <div class="card-body text-center py-3">
-                        <div style="font-weight: 700; color: #ffc107; font-size: 1.8rem;">@ViewBag.ReviewsCount</div>
-                        <div class="text-muted small">Отзывов</div>
+                <div class="card tour-card h-100">
+                    <div class="card-body text-center">
+                        <div class="price-tag mb-2" style="font-size: 1.5rem;">@ViewBag.ReviewsCount</div>
+                        <p class="text-muted mb-0">Отзывов</p>
                     </div>
                 </div>
             </a>
@@ -42,10 +42,10 @@
         
         <div class="col">
             <a asp-action="Bookings" class="text-decoration-none">
-                <div class="card h-100" style="border-left: 4px solid #0dcaf0;">
-                    <div class="card-body text-center py-3">
-                        <div style="font-weight: 700; color: #0dcaf0; font-size: 1.8rem;">@ViewBag.BookingsCount</div>
-                        <div class="text-muted small">Бронирований</div>
+                <div class="card tour-card h-100">
+                    <div class="card-body text-center">
+                        <div class="price-tag mb-2" style="font-size: 1.5rem;">@ViewBag.BookingsCount</div>
+                        <p class="text-muted mb-0">Бронирований</p>
                     </div>
                 </div>
             </a>
@@ -53,36 +53,47 @@
         
         <div class="col">
             <a asp-controller="Chat" asp-action="Index" class="text-decoration-none">
-                <div class="card h-100" style="border-left: 4px solid #dc3545;">
-                    <div class="card-body text-center py-3">
-                        <div style="font-weight: 700; color: #dc3545; font-size: 1.8rem;">@ViewBag.ChatsActiveCount</div>
-                        <div class="text-muted small">Чатов</div>
+                <div class="card tour-card h-100">
+                    <div class="card-body text-center">
+                        <div class="price-tag mb-2" style="font-size: 1.5rem;">@ViewBag.ChatsActiveCount</div>
+                        <p class="text-muted mb-0">Чатов</p>
                     </div>
                 </div>
             </a>
         </div>
     </div>
     
-    <!-- Разделы -->
-    <div class="card" style="border-top: 3px solid var(--primary);">
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-7">
-                    <h5 class="card-title" style="font-weight: 600;">Справочники</h5>
-                    <div class="list-group list-group-flush">
-                        <a asp-action="Countries" class="list-group-item list-group-item-action">Страны</a>
-                        <a asp-action="Cities" class="list-group-item list-group-item-action">Города</a>
-                        <a asp-action="Hotels" class="list-group-item list-group-item-action">Отели</a>
-                        <a asp-action="Sights" class="list-group-item list-group-item-action">Достопримечательности</a>
-                        <a asp-action="Agencies" class="list-group-item list-group-item-action">Агентства</a>
+    <!-- Быстрые ссылки -->
+    <div class="row g-3">
+        <div class="col-md-4">
+            <a asp-action="Countries" class="text-decoration-none">
+                <div class="card tour-card h-100">
+                    <div class="card-body text-center py-4">
+                        <h5 class="mb-1">Справочники</h5>
+                        <small class="text-muted">Страны, города, отели, агентства</small>
                     </div>
                 </div>
-                <div class="col-md-5">
-                    <h5 class="card-title" style="font-weight: 600;">Отчёты</h5>
-                    <p class="text-muted small">Статистика и аналитика по платформе</p>
-                    <a asp-controller="Reports" asp-action="Index" class="btn btn-outline-primary">Открыть отчёты</a>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a asp-controller="Reports" asp-action="Index" class="text-decoration-none">
+                <div class="card tour-card h-100">
+                    <div class="card-body text-center py-4">
+                        <h5 class="mb-1">Отчёты</h5>
+                        <small class="text-muted">Статистика и аналитика</small>
+                    </div>
                 </div>
-            </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a asp-action="Users" class="text-decoration-none">
+                <div class="card tour-card h-100">
+                    <div class="card-body text-center py-4">
+                        <h5 class="mb-1">Пользователи</h5>
+                        <small class="text-muted">Управление и блокировка</small>
+                    </div>
+                </div>
+            </a>
         </div>
     </div>
 </div>
