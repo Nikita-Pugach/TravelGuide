@@ -68,10 +68,10 @@
             {
                 var roleBadgeClass = user.Role switch
                 {
-                    UserRole.Admin => "bg-danger",
-                    UserRole.Manager => "bg-warning text-dark",
-                    UserRole.Tourist => "bg-primary",
-                    _ => "bg-secondary"
+                    UserRole.Admin => "badge-role-admin",
+                    UserRole.Manager => "badge-role-manager",
+                    UserRole.Tourist => "badge-role-tourist",
+                    _ => "badge-role-guest"
                 };
                 
                 var roleText = user.Role switch
@@ -103,11 +103,11 @@
                                 <span class="badge @roleBadgeClass">@roleText</span>
                                 @if (user.IsBlocked)
                                 {
-                                    <span class="badge bg-secondary">Заблокирован</span>
+                                    <span class="badge badge-status-inactive">Заблокирован</span>
                                 }
                                 else
                                 {
-                                    <span class="badge bg-success">Активен</span>
+                                    <span class="badge badge-status-active">Активен</span>
                                 }
                             </div>
                             
