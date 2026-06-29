@@ -50,7 +50,7 @@ namespace TravelGuide.Controllers
 
             ViewBag.ToursCount = tours.Count();
             ViewBag.ActiveChatsCount = chats.Count(c => c.Status == ChatStatus.Active);
-            ViewBag.PendingReviewsCount = reviews.Count(r => r.Status == ReviewStatus.Pending);
+            ViewBag.TotalViewsCount = tours.Sum(t => t.ViewCount);
             ViewBag.TotalReviewsCount = reviews.Count(r => r.Status == ReviewStatus.Approved);
 
             // Популярные туры (по отзывам)
