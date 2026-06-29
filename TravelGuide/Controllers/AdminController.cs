@@ -148,6 +148,40 @@ public class AdminController : Controller
         return RedirectToAction(nameof(Users));
     }
 
+    // POST: /Admin/ChangeRole/5
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ChangeRole(int id, UserRole role)
+    {
+        if (!IsAdmin())
+            return RedirectToAction("Login", "Account");
+
+        var user = await _context.Users.FindAsync(id);
+        if (user == null)
+            return NotFound();
+
+        // Нельзя менять роль自己的 админа
+        var currentUserId = HttpContext.Session.GetInt32("UserId");
+        if (user.Id == currentUserId)
+        {
+            TempData["ErrorMessage"] = "Нельзя изменить свою собственную роль";
+            return RedirectToAction(nameof(Users));
+        }
+
+        user.Role = role;
+        await _context.SaveChangesAsync();
+
+        var roleText = role switch
+        {
+            UserRole.Admin => "Администратор",
+            UserRole.Manager => "Менеджер",
+            UserRole.Tourist => "Турист",
+            _ => "Гость"
+        };
+        TempData["SuccessMessage"] = $"Роль изменена на «{roleText}»";
+        return RedirectToAction(nameof(Users));
+    }
+
     #endregion
 
     #region Справочники
