@@ -14,6 +14,19 @@ namespace TravelGuide.Hubs
             _context = context;
         }
 
+        public override async Task OnConnectedAsync()
+        {
+            // Проверяем авторизацию через сессию
+            var userId = Context.GetHttpContext()?.Session.GetInt32("UserId");
+            if (userId == null)
+            {
+                Context.Abort();
+                return;
+            }
+
+            await base.OnConnectedAsync();
+        }
+
         public async Task SendMessage(int chatId, string text, bool isManager = false)
         {
             var chat = await _context.Chats.FindAsync(chatId);
@@ -56,12 +69,6 @@ namespace TravelGuide.Hubs
         public async Task LeaveChat(int chatId)
         {
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, $"chat_{chatId}");
-        }
-
-        public override async Task OnConnectedAsync()
-        {
-            // Можно добавить логику при подключении
-            await base.OnConnectedAsync();
         }
 
         public override async Task OnDisconnectedAsync(Exception? exception)
