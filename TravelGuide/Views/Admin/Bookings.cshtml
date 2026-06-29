@@ -66,8 +66,8 @@
                             <p class="text-muted small mb-2">@b.CountryName</p>
                             
                             <div class="d-flex align-items-center mb-3">
-                                <div class="avatar-circle me-2" style="width: 36px; height: 36px; font-size: 0.8rem;">
-                                    <span class="avatar-initials">@(b.UserFullName.Length >= 2 ? b.UserFullName.Substring(0, 2).ToUpper() : "?")</span>
+                                <div class="avatar-circle me-2" style="width: 36px; height: 36px;">
+                                    <span class="avatar-initials" style="font-size: 0.7rem;">@(b.UserFullName.Length >= 2 ? b.UserFullName.Substring(0, 2).ToUpper() : "?")</span>
                                 </div>
                                 <div>
                                     <div class="small fw-medium">@b.UserFullName</div>
