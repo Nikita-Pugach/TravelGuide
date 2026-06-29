@@ -120,6 +120,22 @@
                             </div>
                         </div>
                         <div class="card-footer bg-white border-0 pt-0">
+                            @if (user.Role != UserRole.Admin || user.Id == Context.Session.GetInt32("UserId"))
+                            {
+                                <!-- Смена роли -->
+                                <form asp-action="ChangeRole" asp-route-id="@user.Id" method="post" class="mb-2">
+                                    @Html.AntiForgeryToken()
+                                    <div class="input-group input-group-sm">
+                                        <select name="role" class="form-select form-select-sm">
+                                            <option value="Tourist" selected="@(user.Role == UserRole.Tourist)">Турист</option>
+                                            <option value="Manager" selected="@(user.Role == UserRole.Manager)">Менеджер</option>
+                                            <option value="Admin" selected="@(user.Role == UserRole.Admin)">Администратор</option>
+                                        </select>
+                                        <button type="submit" class="btn btn-outline-primary btn-sm">Сменить</button>
+                                    </div>
+                                </form>
+                            }
+
                             @if (user.Role != UserRole.Admin)
                             {
                                 <form asp-action="ToggleUserBlock" asp-route-id="@user.Id" method="post">
@@ -136,7 +152,7 @@
                             }
                             else
                             {
-                                <span class="text-muted small d-block text-center py-1">Нельзя заблокировать</span>
+                                <span class="text-muted small d-block text-center py-1">Администратор</span>
                             }
                         </div>
                     </div>
