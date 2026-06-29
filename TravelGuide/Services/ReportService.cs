@@ -192,14 +192,15 @@ public class ReportService
     {
         var managers = await _context.Users
             .Where(u => u.Role == UserRole.Manager)
-            .Include(u => u.ManagedChats)
             .ToListAsync();
 
         var result = new List<ManagerPerformanceReport>();
 
         foreach (var manager in managers)
         {
-            var chatsQuery = manager.ManagedChats.AsQueryable();
+            // Запрашиваем чаты напрямую из БД, а не из in-memory коллекции
+            var chatsQuery = _context.Chats
+                .Where(c => c.ManagerId == manager.Id);
 
             if (dateFrom.HasValue)
                 chatsQuery = chatsQuery.Where(c => c.StartTime >= dateFrom.Value);
@@ -210,7 +211,7 @@ public class ReportService
             var totalChats = chats.Count;
             var closedChats = chats.Count(c => c.Status == ChatStatus.Closed);
 
-            // Среднее время ответа (в минутах) — считаем как разницу между первым сообщением менеджера и началом чата
+            // Среднее время ответа (в минутах)
             var chatIds = chats.Select(c => c.Id).ToList();
             var messages = await _context.Messages
                 .Where(m => chatIds.Contains(m.ChatId) && m.SenderId == manager.Id)

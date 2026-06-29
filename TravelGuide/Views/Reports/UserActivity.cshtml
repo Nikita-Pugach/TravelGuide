@@ -18,7 +18,7 @@
     </div>
 
     <!-- Фильтр -->
-    <div class="card mb-4">
+    <div class="card tour-card mb-4">
         <div class="card-body">
             <form asp-action="UserActivity" method="get" class="row g-3 align-items-end">
                 <div class="col-md-3">
@@ -39,63 +39,64 @@
         </div>
     </div>
 
-    <!-- Карточки -->
+    <!-- Основная статистика -->
     <div class="row g-3 mb-4">
         <div class="col-md-3">
-            <div class="card bg-primary text-white h-100">
+            <div class="card tour-card h-100">
                 <div class="card-body text-center">
-                    <h3>@Model.TotalUsers</h3>
-                    <p class="mb-0">Всего пользователей</p>
+                    <div class="price-tag mb-2" style="font-size: 1.5rem;">@Model.TotalUsers</div>
+                    <p class="text-muted mb-0">Пользователей</p>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card bg-success text-white h-100">
+            <div class="card tour-card h-100">
                 <div class="card-body text-center">
-                    <h3>@Model.NewUsers</h3>
-                    <p class="mb-0">Новых за период</p>
+                    <div class="price-tag mb-2" style="font-size: 1.5rem;">@Model.NewUsers</div>
+                    <p class="text-muted mb-0">Новых за период</p>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card bg-warning text-dark h-100">
+            <div class="card tour-card h-100">
                 <div class="card-body text-center">
-                    <h3>@Model.TotalReviews</h3>
-                    <p class="mb-0">Отзывов</p>
+                    <div class="price-tag mb-2" style="font-size: 1.5rem;">@Model.TotalReviews</div>
+                    <p class="text-muted mb-0">Отзывов</p>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card bg-info text-white h-100">
+            <div class="card tour-card h-100">
                 <div class="card-body text-center">
-                    <h3>@Model.TotalChats</h3>
-                    <p class="mb-0">Чатов</p>
+                    <div class="price-tag mb-2" style="font-size: 1.5rem;">@Model.TotalChats</div>
+                    <p class="text-muted mb-0">Чатов</p>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Дополнительная статистика -->
     <div class="row g-3 mb-4">
         <div class="col-md-4">
-            <div class="card h-100">
+            <div class="card tour-card h-100">
                 <div class="card-body text-center">
-                    <h4>@Model.ApprovedReviews</h4>
+                    <div class="price-tag mb-2" style="font-size: 1.5rem;">@Model.ApprovedReviews</div>
                     <p class="text-muted mb-0">Опубликованных отзывов</p>
                 </div>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card h-100">
+            <div class="card tour-card h-100">
                 <div class="card-body text-center">
-                    <h4>@Model.ActiveChats</h4>
+                    <div class="price-tag mb-2" style="font-size: 1.5rem;">@Model.ActiveChats</div>
                     <p class="text-muted mb-0">Активных чатов</p>
                 </div>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card h-100">
+            <div class="card tour-card h-100">
                 <div class="card-body text-center">
-                    <h4>@Model.TotalBookings</h4>
+                    <div class="price-tag mb-2" style="font-size: 1.5rem;">@Model.TotalBookings</div>
                     <p class="text-muted mb-0">Бронирований</p>
                 </div>
             </div>
@@ -105,11 +106,9 @@
     <!-- Регистрации по месяцам -->
     @if (Model.RegistrationsByMonth.Any())
     {
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">Регистрации по месяцам</h5>
-            </div>
+        <div class="card tour-card">
             <div class="card-body">
+                <h5 class="mb-3">Регистрации по месяцам</h5>
                 <div class="table-responsive">
                     <table class="table table-sm">
                         <thead>
