@@ -3,79 +3,86 @@
 }
 
 <div class="container">
-    <h2 class="mb-4" style="font-weight: 600;">Панель менеджера</h2>
+    <h2 class="mb-4">Панель менеджера</h2>
     
     <!-- Статистика -->
-    <div class="row g-3 mb-5">
-        <div class="col">
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
             <a asp-action="Tours" class="text-decoration-none">
-                <div class="card h-100" style="border-left: 4px solid #198754;">
-                    <div class="card-body text-center py-3">
-                        <div style="font-weight: 700; color: #198754; font-size: 1.8rem;">@ViewBag.ToursCount</div>
-                        <div class="text-muted small">Туров</div>
+                <div class="card tour-card h-100">
+                    <div class="card-body text-center">
+                        <div class="price-tag mb-2" style="font-size: 1.5rem;">@ViewBag.ToursCount</div>
+                        <p class="text-muted mb-0">Туров</p>
                     </div>
                 </div>
             </a>
         </div>
         
-        <div class="col">
+        <div class="col-md-3">
             <a asp-action="Chats" class="text-decoration-none">
-                <div class="card h-100" style="border-left: 4px solid #dc3545;">
-                    <div class="card-body text-center py-3">
-                        <div style="font-weight: 700; color: #dc3545; font-size: 1.8rem;">@ViewBag.ActiveChatsCount</div>
-                        <div class="text-muted small">Активных чатов</div>
+                <div class="card tour-card h-100">
+                    <div class="card-body text-center">
+                        <div class="price-tag mb-2" style="font-size: 1.5rem;">@ViewBag.ActiveChatsCount</div>
+                        <p class="text-muted mb-0">Активных чатов</p>
                     </div>
                 </div>
             </a>
         </div>
         
-        <div class="col">
+        <div class="col-md-3">
             <a asp-action="Statistics" class="text-decoration-none">
-                <div class="card h-100" style="border-left: 4px solid #ffc107;">
-                    <div class="card-body text-center py-3">
-                        <div style="font-weight: 700; color: #ffc107; font-size: 1.8rem;">@ViewBag.PendingReviewsCount</div>
-                        <div class="text-muted small">На модерации</div>
+                <div class="card tour-card h-100">
+                    <div class="card-body text-center">
+                        <div class="price-tag mb-2" style="font-size: 1.5rem;">@ViewBag.TotalViewsCount</div>
+                        <p class="text-muted mb-0">Просмотров</p>
                     </div>
                 </div>
             </a>
         </div>
         
-        <div class="col">
+        <div class="col-md-3">
             <a asp-action="Statistics" class="text-decoration-none">
-                <div class="card h-100" style="border-left: 4px solid var(--primary);">
-                    <div class="card-body text-center py-3">
-                        <div style="font-weight: 700; color: var(--primary); font-size: 1.8rem;">@ViewBag.TotalReviewsCount</div>
-                        <div class="text-muted small">Отзывов</div>
+                <div class="card tour-card h-100">
+                    <div class="card-body text-center">
+                        <div class="price-tag mb-2" style="font-size: 1.5rem;">@ViewBag.TotalReviewsCount</div>
+                        <p class="text-muted mb-0">Отзывов</p>
                     </div>
                 </div>
             </a>
         </div>
     </div>
     
-    <!-- Разделы -->
-    <div class="card" style="border-top: 3px solid var(--primary);">
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-7">
-                    <h5 class="card-title" style="font-weight: 600;">Управление</h5>
-                    <div class="list-group list-group-flush">
-                        <a asp-action="Tours" class="list-group-item list-group-item-action">Туры</a>
-                        <a asp-action="CreateTour" class="list-group-item list-group-item-action">Добавить тур</a>
-                        <a asp-action="Chats" class="list-group-item list-group-item-action">
-                            Чаты с клиентами
-                            @if (ViewBag.ActiveChatsCount > 0)
-                            {
-                                <span class="badge bg-primary float-end">@ViewBag.ActiveChatsCount</span>
-                            }
-                        </a>
+    <!-- Быстрые ссылки -->
+    <div class="row g-3">
+        <div class="col-md-4">
+            <a asp-action="Tours" class="text-decoration-none">
+                <div class="card tour-card h-100">
+                    <div class="card-body text-center py-4">
+                        <h5 class="mb-1">Туры</h5>
+                        <small class="text-muted">Просмотр и управление</small>
                     </div>
                 </div>
-                <div class="col-md-5">
-                    <h5 class="card-title" style="font-weight: 600;">Статистика</h5>
-                    <p class="text-muted small">Просмотры, отзывы и рейтинг туров</p>
-                    <a asp-action="Statistics" class="btn btn-outline-primary">Открыть статистику</a>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a asp-action="CreateTour" class="text-decoration-none">
+                <div class="card tour-card h-100">
+                    <div class="card-body text-center py-4">
+                        <h5 class="mb-1">Добавить тур</h5>
+                        <small class="text-muted">Создать новое предложение</small>
+                    </div>
                 </div>
-            </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a asp-action="Statistics" class="text-decoration-none">
+                <div class="card tour-card h-100">
+                    <div class="card-body text-center py-4">
+                        <h5 class="mb-1">Статистика</h5>
+                        <small class="text-muted">Просмотры, отзывы и рейтинг</small>
+                    </div>
+                </div>
+            </a>
         </div>
     </div>
 </div>
