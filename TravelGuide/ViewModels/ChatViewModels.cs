@@ -41,6 +41,16 @@ public class ChatConversationViewModel
     public int? ManagerId { get; set; }
     public List<MessageViewModel> Messages { get; set; } = new();
     public SendMessageViewModel NewMessage { get; set; } = new();
+    
+    /// <summary>
+    /// Заголовок чата: для туриста — "Чат поддержки", для менеджера — имя туриста
+    /// </summary>
+    public string ChatTitle { get; set; } = string.Empty;
+    
+    /// <summary>
+    /// Аватар для заголовка: для туриста — аватар менеджера, для менеджера — аватар туриста
+    /// </summary>
+    public string? ChatTitleAvatar { get; set; }
 }
 
 /// <summary>
