@@ -468,12 +468,15 @@ footer a:hover {
     align-items: center;
     justify-content: center;
     box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    overflow: hidden;
+    flex-shrink: 0;
 }
 
 .avatar-initials {
     color: white;
     font-size: 2.5rem;
     font-weight: bold;
+    line-height: 1;
 }
 
 .stat-card {
