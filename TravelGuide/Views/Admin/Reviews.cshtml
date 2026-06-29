@@ -12,10 +12,10 @@
     
     <!-- Фильтры -->
     <div class="d-flex flex-wrap gap-2 mb-4">
-        <a asp-action="Reviews" class="btn @(ViewBag.CurrentStatus == null ? "btn-primary" : "btn-outline-primary")">Все</a>
-        <a asp-action="Reviews" asp-route-status="Pending" class="btn @(ViewBag.CurrentStatus?.ToString() == "Pending" ? "btn-warning" : "btn-outline-warning")">На модерации</a>
-        <a asp-action="Reviews" asp-route-status="Approved" class="btn @(ViewBag.CurrentStatus?.ToString() == "Approved" ? "btn-success" : "btn-outline-success")">Опубликованные</a>
-        <a asp-action="Reviews" asp-route-status="Rejected" class="btn @(ViewBag.CurrentStatus?.ToString() == "Rejected" ? "btn-danger" : "btn-outline-danger")">Отклонённые</a>
+        <a asp-action="Reviews" class="btn @(ViewBag.CurrentStatus == null ? "btn-outline-dark" : "btn-outline-secondary")">Все</a>
+        <a asp-action="Reviews" asp-route-status="Pending" class="btn @(ViewBag.CurrentStatus?.ToString() == "Pending" ? "btn-outline-warning" : "btn-outline-secondary")">На модерации</a>
+        <a asp-action="Reviews" asp-route-status="Approved" class="btn @(ViewBag.CurrentStatus?.ToString() == "Approved" ? "btn-outline-success" : "btn-outline-secondary")">Опубликованные</a>
+        <a asp-action="Reviews" asp-route-status="Rejected" class="btn @(ViewBag.CurrentStatus?.ToString() == "Rejected" ? "btn-outline-danger" : "btn-outline-secondary")">Отклонённые</a>
     </div>
     
     @if (TempData["SuccessMessage"] != null)
@@ -39,10 +39,10 @@
             {
                 var statusBadgeClass = review.Status switch
                 {
-                    ReviewStatus.Pending => "bg-warning text-dark",
-                    ReviewStatus.Approved => "bg-success",
-                    ReviewStatus.Rejected => "bg-danger",
-                    _ => "bg-secondary"
+                    ReviewStatus.Pending => "badge-status-pending",
+                    ReviewStatus.Approved => "badge-status-approved",
+                    ReviewStatus.Rejected => "badge-status-rejected",
+                    _ => "badge-role-guest"
                 };
                 
                 var statusText = review.Status switch
@@ -58,17 +58,17 @@
                 if (review.Tour != null)
                 {
                     itemName = review.Tour.Name;
-                    itemBadgeClass = "bg-primary";
+                    itemBadgeClass = "badge-type-tour";
                 }
                 else if (review.Hotel != null)
                 {
                     itemName = review.Hotel.Name;
-                    itemBadgeClass = "bg-info";
+                    itemBadgeClass = "badge-type-hotel";
                 }
                 else if (review.Sight != null)
                 {
                     itemName = review.Sight.Name;
-                    itemBadgeClass = "bg-secondary";
+                    itemBadgeClass = "badge-type-sight";
                 }
                 
                 var authorInitials = review.User?.FullName != null && review.User.FullName.Length >= 2
@@ -113,11 +113,11 @@
                                 <div class="d-flex gap-2">
                                     <form asp-action="ApproveReview" asp-route-id="@review.Id" method="post" class="flex-grow-1">
                                         @Html.AntiForgeryToken()
-                                        <button type="submit" class="btn btn-success btn-sm w-100">Одобрить</button>
+                                        <button type="submit" class="btn btn-outline-success btn-sm w-100">Одобрить</button>
                                     </form>
                                     <form asp-action="RejectReview" asp-route-id="@review.Id" method="post" class="flex-grow-1">
                                         @Html.AntiForgeryToken()
-                                        <button type="submit" class="btn btn-danger btn-sm w-100">Отклонить</button>
+                                        <button type="submit" class="btn btn-outline-danger btn-sm w-100">Отклонить</button>
                                     </form>
                                 </div>
                             }

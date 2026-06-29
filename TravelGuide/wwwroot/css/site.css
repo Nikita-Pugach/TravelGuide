@@ -819,3 +819,59 @@ footer a:hover {
     color: #c62828;
     font-weight: 500;
 }
+
+/* Мягкие бейджи статусов */
+.badge-status-pending {
+    background: #fff8e1;
+    color: #f57f17;
+    font-weight: 500;
+}
+
+.badge-status-approved {
+    background: #e8f5e9;
+    color: #2e7d32;
+    font-weight: 500;
+}
+
+.badge-status-rejected {
+    background: #fce4ec;
+    color: #c62828;
+    font-weight: 500;
+}
+
+.badge-status-new {
+    background: #fff8e1;
+    color: #f57f17;
+    font-weight: 500;
+}
+
+.badge-status-confirmed {
+    background: #e8f5e9;
+    color: #2e7d32;
+    font-weight: 500;
+}
+
+.badge-status-cancelled {
+    background: #fce4ec;
+    color: #c62828;
+    font-weight: 500;
+}
+
+/* Мягкие бейджи типов */
+.badge-type-tour {
+    background: #e3f2fd;
+    color: #1565c0;
+    font-weight: 500;
+}
+
+.badge-type-hotel {
+    background: #f3e5f5;
+    color: #7b1fa2;
+    font-weight: 500;
+}
+
+.badge-type-sight {
+    background: #e8e8e8;
+    color: #555;
+    font-weight: 500;
+}
