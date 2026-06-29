@@ -124,7 +124,7 @@
         
         connection.on("ReceiveMessage", function(message) {
             const container = document.getElementById('messagesContainer');
-            const isMyMessage = message.senderId === '@Context.Session.GetInt32("UserId")'.toString();
+            const isMyMessage = message.senderId == '@Context.Session.GetInt32("UserId")';
             
             const messageDiv = document.createElement('div');
             messageDiv.className = 'message mb-3 ' + (isMyMessage ? 'text-end' : '');
