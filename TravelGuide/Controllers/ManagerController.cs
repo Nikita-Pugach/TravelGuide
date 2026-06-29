@@ -337,53 +337,18 @@ namespace TravelGuide.Controllers
             return RedirectToAction(nameof(Tours));
         }
 
-        // GET: Manager/Chats
-        public async Task<IActionResult> Chats(ChatStatus? status)
+        // GET: Manager/Chats — перенаправляем на общий список чатов
+        public IActionResult Chats()
         {
             if (!IsManager()) return RedirectToAction("Login", "Account");
-            var chats = await _context.Chats
-                .Include(c => c.User)
-                .ToListAsync();
-
-            // Подгружаем сообщения
-            var chatIds = chats.Select(c => c.Id).ToList();
-            var messages = await _context.Messages
-                .Where(m => chatIds.Contains(m.ChatId))
-                .OrderByDescending(m => m.Timestamp)
-                .ToListAsync();
-
-            foreach (var chat in chats)
-            {
-                chat.Messages = messages.Where(m => m.ChatId == chat.Id).ToList();
-            }
-
-            if (status.HasValue)
-            {
-                chats = chats.Where(c => c.Status == status.Value).ToList();
-            }
-
-            chats = chats.OrderByDescending(c => c.StartTime).ToList();
-
-            ViewBag.Status = status;
-            return View(chats);
+            return RedirectToAction("Index", "Chat");
         }
 
-        // GET: Manager/Chat/5
-        public async Task<IActionResult> Chat(int id)
+        // GET: Manager/Chat/5 — перенаправляем на общую страницу чата
+        public IActionResult Chat(int id)
         {
             if (!IsManager()) return RedirectToAction("Login", "Account");
-            var chat = await _chatRepository.GetByIdAsync(id);
-            if (chat == null)
-            {
-                return NotFound();
-            }
-
-            chat.Messages = await _context.Messages
-                .Where(m => m.ChatId == id)
-                .OrderBy(m => m.Timestamp)
-                .ToListAsync();
-
-            return View(chat);
+            return RedirectToAction("Conversation", "Chat", new { id });
         }
 
         // POST: Manager/CloseChat/5
