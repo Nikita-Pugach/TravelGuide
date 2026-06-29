@@ -132,6 +132,23 @@ public class ChatService : IChatService
                 IsMyMessage = m.SenderId == currentUserId
             }).ToList();
 
+        // Формируем заголовок чата в зависимости от роли текущего пользователя
+        string chatTitle;
+        string? chatTitleAvatar;
+        
+        if (role == UserRole.Tourist)
+        {
+            // Турист видит "Чат поддержки"
+            chatTitle = chat.Manager != null ? $"Чат с {chat.Manager.FullName}" : "Чат поддержки";
+            chatTitleAvatar = chat.Manager?.AvatarUrl;
+        }
+        else
+        {
+            // Менеджер/админ видит имя туриста
+            chatTitle = chat.User?.FullName ?? "Пользователь";
+            chatTitleAvatar = chat.User?.AvatarUrl;
+        }
+
         return new ChatConversationViewModel
         {
             ChatId = chat.Id,
@@ -141,7 +158,9 @@ public class ChatService : IChatService
             UserId = chat.UserId,
             ManagerName = chat.Manager?.FullName,
             ManagerId = chat.ManagerId,
-            Messages = messages
+            Messages = messages,
+            ChatTitle = chatTitle,
+            ChatTitleAvatar = chatTitleAvatar
         };
     }
 
