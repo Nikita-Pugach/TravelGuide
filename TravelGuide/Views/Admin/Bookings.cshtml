@@ -13,10 +13,10 @@
     
     <!-- Фильтры -->
     <div class="d-flex flex-wrap gap-2 mb-4">
-        <a asp-action="Bookings" class="btn @(ViewBag.CurrentStatus == null ? "btn-primary" : "btn-outline-primary")">Все</a>
-        <a asp-action="Bookings" asp-route-status="New" class="btn @(ViewBag.CurrentStatus?.ToString() == "New" ? "btn-warning" : "btn-outline-warning")">Новые</a>
-        <a asp-action="Bookings" asp-route-status="Confirmed" class="btn @(ViewBag.CurrentStatus?.ToString() == "Confirmed" ? "btn-success" : "btn-outline-success")">Подтверждённые</a>
-        <a asp-action="Bookings" asp-route-status="Cancelled" class="btn @(ViewBag.CurrentStatus?.ToString() == "Cancelled" ? "btn-danger" : "btn-outline-danger")">Отменённые</a>
+        <a asp-action="Bookings" class="btn @(ViewBag.CurrentStatus == null ? "btn-outline-dark" : "btn-outline-secondary")">Все</a>
+        <a asp-action="Bookings" asp-route-status="New" class="btn @(ViewBag.CurrentStatus?.ToString() == "New" ? "btn-outline-warning" : "btn-outline-secondary")">Новые</a>
+        <a asp-action="Bookings" asp-route-status="Confirmed" class="btn @(ViewBag.CurrentStatus?.ToString() == "Confirmed" ? "btn-outline-success" : "btn-outline-secondary")">Подтверждённые</a>
+        <a asp-action="Bookings" asp-route-status="Cancelled" class="btn @(ViewBag.CurrentStatus?.ToString() == "Cancelled" ? "btn-outline-danger" : "btn-outline-secondary")">Отменённые</a>
     </div>
     
     @if (TempData["SuccessMessage"] != null)
@@ -40,10 +40,10 @@
             {
                 var statusBadgeClass = b.Status switch
                 {
-                    BookingStatus.New => "bg-warning text-dark",
-                    BookingStatus.Confirmed => "bg-success",
-                    BookingStatus.Cancelled => "bg-danger",
-                    _ => "bg-secondary"
+                    BookingStatus.New => "badge-status-new",
+                    BookingStatus.Confirmed => "badge-status-confirmed",
+                    BookingStatus.Cancelled => "badge-status-cancelled",
+                    _ => "badge-role-guest"
                 };
 
                 <div class="col-md-6 col-lg-4">
@@ -96,12 +96,12 @@
                                     <form asp-action="ConfirmBooking" asp-route-id="@b.Id" method="post" class="flex-grow-1">
                                         @Html.AntiForgeryToken()
                                         <input type="hidden" name="managerNotes" value="">
-                                        <button type="submit" class="btn btn-success btn-sm w-100">Подтвердить</button>
+                                        <button type="submit" class="btn btn-outline-success btn-sm w-100">Подтвердить</button>
                                     </form>
                                     <form asp-action="CancelBooking" asp-route-id="@b.Id" method="post" class="flex-grow-1">
                                         @Html.AntiForgeryToken()
                                         <input type="hidden" name="managerNotes" value="">
-                                        <button type="submit" class="btn btn-danger btn-sm w-100">Отменить</button>
+                                        <button type="submit" class="btn btn-outline-danger btn-sm w-100">Отменить</button>
                                     </form>
                                 </div>
                             }
