@@ -78,7 +78,7 @@ using (var scope = app.Services.CreateScope())
         {
             FullName = "Администратор",
             Email = "admin@admin.com",
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin123"),
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin123!"),
             Role = UserRole.Admin,
             RegistrationDate = DateTime.Now
         };
@@ -94,7 +94,7 @@ using (var scope = app.Services.CreateScope())
         {
             FullName = "Менеджер",
             Email = "manager@travelguide.com",
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword("manager123"),
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword("Manager123!"),
             Role = UserRole.Manager,
             RegistrationDate = DateTime.Now
         };

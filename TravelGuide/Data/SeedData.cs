@@ -309,8 +309,8 @@ public static class SeedData
         // =====================
         // ПОЛЬЗОВАТЕЛИ
         // =====================
-        var tourist1 = new User { FullName = "Иван Иванов", Email = "ivan@test.com", Phone = "+375 (29) 111-22-33", Role = UserRole.Tourist, RegistrationDate = DateTime.Now.AddDays(-60) };
-        tourist1.PasswordHash = BCrypt.Net.BCrypt.HashPassword("password123");
+        var tourist1 = new User { FullName = "Иван Иванов", Email = "tourist@travelguide.com", Phone = "+375 (29) 111-22-33", Role = UserRole.Tourist, RegistrationDate = DateTime.Now.AddDays(-60) };
+        tourist1.PasswordHash = BCrypt.Net.BCrypt.HashPassword("Tourist123!");
 
         var tourist2 = new User { FullName = "Мария Петрова", Email = "maria@test.com", Phone = "+375 (33) 333-44-55", Role = UserRole.Tourist, RegistrationDate = DateTime.Now.AddDays(-30) };
         tourist2.PasswordHash = BCrypt.Net.BCrypt.HashPassword("password123");
@@ -319,10 +319,10 @@ public static class SeedData
         tourist3.PasswordHash = BCrypt.Net.BCrypt.HashPassword("password123");
 
         var admin = new User { FullName = "Администратор", Email = "admin@travelguide.com", Phone = "+375 (33) 000-00-01", Role = UserRole.Admin, RegistrationDate = DateTime.Now.AddDays(-90) };
-        admin.PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin123");
+        admin.PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin123!");
 
         var manager = new User { FullName = "Менеджер Ольга", Email = "manager@travelguide.com", Phone = "+375 (29) 000-00-02", Role = UserRole.Manager, RegistrationDate = DateTime.Now.AddDays(-80) };
-        manager.PasswordHash = BCrypt.Net.BCrypt.HashPassword("manager123");
+        manager.PasswordHash = BCrypt.Net.BCrypt.HashPassword("Manager123!");
 
         context.Users.AddRange(tourist1, tourist2, tourist3, admin, manager);
         context.SaveChanges();
