@@ -30,9 +30,9 @@ dotnet run --urls="http://localhost:5107"
 
 | Роль | Email | Пароль |
 |------|-------|--------|
-| Администратор | admin@travelguide.com | admin123 |
-| Менеджер | manager@travelguide.com | manager123 |
-| Турист | ivan@test.com | password123 |
+| Администратор | admin@travelguide.com | Admin123! |
+| Менеджер | manager@travelguide.com | Manager123! |
+| Турист | tourist@travelguide.com | Tourist123! |
 | Турист | maria@test.com | password123 |
 | Турист | alex@test.com | password123 |
 
