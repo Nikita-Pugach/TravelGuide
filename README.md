@@ -111,3 +111,7 @@ This started as a coursework project for the "Software Development and
 Maintenance" course at the College of Business and Law (2026). It grew past the
 assignment: three roles, a real-time chat, reports and a test suite are all
 beyond what was required.
+
+## License
+
+MIT. See [LICENSE](LICENSE).
