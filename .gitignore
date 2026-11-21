@@ -1,0 +1,21 @@
+# Build output
+bin/
+obj/
+Installer/Output/
+*.user
+*.suo
+.vs/
+
+# Local database (created and seeded on first run)
+*.db
+*.db-shm
+*.db-wal
+
+# Local logs and scratch files
+startup_log.txt
+TestResults/
+coverage*
+*.log
+
+# Local agent workspace
+.opencode/

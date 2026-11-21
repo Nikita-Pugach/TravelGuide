@@ -1,229 +1,113 @@
-# TravelGuide - Справочник туриста
+# TravelGuide
 
-Веб-приложение для поиска и бронирования туров, отелей и достопримечательностей.
+A travel booking web app: tours, hotels and sights with reviews and maps, three
+user roles, a live support chat and Excel reports.
 
-Курсовой проект по дисциплине **"Разработка и сопровождение программного обеспечения" (РСПО)**
+![.NET](https://img.shields.io/badge/.NET-9.0-512BD4)
+![ASP.NET Core](https://img.shields.io/badge/ASP.NET%20Core-MVC-512BD4)
+![SQLite](https://img.shields.io/badge/SQLite-EF%20Core-003B57)
 
-**Студент:** Пугач Никита, группа Т-393  
-**Учебное заведение:** Колледж бизнеса и права
+ASP.NET Core 9 MVC on Entity Framework Core with SQLite, Bootstrap 5 for the UI,
+Leaflet for maps, SignalR for real-time chat, BCrypt for passwords and ClosedXML
+for reports. Ships with 36 unit tests and a Windows installer.
 
-## Требования
+## What it does
 
-- **.NET 9.0 SDK** - [Скачать](https://dotnet.microsoft.com/download/dotnet/9.0)
-- **Редактор кода** (рекомендуется Visual Studio 2022 или VS Code)
+- **Catalogues** of tours, hotels and sights with filters — type, price, country,
+  star rating, meal plan — and pagination.
+- **Detail pages** with an interactive map, reviews and a booking action.
+- **Three roles**, each with its own panel: tourist, manager, administrator.
+- **Bookings** with status tracking, favourites, and reviews for every entity.
+- **Live support chat** over SignalR: a tourist writes, a manager answers in real
+  time, history is kept per user.
+- **Excel reports** for administration: popular tours, user activity, review
+  statistics, manager workload, agency ratings.
 
-## Запуск проекта
+## Roles
+
+| Role | What it can do |
+|---|---|
+| **Tourist** | Browse catalogues, favourite tours, write reviews, book tours, chat with support, edit the profile |
+| **Manager** | Manage tours, confirm or cancel bookings, answer support chat, view statistics |
+| **Admin** | Manage all content and reference data (countries, cities, agencies), manage users and roles, moderate reviews, export reports |
+
+## Tech stack
+
+| Layer | Choice |
+|---|---|
+| Framework | ASP.NET Core MVC 9.0 |
+| Data | Entity Framework Core 9.0 + SQLite |
+| Real-time | SignalR |
+| UI | Razor views, Bootstrap 5 |
+| Maps | Leaflet.js |
+| Passwords | BCrypt.Net |
+| Reports | ClosedXML (XLSX) |
+| Tests | xUnit + Moq |
+
+## Run it
+
+Requirements: [.NET 9 SDK](https://dotnet.microsoft.com/download/dotnet/9.0).
 
 ```bash
-# Перейти в папку проекта
 cd TravelGuide
-
-# Запустить приложение
 dotnet run --urls="http://localhost:5107"
 ```
 
-После запуска откройте браузер по адресу: `http://localhost:5107`
+Open <http://localhost:5107>. The SQLite database is created and seeded on the
+first run — no setup step.
 
-> При первом запуске база данных заполняется начальными данными автоматически.
+### Demo accounts
 
-## Тестовые учётные данные
+The seed data is for local development only.
 
-| Роль | Email | Пароль |
-|------|-------|--------|
-| Администратор | admin@travelguide.com | Admin123! |
-| Менеджер | manager@travelguide.com | Manager123! |
-| Турист | tourist@travelguide.com | Tourist123! |
-| Турист | maria@test.com | password123 |
-| Турист | alex@test.com | password123 |
+| Role | Email | Password |
+|---|---|---|
+| Administrator | `admin@travelguide.com` | `Admin123!` |
+| Manager | `manager@travelguide.com` | `Manager123!` |
+| Tourist | `tourist@travelguide.com` | `Tourist123!` |
 
-## Начальные данные
+### Seed data
 
-При первом запуске создаётся полный демо-набор данных:
+20 countries, 21 cities, 3 agencies, 60 hotels, 68 sights, 20 tours, 136 reviews,
+several bookings and favourites, plus two support chats with messages.
 
-| Объект | Количество | Примеры |
-|--------|------------|---------|
-| Страны | 20 | Италия, Франция, Япония, Исландия, Египет, Турция, Испания, Таиланд, США, Грузия, ОАЭ, Норвегия, Перу, Чехия, Греция, Марокко, ЮАР, Великобритания, Индонезия, Швейцария |
-| Города | 21 | Рим, Париж, Киото, Пхукет, Барселона, Дубай, Прага, Лондон, Бали и др. |
-| Агентства | 3 | TravelPro, Wanderlust Travel, Лучшие Туры |
-| Отели | 60 | Hotel Artemide, The Savoy, Sultan Cave Suites, Armani Hotel Dubai, Maya Ubud Resort и др. |
-| Достопримечательности | 68 | Колизей, Эйфелева башня, Саграда Фамилия, Бурдж-Халифа, Мачу-Пикчу, Карлов мост и др. |
-| Туры | 20 | Экскурсионные по 20 странам мира |
-| Отзывы | 136 | 46 на туры, 60 на отели (по одному на каждый), 30 на достопримечательности |
-| Бронирования | 3 | Разные статусы (новое, подтверждённое) |
-| Избранное | 7 | Разные пользователи |
-| Чаты | 2 | С сообщениями |
+To rebuild the database from scratch, delete `TravelGuide/TravelGuide.db` and run
+the app again.
 
-## Роли пользователей
+## Tests
 
-| Роль | Описание |
-|------|----------|
-| **Admin** | Полный доступ: управление турами, отелями, достопримечательностями, странами, городами, агентствами, пользователями и отзывами |
-| **Manager** | Управление турами, обработка бронирований, чат поддержки, статистика |
-| **Tourist** | Просмотр каталогов, добавление в избранное, написание отзывов, бронирование туров, чат с поддержкой |
+```bash
+dotnet test
+```
 
-## Структура проекта
+36 unit tests cover `AccountService` (registration, login, profile),
+`ChatService` (chat lifecycle, messages, read state) and `ReportService`
+(report generation).
+
+## Project layout
 
 ```
 TravelGuide/
-├── Controllers/              # Контроллеры MVC
-│   ├── AccountController.cs      - Регистрация, вход, профиль
-│   ├── AdminController.cs        - Панель администратора
-│   ├── ManagerController.cs      - Панель менеджера
-│   ├── ToursController.cs        - Каталог туров
-│   ├── HotelsController.cs       - Каталог отелей
-│   ├── SightsController.cs       - Достопримечательности
-│   ├── BookingsController.cs     - Бронирование туров
-│   ├── ReviewsController.cs      - Отзывы
-│   ├── FavoritesController.cs    - Избранные туры
-│   ├── ChatController.cs         - Чат поддержки
-│   ├── ReportsController.cs      - Отчёты (Excel)
-│   └── HomeController.cs         - Главная, О проекте, 404
-├── Models/
-│   └── Entities/             # Сущности БД
-│       ├── Tour.cs, Hotel.cs, Sight.cs
-│       ├── Country.cs, City.cs, Agency.cs
-│       ├── User.cs, Review.cs
-│       ├── Chat.cs, Message.cs
-│       ├── Booking.cs
-│       ├── FavoriteTour.cs
-│       └── Enums.cs          - Перечисления
-├── Views/                    # Представления Razor
-│   ├── Account/              - Авторизация и профиль
-│   ├── Admin/                - Панель администратора
-│   ├── Manager/              - Панель менеджера
-│   ├── Tours/                - Каталог и детали туров
-│   ├── Hotels/               - Каталог и детали отелей
-│   ├── Sights/               - Достопримечательности
-│   ├── Bookings/             - Бронирования
-│   ├── Favorites/            - Избранные туры
-│   ├── Chat/                 - Чат поддержки
-│   ├── Reports/              - Отчёты
-│   ├── Home/                 - Главная, О проекте, Privacy
-│   └── Shared/               - Общие (Layout, Error, NotFound, Pagination)
-├── ViewModels/               # Модели представлений
-├── Services/                 # Бизнес-логика
-│   ├── AccountService.cs        - Авторизация
-│   ├── ChatService.cs           - Чат
-│   └── ReportService.cs         - Формирование отчётов
-├── Repositories/             # Репозитории (generic)
-├── Data/                     # Контекст БД (EF Core)
-│   └── SeedData.cs              - Начальные данные
-├── Hubs/                     # SignalR хабы
-│   └── ChatHub.cs                - Реалтайм чат
-├── Migrations/               # Миграции EF Core
-├── wwwroot/                  # Статические файлы
-│   ├── css/site.css          - Глобальные стили
-│   └── uploads/              - Загруженные фото
-├── Tests/                    # Unit-тесты (xUnit)
-│   ├── AccountServiceTests.cs
-│   ├── ChatServiceTests.cs
-│   └── ReportServiceTests.cs
-├── appsettings.json          # Конфигурация
-└── TravelGuide.db            # База данных SQLite
+├── Controllers/     MVC controllers, incl. Admin, Manager, Reports
+├── Models/          entities: Tour, Hotel, Sight, Booking, Review, Chat, User
+├── Data/            DbContext, migrations, SeedData
+├── Services/        business logic: accounts, chat, reports
+├── Repositories/    generic repository over EF Core
+├── Hubs/            SignalR chat hub
+├── ViewModels/      view models
+└── Views/           Razor pages
+Installer/           Inno Setup script for a Windows build
+Tests/               xUnit project
 ```
 
-## Функционал
+## Installer
 
-### Для всех пользователей
-- Просмотр каталога туров с фильтрами (тип, цена, страна) и пагинацией
-- Просмотр каталога отелей с фильтрами (звёздность, город, тип питания) и пагинацией
-- Просмотр достопримечательностей с фильтрами и пагинацией
-- Страницы деталей с картой (Leaflet.js), отзывами, информацией
-- Регистрация и авторизация
+`Installer/` contains an Inno Setup script that packages a published build into a
+Windows installer, so the app can be installed and started without the SDK.
 
-### Для авторизованных пользователей (Tourist)
-- Добавление туров в избранное
-- Написание отзывов на туры, отели, достопримечательности
-- Бронирование туров с отслеживанием статуса
-- Чат с поддержкой в реальном времени (SignalR)
-- Редактирование профиля
+## Background
 
-### Для менеджеров (Manager)
-- Управление турами (создание, редактирование)
-- Обработка бронирований (подтверждение, отмена)
-- Ответы на сообщения в чате поддержки
-- Просмотр статистики (туры, чаты, отзывы)
-
-### Для администраторов (Admin)
-- Полное управление контентом: туры, отели, достопримечательности
-- Управление справочниками: страны, города, агентства
-- Управление пользователями (блокировка, смена ролей)
-- Модерация отзывов
-- Просмотр и управление бронированиями
-- Экспорт отчётов в Excel (5 типов отчётов)
-
-## Отчёты
-
-| Отчёт | Описание |
-|-------|----------|
-| Популярные туры | Рейтинг туров по отзывам и оценкам |
-| Активность пользователей | Статистика регистраций, бронирований, чатов |
-| Статистика отзывов | Средние оценки по турам, отелям, достопримечательностям |
-| Работа менеджеров | Загрузка менеджеров, время ответа |
-| Агентства | Рейтинг агентств, количество туров |
-
-Все отчёты доступны в формате **Excel** (ClosedXML).
-
-## Технологии
-
-| Технология | Назначение |
-|------------|------------|
-| ASP.NET Core MVC 9.0 | Backend-фреймворк |
-| Entity Framework Core 9.0 | ORM для работы с БД |
-| SQLite | База данных |
-| SignalR | Чат в реальном времени |
-| Bootstrap 5 | CSS-фреймворк |
-| Leaflet.js | Интерактивные карты |
-| BCrypt.Net | Хеширование паролей |
-| ClosedXML | Генерация Excel-отчётов |
-| xUnit + Moq | Unit-тесты |
-
-## Тестирование
-
-```bash
-# Запуск всех тестов
-dotnet test
-
-# Из папки Tests
-cd Tests
-dotnet test
-```
-
-**36 unit-тестов** покрывают:
-- AccountService (регистрация, авторизация, профиль)
-- ChatService (создание чата, сообщения, закрытие, прочтение)
-- ReportService (отчёты по турам, активности, отзывам, агентствам)
-
-## Конфигурация
-
-Основные настройки в `appsettings.json`:
-
-```json
-{
-  "ConnectionStrings": {
-    "DefaultConnection": "Data Source=TravelGuide.db"
-  }
-}
-```
-
-## База данных
-
-Проект использует **SQLite** — база данных создаётся и заполняется автоматически при первом запуске.
-
-### Пересоздание БД с начальными данными
-
-```bash
-cd TravelGuide
-del TravelGuide.db
-dotnet run --urls="http://localhost:5107"
-```
-
-## Дополнительные страницы
-
-- **О проекте** (`/Home/About`) — описание проекта, технологии, роли, автор
-- **Политика конфиденциальности** (`/Home/Privacy`) — 10 разделов о защите данных
-- **404** — кастомная страница ошибки
-
-## Контакты
-
-Курсовой проект, 2026 г.
+This started as a coursework project for the "Software Development and
+Maintenance" course at the College of Business and Law (2026). It grew past the
+assignment: three roles, a real-time chat, reports and a test suite are all
+beyond what was required.
